@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: MyString
+  first_name: MyString
+  last_name: MyString
+  password_hash: MyString
+  questionnaire_id: 1
+  privacy_level: 1
+
+two:
+  email: MyString
+  first_name: MyString
+  last_name: MyString
+  password_hash: MyString
+  questionnaire_id: 1
+  privacy_level: 1
