@@ -10,11 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_26_031046) do
+ActiveRecord::Schema.define(version: 2021_02_26_032526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "adminpack"
   enable_extension "plpgsql"
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.integer "q1"
+    t.integer "q2"
+    t.integer "q3"
+    t.integer "q4"
+    t.integer "q5"
+    t.integer "q6"
+    t.integer "q7"
+    t.integer "q8"
+    t.integer "q9"
+    t.integer "q10"
+    t.integer "q11"
+    t.integer "q12"
+    t.integer "q13"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"

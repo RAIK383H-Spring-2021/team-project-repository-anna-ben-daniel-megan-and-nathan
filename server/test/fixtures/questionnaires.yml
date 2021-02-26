@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  q1: 1
+  q2: 1
+  q3: 1
+  q4: 1
+  q5: 1
+  q6: 1
+  q7: 1
+  q8: 1
+  q9: 1
+  q10: 1
+  q11: 1
+  q12: 1
+  q13: 1
+
+two:
+  q1: 1
+  q2: 1
+  q3: 1
+  q4: 1
+  q5: 1
+  q6: 1
+  q7: 1
+  q8: 1
+  q9: 1
+  q10: 1
+  q11: 1
+  q12: 1
+  q13: 1
