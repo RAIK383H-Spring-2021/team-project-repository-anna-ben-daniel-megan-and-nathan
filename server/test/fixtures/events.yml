@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  host_id: 1
+  description: MyString
+  date_time: 2021-02-25 21:45:09
+  food_prepackaged: false
+  food_buffet: false
+  location: MyString
+  indoor: false
+  outdoor: false
+  remote: false
+  score: 1.5
+
+two:
+  title: MyString
+  host_id: 1
+  description: MyString
+  date_time: 2021-02-25 21:45:09
+  food_prepackaged: false
+  food_buffet: false
+  location: MyString
+  indoor: false
+  outdoor: false
+  remote: false
+  score: 1.5

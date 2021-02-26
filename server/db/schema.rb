@@ -10,11 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_26_033256) do
+ActiveRecord::Schema.define(version: 2021_02_26_035854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "adminpack"
   enable_extension "plpgsql"
+
+  create_table "events", force: :cascade do |t|
+    t.string "title"
+    t.integer "host_id"
+    t.string "description"
+    t.datetime "date_time"
+    t.boolean "food_prepackaged"
+    t.boolean "food_buffet"
+    t.string "location"
+    t.boolean "indoor"
+    t.boolean "outdoor"
+    t.boolean "remote"
+    t.float "score"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "questionnaires", force: :cascade do |t|
     t.integer "q1"
