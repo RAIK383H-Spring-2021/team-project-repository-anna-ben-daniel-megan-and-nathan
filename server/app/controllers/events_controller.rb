@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  def index
+  def create
   end
 
   def show
