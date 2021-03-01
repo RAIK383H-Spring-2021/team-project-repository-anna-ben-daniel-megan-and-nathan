@@ -1,5 +1,5 @@
 import { ThemeProvider } from "react-jss";
-import { light } from "../src/theme";
+import { dark, light } from "../src/theme";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -7,7 +7,7 @@ export const parameters = {
 
 export const decorators = [
   (Story) => (
-    <ThemeProvider theme={light}>
+    <ThemeProvider theme={dark}>
       <Story />
     </ThemeProvider>
   ),

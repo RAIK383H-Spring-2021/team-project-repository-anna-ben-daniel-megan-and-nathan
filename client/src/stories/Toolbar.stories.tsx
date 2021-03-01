@@ -4,6 +4,8 @@ import { Toolbar, ToolbarComponentProps } from "../components/Toolbar";
 import "../index.css";
 import { IconButton } from "../components/IconButton";
 import { Button } from "../components/Button";
+import { AppTheme } from "../theme";
+import { useTheme } from "react-jss";
 
 export default {
   title: "Components/Toolbar",
@@ -22,19 +24,23 @@ export default {
   },
 } as Meta;
 
-const Template: Story<ToolbarComponentProps> = (args) => (
-  <div
-    style={{
-      width: 375,
-      height: 812,
-      border: "1px solid black",
-      borderRadius: "8px",
-      overflow: "hidden",
-    }}
-  >
-    <Toolbar {...args} />
-  </div>
-);
+const Template: Story<ToolbarComponentProps> = (args) => {
+  const theme = useTheme<AppTheme>();
+  return (
+    <div
+      style={{
+        width: 375,
+        height: 812,
+        border: `1px solid ${theme.colors.divider.base.color}`,
+        borderRadius: "8px",
+        overflow: "hidden",
+        ...theme.colors.background.base,
+      }}
+    >
+      <Toolbar {...args} />
+    </div>
+  );
+};
 
 export const Default = Template.bind({});
 Default.args = {

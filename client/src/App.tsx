@@ -5,7 +5,7 @@ import { light } from "./theme";
 function App() {
   return (
     <ThemeProvider theme={light}>
-      <div style={{ ...light.typography.heading }}>Hello, world.</div>
+      <div>Hello, world.</div>
     </ThemeProvider>
   );
 }

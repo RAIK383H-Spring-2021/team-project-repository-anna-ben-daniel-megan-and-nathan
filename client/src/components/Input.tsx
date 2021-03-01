@@ -13,9 +13,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   input: {
     margin: "4px 0",
     padding: "12px 18px",
+    ...theme.colors.background.light,
     ...theme.typography.body,
     border: `1px solid ${theme.colors.divider.base.color}`,
     borderRadius: 4,
+    position: "relative",
 
     "&:hover": {
       border: `1px solid ${theme.colors.primary.light?.backgroundColor}`,
@@ -24,6 +26,29 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     "&:focus": {
       border: `1px solid ${theme.colors.primary.base.backgroundColor}`,
       outline: "none",
+    },
+
+    "&::-webkit-calendar-picker-indicator": {
+      color: "transparent",
+      background: "none",
+      zIndex: 1,
+      height: 18,
+      width: 18,
+    },
+
+    '&[type="date"]:before': {
+      content: "'today'",
+      fontFamily: "Material Icons",
+      ...theme.colors.background.base,
+      width: 18,
+      height: 18,
+      position: "absolute",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 18,
+      right: 12,
+      top: 12,
     },
   },
   captionWrapper: {
