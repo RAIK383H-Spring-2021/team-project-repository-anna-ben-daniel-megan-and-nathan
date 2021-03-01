@@ -6,22 +6,15 @@ import { Icon } from "./Icon";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
+    background: "transparent",
+    color: theme.colors.background.base.color,
+    border: "none",
+    position: "relative",
+    cursor: "pointer",
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",
-    padding: 16,
-    width: 56,
-    height: 56,
-    backgroundColor: ({ color }) => theme.colors[color].base.backgroundColor,
-    color: ({ color }) => theme.colors[color].base.color,
-    borderRadius: 32,
-    border: "none",
-    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1);",
-    transitionDuration: theme.transitions.timing.short,
-    transitionTimingFunction: theme.transitions.easing.default,
-    cursor: "pointer",
-    position: "relative",
-    overflow: "hidden",
+    borderRadius: "50%",
 
     "&:focus": {
       border: "none",
@@ -30,17 +23,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface FabComponentProps {
+export interface IconButtonComponentProps {
   icon: string;
-  color: "primary" | "secondary" | "accent";
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
-export const FAB: FC<FabComponentProps> = (props) => {
+export const IconButton: FC<IconButtonComponentProps> = (props) => {
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, ...props });
+  const classes = useStyles({ theme });
   const rippleRef = useRef(null);
-  useRipple(rippleRef);
+  useRipple(rippleRef, true);
 
   return (
     <button className={classes.button} ref={rippleRef} onClick={props.onClick}>

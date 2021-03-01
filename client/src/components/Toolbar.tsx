@@ -8,13 +8,22 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    padding: "20px 28px 20px 20px",
+    padding: 20,
     margin: 0,
+    height: 75,
   },
-  title: {
+  titleStart: {
     ...theme.typography.heading,
     flex: "1 1 auto",
-    margin: "0 20px",
+    margin: 0,
+  },
+  titleNoStart: {
+    ...theme.typography.heading,
+    flex: "1 1 auto",
+    margin: "0 0 0 8px",
+  },
+  start: {
+    marginRight: 12,
   },
 }));
 
@@ -31,8 +40,10 @@ export const Toolbar: FC<ToolbarComponentProps> = (props) => {
 
   return (
     <div className={classes.toolbar}>
-      <div>{props.start}</div>
-      <h1 className={classes.title}>{props.title}</h1>
+      {props.start && <div className={classes.start}>{props.start}</div>}
+      <h1 className={props.start ? classes.titleStart : classes.titleNoStart}>
+        {props.title}
+      </h1>
       <div>{props.end}</div>
     </div>
   );

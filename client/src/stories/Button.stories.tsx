@@ -24,5 +24,4 @@ export const Default = Template.bind({});
 Default.args = {
   color: "primary",
   size: "medium",
-  type: "text",
 };
