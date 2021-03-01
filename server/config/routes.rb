@@ -1,3 +1,17 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  resources :users, only: [:index, :create, :show, :update] do
+    resources :questionnaires, only: [:index, :create]
+    member do 
+      get 'invitations'
+      get 'events'
+    end
+  end
+
+  post '/users/login'
+
+  resources :events, only: [:create, :show, :update, :destroy] do 
+    resources :invitees, only: [:index, :create]
+    resources :suggestions, only: [:index, :show]
+  end
 end

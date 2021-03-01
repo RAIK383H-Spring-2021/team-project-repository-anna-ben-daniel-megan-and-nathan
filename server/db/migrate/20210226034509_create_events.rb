@@ -2,7 +2,7 @@ class CreateEvents < ActiveRecord::Migration[6.1]
   def change
     create_table :events do |t|
       t.string :title
-      t.integer :host_id, :references => [:users, :id]
+      t.integer :host_id
       t.string :description
       t.datetime :date_time
       t.boolean :food_prepackaged
