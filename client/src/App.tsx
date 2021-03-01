@@ -1,8 +1,13 @@
 import React from "react";
-import "./App.css";
+import { ThemeProvider } from "react-jss";
+import { light } from "./theme";
 
 function App() {
-  return <div>Hello, world.</div>;
+  return (
+    <ThemeProvider theme={light}>
+      <div style={{ ...light.typography.heading }}>Hello, world.</div>
+    </ThemeProvider>
+  );
 }
 
 export default App;

@@ -27,9 +27,30 @@ interface TypographyStyle {
   lineHeight: string;
   fontSize: string;
   color: string;
-  fontWeight?: string;
+  fontWeight?:
+    | "-moz-initial"
+    | "inherit"
+    | "initial"
+    | "revert"
+    | "unset"
+    | "bold"
+    | "normal"
+    | (number & {})
+    | "bolder"
+    | "lighter";
   letterSpacing?: string;
-  textTransform?: string;
+  textTransform?:
+    | "-moz-initial"
+    | "inherit"
+    | "initial"
+    | "revert"
+    | "unset"
+    | "none"
+    | "capitalize"
+    | "full-size-kana"
+    | "full-width"
+    | "lowercase"
+    | "uppercase";
 }
 
 export interface AppTheme extends DefaultTheme {
