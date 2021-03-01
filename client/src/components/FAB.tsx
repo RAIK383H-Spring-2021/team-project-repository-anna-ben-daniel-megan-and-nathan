@@ -11,7 +11,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: 16,
     width: 56,
     height: 56,
-    background: theme.colors.accent.base,
+    backgroundColor: ({ color }) => theme.colors[color].base.backgroundColor,
+    color: ({ color }) => theme.colors[color].base.color,
     borderRadius: 32,
     border: "none",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1);",
@@ -25,19 +26,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
 
     "&:hover": {
-      background: theme.colors.accent.dark,
+      backgroundColor: ({ color }) => theme.colors[color].dark?.backgroundColor,
+      color: ({ color }) => theme.colors[color].dark?.color,
     },
   },
 }));
 
 export interface FabComponentProps {
   icon: string;
+  color: "primary" | "secondary" | "accent";
   onClick?: (ev: MouseEvent) => void;
 }
 
 export const FAB: FC<FabComponentProps> = (props) => {
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, ...props });
 
   return (
     <button className={classes.button}>

@@ -1,11 +1,11 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { FAB, FabComponentProps } from "../components/FAB";
 import "../index.css";
+import { Button, ButtonComponentProps } from "../components/Button";
 
 export default {
-  title: "Components/FAB",
-  component: FAB,
+  title: "Components/Button",
+  component: Button,
   argTypes: {
     color: {
       control: {
@@ -16,10 +16,13 @@ export default {
   },
 } as Meta;
 
-const Template: Story<FabComponentProps> = (args) => <FAB {...args} />;
+const Template: Story<ButtonComponentProps> = (args) => (
+  <Button {...args}>Button</Button>
+);
 
 export const Default = Template.bind({});
 Default.args = {
-  icon: "add",
-  color: "accent",
+  color: "primary",
+  size: "medium",
+  type: "text",
 };
