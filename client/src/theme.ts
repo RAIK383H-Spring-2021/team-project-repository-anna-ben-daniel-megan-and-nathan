@@ -26,7 +26,7 @@ interface TypographyStyle {
   fontFamily: string;
   lineHeight: string;
   fontSize: string;
-  color: string;
+  color: string | ((params: { theme: AppTheme }) => string);
   fontWeight?:
     | "-moz-initial"
     | "inherit"
@@ -54,6 +54,7 @@ interface TypographyStyle {
 }
 
 export interface AppTheme extends DefaultTheme {
+  name: "dark" | "light";
   colors: {
     primary: ThemeColor;
     secondary: ThemeColor;
@@ -150,33 +151,35 @@ const transitions = {
 
 const typography: { [name: string]: TypographyStyle } = {
   heading: {
-    color: "black",
+    color: ({ theme }) => theme.colors.background.base.color,
     fontFamily: "Questrial",
     fontSize: "24px",
     lineHeight: "32px",
     fontWeight: "normal",
   },
   subheading: {
-    color: "black",
+    color: ({ theme }) => theme.colors.background.base.color,
     fontFamily: "Questrial",
     fontSize: "18px",
     lineHeight: "20px",
     fontWeight: "normal",
   },
   body: {
-    color: "black",
+    color: ({ theme }) => theme.colors.background.base.color,
     fontFamily: "Questrial",
     fontSize: "14px",
     lineHeight: "18px",
   },
   caption: {
-    color: "black",
+    color: ({ theme }) =>
+      theme.colors.background.light?.color ??
+      theme.colors.background.base.color,
     fontFamily: "Questrial",
     fontSize: "10px",
     lineHeight: "12px",
   },
   button: {
-    color: "black",
+    color: ({ theme }) => theme.colors.background.base.color,
     fontFamily: "DM Sans",
     fontSize: "10px",
     fontWeight: "bold",
@@ -185,7 +188,7 @@ const typography: { [name: string]: TypographyStyle } = {
     letterSpacing: "0.04em",
   },
   preTitle: {
-    color: "black",
+    color: ({ theme }) => theme.colors.background.base.color,
     fontFamily: "Questrial",
     fontSize: "10px",
     lineHeight: "10px",
@@ -195,12 +198,21 @@ const typography: { [name: string]: TypographyStyle } = {
 };
 
 export const light: AppTheme = {
+  name: "light",
   colors: {
     ...baseColors,
     background: {
       base: {
         backgroundColor: "white",
         color: textColors.light.primary,
+      },
+      light: {
+        backgroundColor: "white",
+        color: textColors.light.secondary,
+      },
+      dark: {
+        backgroundColor: "white",
+        color: textColors.light.secondary,
       },
     },
     divider: {
@@ -215,12 +227,21 @@ export const light: AppTheme = {
 };
 
 export const dark: AppTheme = {
+  name: "dark",
   colors: {
     ...baseColors,
     background: {
       base: {
         backgroundColor: "black",
         color: textColors.dark.primary,
+      },
+      light: {
+        backgroundColor: "black",
+        color: textColors.dark.secondary,
+      },
+      dark: {
+        backgroundColor: "black",
+        color: textColors.dark.secondary,
       },
     },
     divider: {

@@ -32,13 +32,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 export interface FabComponentProps {
   icon: string;
-  color: "primary" | "secondary" | "accent";
+  color?: "primary" | "secondary" | "accent";
+  size?: "small" | "normal" | "large" | "giant";
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const FAB: FC<FabComponentProps> = (props) => {
+  const { size = "normal", color = "accent" } = props;
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, ...props });
+  const classes = useStyles({ theme, size, color });
   const rippleRef = useRef(null);
   useRipple(rippleRef);
 

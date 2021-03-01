@@ -2,9 +2,6 @@ import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
-const WIDTH = 250;
-const HEIGHT = 250;
-
 const useStyles = createUseStyles((theme: AppTheme) => ({
   box: {
     width: 255,
@@ -75,54 +72,44 @@ export const Score: FC<ScoreComponentProps> = (props) => {
   const pctOf180 = 180 - 180 * percent;
 
   const s1 = Math.min(90, Math.max(0, pctOf180 - 90));
-  const p = Math.max(0, percent * 2 - 1);
-  const x = p * (Math.PI / 2);
-  const s2X = Math.sin(x + Math.PI / 2) * 100;
-  const s2Y = -Math.cos(x + Math.PI / 2) * 100;
+  const s2 = Math.min(90, Math.max(0, pctOf180));
 
-  const path = `polygon(0 100%, ${s2X}% ${s2Y}%, 0 0)`;
-  console.log(path);
+  console.log(s2);
 
   return (
-    <div>
-      <div className={classes.box}>
-        <div className={classes.meterWrapper}>
-          <div className={classes.meterOuter}>
-            <div className={classes.meterInner}>
-              <div
-                className={classes.meterSegment}
-                style={{
-                  transform: `rotate(180deg) skew(${s1}deg)`,
-                  background:
-                    props.type === "responses"
-                      ? "#1F57C4"
-                      : `conic-gradient(from 90deg at 0 0, #D62F43 0deg, #F7C44C ${
-                          90 + s1
-                        }deg, #4BB169 ${180 + s1}deg, #D62F43 ${360 + s1}deg)`,
-                }}
-              ></div>
-              <div
-                className={classes.meterSegment}
-                style={{
-                  transform: `rotate(270deg)`,
-                  background:
-                    props.type === "responses"
-                      ? "#1F57C4"
-                      : `conic-gradient(from 90deg at 0 0, #F7C44C 0deg, #4BB169 90deg`,
-                  clipPath: path,
-                }}
-              ></div>
-              <div className={classes.meterBackground}></div>
-            </div>
+    <div className={classes.box}>
+      <div className={classes.meterWrapper}>
+        <div className={classes.meterOuter}>
+          <div className={classes.meterInner}>
+            <div
+              className={classes.meterSegment}
+              style={{
+                transform: `rotate(180deg) skew(${s1}deg)`,
+                background:
+                  props.type === "responses"
+                    ? "#1F57C4"
+                    : `conic-gradient(from 90deg at 0 0, #D62F43 0deg, #F7C44C ${
+                        90 + s1
+                      }deg, #4BB169 ${180 + s1}deg, #D62F43 ${360 + s1}deg)`,
+              }}
+            ></div>
+            <div
+              className={classes.meterSegment}
+              style={{
+                transform: `rotate(270deg) skew(${s2}deg)`,
+                background:
+                  props.type === "responses"
+                    ? "#1F57C4"
+                    : `conic-gradient(from 90deg at 0 0, #F7C44C 0deg, #4BB169 ${
+                        90 + s2 * 2
+                      }deg`,
+              }}
+            ></div>
+            <div className={classes.meterBackground}></div>
           </div>
         </div>
-        <div className={classes.number}>{props.val}</div>
       </div>
-      <img
-        height="400"
-        style={{ clipPath: path }}
-        src="https://images.unsplash.com/photo-1488654715439-fbf461f0eb8d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
-      ></img>
+      <div className={classes.number}>{props.val}</div>
     </div>
   );
 };
