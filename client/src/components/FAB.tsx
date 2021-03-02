@@ -43,7 +43,7 @@ export const FAB: FC<FabComponentProps> = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size, color });
   const rippleRef = useRef(null);
-  useRipple(rippleRef);
+  useRipple(rippleRef, theme.colors[color].base.color);
 
   return (
     <button className={classes.button} ref={rippleRef} onClick={props.onClick}>

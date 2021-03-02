@@ -1,6 +1,4 @@
-**!notice**: be sure to delete `.gitkeep` before scaffolding rails!
-
-# [Project Name]
+# Shindig
 
 \[short description]
 

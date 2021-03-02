@@ -32,7 +32,7 @@ export const IconButton: FC<IconButtonComponentProps> = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const rippleRef = useRef(null);
-  useRipple(rippleRef, true);
+  useRipple(rippleRef, theme.colors.background.base.color, true);
 
   return (
     <button className={classes.button} ref={rippleRef} onClick={props.onClick}>

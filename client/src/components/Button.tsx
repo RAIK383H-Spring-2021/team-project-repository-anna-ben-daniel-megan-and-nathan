@@ -18,12 +18,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     display: "inline-block",
     overflow: "hidden",
 
-    "&:focused": {
+    "&:focus": {
       border: "none",
-    },
-
-    "&:active": {
-      border: "none",
+      outline: "none",
     },
   },
 }));
@@ -40,7 +37,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
 
   const rippleRef = useRef(null);
 
-  useRipple(rippleRef);
+  useRipple(rippleRef, theme.colors[props.color ?? "primary"].base.color);
 
   return (
     <button className={classes.button} ref={rippleRef} onClick={props.onClick}>

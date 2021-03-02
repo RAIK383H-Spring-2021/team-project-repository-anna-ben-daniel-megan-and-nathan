@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 export function useRipple(
   parentElement: React.MutableRefObject<HTMLElement | null>,
+  color: string,
   unbounded = false
 ) {
   useEffect(() => {
@@ -11,6 +12,9 @@ export function useRipple(
     if (parent) {
       const ripple = new Ripple();
       ripple.unbounded = unbounded;
+      ripple.primary = true;
+      parent.style.setProperty("--mdc-theme-primary", color);
+
       const rh = new RippleHandlers(async () => ripple);
       parent.appendChild(ripple);
       parent.addEventListener("mouseenter", rh.startHover);

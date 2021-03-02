@@ -18,6 +18,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     border: `1px solid ${theme.colors.divider.base.color}`,
     borderRadius: 4,
     position: "relative",
+    height: 44,
 
     "&:hover": {
       border: `1px solid ${theme.colors.primary.light?.backgroundColor}`,
@@ -28,27 +29,67 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       outline: "none",
     },
 
+    "&[disabled]": {
+      background: theme.colors.divider.base.backgroundColor,
+      cursor: "not-allowed",
+
+      "&:hover": {
+        border: `1px solid ${theme.colors.divider.base.color}`,
+      },
+    },
+
     "&::-webkit-calendar-picker-indicator": {
       color: "transparent",
       background: "none",
       zIndex: 1,
       height: 18,
       width: 18,
+      cursor: "pointer",
+
+      "&:focus": {
+        outline: "none",
+        border: "none",
+      },
     },
 
-    '&[type="date"]:before': {
-      content: "'today'",
-      fontFamily: "Material Icons",
-      ...theme.colors.background.base,
-      width: 18,
-      height: 18,
-      position: "absolute",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 18,
-      right: 12,
-      top: 12,
+    '&[type="date"]': {
+      ...theme.typography.body,
+
+      "&:before": {
+        ...theme.colors.background.base,
+        backgroundColor: "transparent",
+        content: "'today'",
+        fontFamily: "Material Icons",
+        width: 18,
+        height: 18,
+        position: "absolute",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 18,
+        right: 16,
+        top: 12,
+      },
+    },
+
+    '&[type="time"]': {
+      ...theme.typography.body,
+
+      "&:before": {
+        ...theme.colors.background.base,
+        backgroundColor: "transparent",
+        content: "'schedule'",
+        fontFamily: "Material Icons",
+        width: 18,
+        height: 18,
+        position: "absolute",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 18,
+        right: 16,
+        top: 12,
+      },
     },
   },
   captionWrapper: {
@@ -58,7 +99,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   caption: {
     ...theme.typography.caption,
-    // color:
   },
   wordLimit: {
     ...theme.typography.caption,

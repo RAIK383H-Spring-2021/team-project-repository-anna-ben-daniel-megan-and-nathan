@@ -15,6 +15,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     letterSpacing: "0.04em",
     margin: "auto",
     zIndex: 99,
+    color: theme.colors.background.base.color,
   },
   meterWrapper: {
     position: "absolute",
