@@ -6,28 +6,17 @@ env:
   POSTGRES_DB: postgres
 on: [push, pull_request]
 jobs:
-  # rubocop-test:
-  #   name: Rubocop
-  #   runs-on: ubuntu-18.04
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - run: cd server
-  #     - uses: actions/setup-ruby@v1
-  #       with:
-  #         ruby-version: ${{ env.RUBY_VERSION }}
-  #     - name: Install Rubocop
-  #       run: gem install rubocop
-  #     - name: Check code
-  #       run: rubocop
   rspec-test:
     name: RSpec
-    # needs: rubocop-test
     runs-on: ubuntu-18.04
     services:
       postgres:
         image: postgres:latest
         ports:
           - 5432:5432
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-ruby@v1
@@ -55,3 +44,26 @@ jobs:
         with:
           name: coverage-report
           path: ./server/coverage
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: rspec-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: AkhileshNS/heroku-deploy@v3.8.8
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: danielanoon@outlook.com
+          heroku_app_name: shindig-app
+          branch: main
+          appdir: server
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.7.2"
+      - run: cd server && bundle install
+      - run: cd server && ruby bin/rails db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
