@@ -30,7 +30,6 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v1
-      - run: cd server
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
@@ -38,6 +37,7 @@ jobs:
         run: sudo apt-get install libpq-dev
       - name: Install dependencies
         run: |
+          cd ./server
           gem install bundler
           bundler install
       - name: Create database
