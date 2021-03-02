@@ -35,7 +35,7 @@ jobs:
           bundler exec rails db:create RAILS_ENV=test
           bundler exec rails db:migrate RAILS_ENV=test
       - name: Run tests
-        run: /
+        run: |
           cd ./server
           bundler exec rake
       - name: Upload coverage results
