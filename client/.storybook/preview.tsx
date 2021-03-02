@@ -11,9 +11,12 @@ export const parameters = {
   },
 };
 
+const useDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
+const theme = useDarkTheme ? dark : light;
+
 export const decorators = [
   (Story) => (
-    <ThemeProvider theme={light}>
+    <ThemeProvider theme={theme}>
       <Story />
     </ThemeProvider>
   ),

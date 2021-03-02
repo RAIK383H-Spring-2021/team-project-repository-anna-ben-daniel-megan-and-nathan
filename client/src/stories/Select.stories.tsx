@@ -33,7 +33,9 @@ const Template: Story<SelectComponentProps> = (args) => {
       }}
     >
       <Select {...args}>
-        <option>Fuck</option>
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
       </Select>
     </div>
   );

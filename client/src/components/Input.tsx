@@ -114,7 +114,7 @@ export interface InputComponentProps {
   disabled?: boolean;
   value?: string;
   onChange?: (value: string) => void;
-  // validator?:
+  className?: string;
 }
 
 export const Input: FC<InputComponentProps> = (props) => {
@@ -129,7 +129,7 @@ export const Input: FC<InputComponentProps> = (props) => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <div className={`${classes.wrapper} ${props.className ?? ""}`}>
       {props.label && <label className={classes.label}>{props.label}</label>}
       <input
         type={props.type}

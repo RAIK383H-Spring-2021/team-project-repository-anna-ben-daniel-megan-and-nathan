@@ -6,6 +6,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {
     display: "flex",
     flexDirection: "column",
+    position: "relative",
   },
   label: {
     ...theme.typography.preTitle,
@@ -19,7 +20,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderRadius: 4,
     position: "relative",
     height: 44,
-    appearance: "none",
+    flex: "1 1 auto",
 
     "&:hover": {
       border: `1px solid ${theme.colors.primary.light?.backgroundColor}`,
@@ -31,16 +32,17 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
 
     "&::after": {
+      ...theme.typography.body,
+      ...theme.colors.background.base,
       fontFamily: "Material Icons",
       content: "'expand_more'",
-      color: theme.colors.background.base.color,
       backgroundColor: "transparent",
       width: 18,
       height: 18,
-      position: "absolute",
-      zIndex: 99,
-      left: 0,
-      top: 0,
+      gridArea: "select",
+      visibility: "visible",
+      display: "inline",
+      position: "relative",
     },
 
     "&[disabled]": {
@@ -51,6 +53,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         border: `1px solid ${theme.colors.divider.base.color}`,
       },
     },
+  },
+  selectWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   captionWrapper: {
     display: "flex",
