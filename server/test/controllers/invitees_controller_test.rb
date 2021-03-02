@@ -2,12 +2,12 @@ require "test_helper"
 
 class InviteesControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get invitees_index_url
+    get "/events/:event_id/invitees/"
     assert_response :success
   end
 
   test "should get create" do
-    get invitees_create_url
+    post "/events/:event_id/invitees/"
     assert_response :success
   end
 end

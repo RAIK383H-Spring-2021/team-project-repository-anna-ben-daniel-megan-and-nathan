@@ -1,8 +1,8 @@
-class QuestionnairesController < ApplicationController
-  def index
+class QuestionnaireController < ApplicationController
+  def show
     #TODO: Get current questionnaire responses
     respond_to do |format|
-      format.json { render json: { status: 'Questionnaires controller index received request' } }
+      format.json { render json: { status: 'Questionnaires controller show received request' } }
     end
   end
 

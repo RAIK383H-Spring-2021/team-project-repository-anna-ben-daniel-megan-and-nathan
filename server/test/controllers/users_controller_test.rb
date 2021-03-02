@@ -2,37 +2,37 @@ require "test_helper"
 
 class UsersControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get users_index_url
+    get "/users/"
     assert_response :success
   end
 
   test "should get create" do
-    get users_create_url
+    post "/users/"
     assert_response :success
   end
 
   test "should get show" do
-    get users_show_url
+    get "/users/:user_id"
     assert_response :success
   end
 
   test "should get update" do
-    get users_update_url
+    put "/users/:user_id"
     assert_response :success
   end
 
   test "should get login" do
-    get users_login_url
+    get "/users/login"
     assert_response :success
   end
 
   test "should get invitations" do
-    get users_invitations_url
+    get "/users/:id/invitations"
     assert_response :success
   end
 
   test "should get events" do
-    get users_events_url
+    get "/users/:id/events"
     assert_response :success
   end
 end

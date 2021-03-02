@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+
   def index
     # TODO: get all users matching query (uses ?q=...)
 

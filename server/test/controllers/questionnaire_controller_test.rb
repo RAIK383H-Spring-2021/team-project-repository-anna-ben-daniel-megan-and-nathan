@@ -1,13 +1,13 @@
 require "test_helper"
 
-class QuestionnairesControllerTest < ActionDispatch::IntegrationTest
+class QuestionnaireControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get questionnaires_index_url
+    get "/users/:id/questionnaire/"
     assert_response :success
   end
 
   test "should get update" do
-    get questionnaires_update_url
+    put "/users/:id/questionnaire/"
     assert_response :success
   end
 end

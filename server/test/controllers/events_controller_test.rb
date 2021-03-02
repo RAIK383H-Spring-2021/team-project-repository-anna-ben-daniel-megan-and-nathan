@@ -1,23 +1,23 @@
 require "test_helper"
 
 class EventsControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get events_index_url
+  test "should get create" do
+    post "/events/"
     assert_response :success
   end
 
   test "should get show" do
-    get events_show_url
+    get "/events/:event_id/"
     assert_response :success
   end
 
   test "should get update" do
-    get events_update_url
+    put "/events/:event_id/"
     assert_response :success
   end
 
   test "should get destroy" do
-    get events_destroy_url
+    delete "/events/:event_id"
     assert_response :success
   end
 end
