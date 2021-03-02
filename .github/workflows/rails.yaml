@@ -1,6 +1,6 @@
 name: Rails
 env:
-  RUBY_VERSION: 2.9
+  RUBY_VERSION: 2.7.2
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: password
   POSTGRES_DB: postgres
