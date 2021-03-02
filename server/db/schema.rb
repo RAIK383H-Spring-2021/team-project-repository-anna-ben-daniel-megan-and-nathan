@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 2021_03_02_065935) do
   end
 
   create_table "suggestions", force: :cascade do |t|
-    t.bigint "events_id", null: false
+    t.bigint "event_id", null: false
     t.boolean "masks"
     t.integer "distance"
     t.string "indoor_outdoor"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2021_03_02_065935) do
     t.float "score"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["events_id"], name: "index_suggestions_on_events_id"
+    t.index ["event_id"], name: "index_suggestions_on_event_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -87,6 +87,6 @@ ActiveRecord::Schema.define(version: 2021_03_02_065935) do
   add_foreign_key "events", "users", column: "host_id"
   add_foreign_key "participants", "events"
   add_foreign_key "participants", "users"
-  add_foreign_key "suggestions", "events", column: "events_id"
+  add_foreign_key "suggestions", "events"
   add_foreign_key "users", "questionnaires"
 end

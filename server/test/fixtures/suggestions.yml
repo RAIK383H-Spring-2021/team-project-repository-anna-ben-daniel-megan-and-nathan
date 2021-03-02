@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  event_id: 1
   masks: false
   distance: 1
   indoor_outdoor: MyString
@@ -9,6 +10,7 @@ one:
   score: 1.5
 
 two:
+  event_id: 1
   masks: false
   distance: 1
   indoor_outdoor: MyString
