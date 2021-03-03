@@ -85,13 +85,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export const SignUpPage: FC = (props) => {
+export const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
   return (
     <div className={classes.content}>
-      <Helmet title="Sign Up"></Helmet>
+      <Helmet title="Log In"></Helmet>
       <div className={classes.background}>
         <Background />
       </div>
@@ -100,24 +100,15 @@ export const SignUpPage: FC = (props) => {
           <Logo type="full" />
         </div>
         <form className={classes.inputWrapper}>
-          <div className={classes.nameWrapper}>
-            <Input type="text" className={classes.name} label="First Name" />
-            <Input type="text" className={classes.name} label="Last Name" />
-          </div>
           <Input className={classes.input} type="email" label="Email" />
           <Input className={classes.input} type="password" label="Password" />
-          <Input
-            className={classes.input}
-            type="password"
-            label="Confirm Password"
-          />
         </form>
         <div className={classes.buttonWrapper}>
-          <Button color="accent">Sign Up</Button>
+          <Button color="accent">Log In</Button>
         </div>
         <div className={classes.logInLinkWrapper}>
-          <Link to="/login" className={classes.logInLink}>
-            Already have an account? Log In
+          <Link to="/register" className={classes.logInLink}>
+            Don't have an account? Sign Up
           </Link>
         </div>
       </main>
