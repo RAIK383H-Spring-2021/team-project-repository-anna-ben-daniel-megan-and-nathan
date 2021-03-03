@@ -106,7 +106,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 export interface InputComponentProps {
-  type?: "text" | "number" | "date" | "time" | "search";
+  type?: "text" | "number" | "date" | "time" | "search" | "password" | "email";
   label?: string;
   placeholder?: string;
   caption?: string;

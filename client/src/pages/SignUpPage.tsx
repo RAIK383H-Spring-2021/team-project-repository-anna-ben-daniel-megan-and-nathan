@@ -8,6 +8,7 @@ import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   content: {
+    ...theme.colors.background.base,
     height: "100%",
     width: "100%",
     overflow: "hidden",
@@ -29,6 +30,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: 48,
     zIndex: 1,
     borderRadius: 12,
+    maxHeight: "100%",
+    overflowY: "auto",
 
     "@media (max-width: 710px)": {
       width: "100%",
@@ -70,6 +73,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     ...theme.typography.button,
     textDecoration: "none",
   },
+  buttonWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 36,
+  },
 }));
 
 export const SignUpPage: FC = (props) => {
@@ -83,22 +94,22 @@ export const SignUpPage: FC = (props) => {
       </div>
       <main className={classes.card}>
         <div className={classes.logo}>
-          <Logo />
+          <Logo type="full" />
         </div>
         <form className={classes.inputWrapper}>
           <div className={classes.nameWrapper}>
             <Input type="text" className={classes.name} label="First Name" />
             <Input type="text" className={classes.name} label="Last Name" />
           </div>
-          <Input className={classes.input} type="text" label="Email" />
-          <Input className={classes.input} type="text" label="Password" />
+          <Input className={classes.input} type="email" label="Email" />
+          <Input className={classes.input} type="password" label="Password" />
           <Input
             className={classes.input}
-            type="text"
+            type="password"
             label="Confirm Password"
           />
         </form>
-        <div>
+        <div className={classes.buttonWrapper}>
           <Button color="accent">Sign Up</Button>
         </div>
         <div className={classes.logInLinkWrapper}>

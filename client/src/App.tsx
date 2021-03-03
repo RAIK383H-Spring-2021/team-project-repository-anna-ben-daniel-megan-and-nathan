@@ -1,11 +1,14 @@
 import React from "react";
 import { ThemeProvider } from "react-jss";
 import { SignUpPage } from "./pages/SignUpPage";
-import { light } from "./theme";
+import { light, dark } from "./theme";
+
+const useDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
+const theme = useDarkTheme ? dark : light;
 
 function App() {
   return (
-    <ThemeProvider theme={light}>
+    <ThemeProvider theme={theme}>
       <SignUpPage />
     </ThemeProvider>
   );

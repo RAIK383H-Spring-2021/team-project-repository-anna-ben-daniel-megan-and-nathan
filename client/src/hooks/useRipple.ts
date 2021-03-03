@@ -39,6 +39,10 @@ export function useRipple(
       });
       parent.addEventListener("focus", rh.startFocus);
       parent.addEventListener("blur", rh.endFocus);
+
+      return () => {
+        parent.removeChild(ripple);
+      };
     }
   });
 }
