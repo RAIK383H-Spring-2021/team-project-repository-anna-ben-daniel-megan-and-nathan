@@ -12,10 +12,10 @@ import {
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
-const systemDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
-const userTheme = localStorage.getItem("theme");
-
 function determineTheme() {
+  const systemDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
+  const userTheme = localStorage.getItem("theme");
+
   if (userTheme) {
     return userTheme === "dark" ? dark : light;
   }
