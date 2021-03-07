@@ -2,7 +2,7 @@ export class API {
   public static base = "";
 
   public static makeUrl(path: string) {
-    return (this.base + "/" + path).replace(/[/]+/g, "/");
+    return this.base + ("/" + path).replace(/[/]+/g, "/");
   }
 
   public static setToken(token: string) {

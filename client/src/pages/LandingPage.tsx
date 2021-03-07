@@ -159,7 +159,7 @@ export const LandingPage: FC = (props) => {
   const classes = useStyles({ theme });
   const [response] = useRequest<GetVotesResponse>(getVotes, "daitarou");
 
-  const vote = response?.data[0].title ?? "Loading";
+  const vote = response?.data[0].title ?? "social";
 
   return (
     <div className={classes.content}>
