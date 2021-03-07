@@ -1,8 +1,13 @@
-name: Client
+name: Client Preview
 on:
   push:
     branches:
-      - main
+      - dev
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 jobs:
   deploy:
     name: Deploy
@@ -12,6 +17,5 @@ jobs:
       - uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: "--prod"
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}

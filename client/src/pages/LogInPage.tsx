@@ -1,11 +1,13 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles, useTheme } from "react-jss";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { API } from "../api";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
+import { MutativeRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -85,9 +87,32 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
+interface LoginResponse {
+  code: number;
+  data: { token: string };
+}
+
+const login = (username: string, password: string) =>
+  ({
+    method: "POST",
+    path: "auth/login",
+    body: { username, password },
+    onComplete: (response: LoginResponse) =>
+      response?.data?.token && API.setToken(response.data.token),
+  } as MutativeRequest);
+
 export const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
+  const history = useHistory();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [response, isLoading, makeRequest] = useRequest<LoginResponse>(login);
+
+  if (response?.code === 0) {
+    history.push("/");
+  }
 
   return (
     <div className={classes.content}>
@@ -100,11 +125,25 @@ export const LogInPage: FC = (props) => {
           <Logo type="full" />
         </div>
         <form className={classes.inputWrapper}>
-          <Input className={classes.input} type="email" label="Email" />
-          <Input className={classes.input} type="password" label="Password" />
+          <Input
+            className={classes.input}
+            value={email}
+            onChange={setEmail}
+            type="email"
+            label="Email"
+          />
+          <Input
+            className={classes.input}
+            value={password}
+            onChange={setPassword}
+            type="password"
+            label="Password"
+          />
         </form>
         <div className={classes.buttonWrapper}>
-          <Button color="accent">Log In</Button>
+          <Button color="accent" onClick={() => makeRequest(email, password)}>
+            {isLoading ? "Loading..." : "Log In"}
+          </Button>
         </div>
         <div className={classes.logInLinkWrapper}>
           <Link to="/register" className={classes.logInLink}>

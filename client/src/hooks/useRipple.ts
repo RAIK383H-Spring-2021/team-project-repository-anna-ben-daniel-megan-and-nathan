@@ -41,7 +41,9 @@ export function useRipple(
       parent.addEventListener("blur", rh.endFocus);
 
       return () => {
-        parent.removeChild(ripple);
+        if (parent.contains(ripple)) {
+          parent.removeChild(ripple);
+        }
       };
     }
   });
