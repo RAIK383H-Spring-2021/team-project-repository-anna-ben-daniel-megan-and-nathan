@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   def create
     # TODO: take user info sent via post request and push new user into database
 
-    @user_found = User.where("users.email = '#{params[:email]}'")
+    @user_found = User.find_by(email: params[:email])
 
     if @user_found != []
       respond_to do |format|
