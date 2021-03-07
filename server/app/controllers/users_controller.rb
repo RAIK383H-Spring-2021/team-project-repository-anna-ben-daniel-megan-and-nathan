@@ -11,8 +11,27 @@ class UsersController < ApplicationController
   def create
     # TODO: take user info sent via post request and push new user into database
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller create successfully received request' } }
+    @user_found = User.where("users.email = '#{params[:email]}'")
+
+    if @user_found != []
+      respond_to do |format|
+        format.json { render json: { status: 'email already registered' } }
+      end
+    else
+      @new_questionnaire = Questionnaire.create()
+      @new_user = User.create(email: params[:email], 
+        first_name: params[:first_name], 
+        last_name: params[:last_name],
+        password: params[:password],
+        password_confirmation: params[:password],
+        questionnaire_id: @new_questionnaire.id,
+        privacy_level: params[:privacy_level]
+      )
+
+      @token = encode({user_id: @new_user.id})
+      respond_to do |format|
+        format.json { render json: { user: @new_user, token: @token } }
+      end
     end
   end
 
@@ -35,8 +54,17 @@ class UsersController < ApplicationController
   def login
     # TODO: find corresponding user in query if exists, otherwise be sad :(
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller login successfully received request' } }
+    @user = User.find_by(email: params[:email])
+
+    if @user && @user.authenticate(params[:password])
+      token = encode({ user_id: @user.id })
+      respond_to do |format|
+        format.json { render json: { user: @user, token: token } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { status: 'user not found' } }
+      end
     end
   end
 
