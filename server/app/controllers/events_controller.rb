@@ -14,7 +14,7 @@ class EventsController < ApplicationController
       remote: params[:remote],
       score: params[:score]
     )
-    #TODO: Don't forget authentification
+
     @event.save!
     respond_to do |format|
       format.json { render json: { id: @event[:id] } }
@@ -22,16 +22,17 @@ class EventsController < ApplicationController
   end
 
   def show
+    #TODO: Get a specific event's details
     @event = Event.find(params[:id])
     e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
 
-    #TODO: Get a specific event's details
     respond_to do |format|
       format.json { render json: e_JSON }
       end
   end
 
   def update
+    #TODO: update an event
     @event = Event.find_by(id: params[:id])
     @event.update(
       title: params[:title],
@@ -48,7 +49,7 @@ class EventsController < ApplicationController
     )
 
     e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
-    #TODO: update an event
+    
     respond_to do |format|
       format.json { render json: e_JSON }
       end
@@ -58,7 +59,7 @@ class EventsController < ApplicationController
     #TODO: delete an event
     @event = params[:id]
 
-    ActiveRecord::Base.connection.execute("DELETE FROM events WHERE id = #{@event}")
+    Event.destroy(@event)
 
     respond_to do |format|
       format.json { render json: { status: '/events/destroy received request' } }
