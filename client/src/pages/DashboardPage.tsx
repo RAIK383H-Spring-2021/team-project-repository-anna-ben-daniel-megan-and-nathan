@@ -89,6 +89,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   mobileTransitionWrapper: {
     height: "100%",
   },
+  desktopPageWrapper: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    height: "100%",
+    padding: "96px 180px 0 180px",
+    columnGap: 60,
+  },
 }));
 
 export const DashboardPage: FC = (props) => {
@@ -98,9 +105,30 @@ export const DashboardPage: FC = (props) => {
 };
 
 function DashboardLarge() {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+
   return (
-    <Content>
-      <div>
+    <Content
+      toolbar={
+        <Toolbar
+          title="Dashboard"
+          size="large"
+          end={
+            <IconButton
+              icon="account_circle"
+              onClick={() =>
+                localStorage.getItem("debug") === "debug"
+                  ? localStorage.removeItem("debug")
+                  : localStorage.setItem("debug", "debug")
+              }
+            />
+          }
+        />
+      }
+      fab={<FAB icon="add" />}
+    >
+      <div className={classes.desktopPageWrapper}>
         <div>
           <CreatedEventsTab type="contain" />
         </div>

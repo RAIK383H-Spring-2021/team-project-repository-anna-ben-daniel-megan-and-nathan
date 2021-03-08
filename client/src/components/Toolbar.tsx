@@ -12,6 +12,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     margin: 0,
     height: 75,
     width: "100%",
+    paddingTop: ({ size }) => size === "large" && 60,
+    paddingBottom: ({ size }) => size === "large" && 36,
+    paddingLeft: ({ size }) => size === "large" && 180,
+    paddingRight: ({ size }) => size === "large" && 180,
   },
   titleStart: {
     ...theme.typography.heading,
@@ -33,11 +37,13 @@ export interface ToolbarComponentProps {
   end?: React.ReactNode;
   tabs?: React.ReactNode;
   title: string;
+  size?: "normal" | "large";
 }
 
 export const Toolbar: FC<ToolbarComponentProps> = (props) => {
+  const { size = "normal" } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, size });
 
   return (
     <div className={classes.toolbar}>

@@ -22,6 +22,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     cursor: "pointer",
     position: "relative",
     overflow: "hidden",
+    pointerEvents: "auto",
 
     "&:focus": {
       border: "none",
