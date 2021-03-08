@@ -85,6 +85,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     marginTop: 36,
   },
+  logoLink: {
+    textDecoration: "none",
+    margin: "none",
+  },
 }));
 
 interface LoginResponse {
@@ -93,13 +97,13 @@ interface LoginResponse {
 }
 
 const login = (username: string, password: string) =>
-  ({
-    method: "POST",
-    path: "auth/login",
-    body: { username, password },
-    onComplete: (response: LoginResponse) =>
-      response?.data?.token && API.setToken(response.data.token),
-  } as MutativeRequest);
+({
+  method: "POST",
+  path: "auth/login",
+  body: { username, password },
+  onComplete: (response: LoginResponse) =>
+    response?.data?.token && API.setToken(response.data.token),
+} as MutativeRequest);
 
 export const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
@@ -122,7 +126,9 @@ export const LogInPage: FC = (props) => {
       </div>
       <main className={classes.card}>
         <div className={classes.logo}>
-          <Logo type="full" />
+          <Link to="/" className={classes.logoLink}>
+            <Logo type="full" />
+          </Link>
         </div>
         <form className={classes.inputWrapper}>
           <Input

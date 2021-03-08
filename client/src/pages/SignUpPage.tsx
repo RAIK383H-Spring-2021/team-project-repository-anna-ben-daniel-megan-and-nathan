@@ -83,6 +83,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     marginTop: 36,
   },
+  logoLink: {
+    textDecoration: "none",
+    margin: "none",
+  },
 }));
 
 export const SignUpPage: FC = (props) => {
@@ -97,7 +101,9 @@ export const SignUpPage: FC = (props) => {
       </div>
       <main className={classes.card}>
         <div className={classes.logo}>
-          <Logo type="full" />
+          <Link to="/" className={classes.logoLink}>
+            <Logo type="full" />
+          </Link>
         </div>
         <form className={classes.inputWrapper}>
           <div className={classes.nameWrapper}>
