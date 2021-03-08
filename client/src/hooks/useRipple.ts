@@ -5,11 +5,12 @@ import { useEffect } from "react";
 export function useRipple(
   parentElement: React.MutableRefObject<HTMLElement | null>,
   color: string,
-  unbounded = false
+  unbounded = false,
+  cancel = false
 ) {
   useEffect(() => {
     const parent = parentElement.current;
-    if (parent) {
+    if (parent && !cancel) {
       const ripple = new Ripple();
       ripple.unbounded = unbounded;
       ripple.primary = true;

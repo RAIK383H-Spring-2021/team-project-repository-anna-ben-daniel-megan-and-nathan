@@ -121,7 +121,7 @@ const baseColors = {
     },
     dark: {
       backgroundColor: "#4BB169",
-      color: textColors.light.primary,
+      color: textColors.dark.primary,
     },
   },
   error: {

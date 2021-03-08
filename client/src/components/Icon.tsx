@@ -6,7 +6,7 @@ export interface IconComponentProps {
 }
 
 export const Icon: FC<IconComponentProps> = (props) => {
-  return (
-    <span className={`material-icons ${props.className}`}>{props.name}</span>
-  );
+  const { className = "" } = props;
+
+  return <span className={`material-icons ${className}`}>{props.name}</span>;
 };
