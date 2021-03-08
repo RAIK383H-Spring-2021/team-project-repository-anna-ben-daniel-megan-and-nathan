@@ -1,6 +1,8 @@
 import { FC, Fragment, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { Content } from "../components/Content";
+import { FAB } from "../components/FAB";
+import { IconButton } from "../components/IconButton";
 import { List } from "../components/List";
 import { ListItem } from "../components/ListItem";
 import { MiniScore } from "../components/MiniScore";
@@ -12,13 +14,15 @@ import {
   getUserInvitations,
   UserInvitationsResponse,
   Event,
+  UserCreatedEventsResponse,
+  getUserCreatedEvents,
 } from "../resources/dashboard";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   sectionHeader: {
     ...theme.typography.preTitle,
-    marginTop: 48,
+    marginTop: 32,
     marginLeft: 28,
     marginBottom: 12,
   },
@@ -28,37 +32,26 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
   },
   smallContent: {
-    marginTop: 72,
+    marginTop: 0,
   },
 }));
 
 export const DashboardPage: FC = (props) => {
-  // const theme = useTheme<AppTheme>();
-  // const classes = useStyles({ theme });
   const size = useScreen();
 
-  return (
-    <Content toolbar={<Toolbar title="Dashboard" />}>
-      {size === "large" ? <DashboardLarge /> : <DashboardSmall />}
-    </Content>
-  );
+  return size === "large" ? <DashboardLarge /> : <DashboardSmall />;
 };
 
 function DashboardLarge() {
   return (
-    <Fragment>
+    <Content>
       <div>
-        <h2>Your Events</h2>
-        <List type="contain">
-          <ListItem>Event Name</ListItem>
-          <ListItem>Event Name</ListItem>
-          <ListItem>Event Name</ListItem>
-        </List>
+        <CreatedEventsTab />
       </div>
       <div>
         <InvitationsTab />
       </div>
-    </Fragment>
+    </Content>
   );
 }
 
@@ -73,18 +66,42 @@ function DashboardSmall() {
   ];
 
   return (
-    <Fragment>
-      <TabBar
-        className={classes.tabBar}
-        tabs={tabs}
-        color="primary"
-        onChange={setCurrent}
-      />
+    <Content
+      toolbar={
+        <div>
+          <Toolbar
+            title="Dashboard"
+            end={<IconButton icon="account_circle" />}
+          />
+          <TabBar tabs={tabs} color="primary" onChange={setCurrent} />
+        </div>
+      }
+      fab={<FAB icon="add" />}
+    >
       <div className={classes.smallContent}>
-        {current === "created" && <div>Your Events</div>}
+        {current === "created" && <CreatedEventsTab />}
         {current === "invited" && <InvitationsTab />}
       </div>
-    </Fragment>
+    </Content>
+  );
+}
+
+function CreatedEventsTab() {
+  const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
+    getUserCreatedEvents,
+    14
+  );
+
+  console.log(response);
+
+  return (
+    <div>
+      <EventList
+        events={response?.events ?? []}
+        loading={isLoading}
+        title="Your Events"
+      ></EventList>
+    </div>
   );
 }
 

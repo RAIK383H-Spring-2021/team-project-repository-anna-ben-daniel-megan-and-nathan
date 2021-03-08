@@ -66,7 +66,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
         <svg height={RADIUS * 2} width={RADIUS * 2}>
           <circle
             stroke="rgba(31, 87, 196, 0.25)"
-            stroke-width={STROKE}
+            strokeWidth={STROKE}
             fill="transparent"
             r={NORM_RADIUS}
             cx={RADIUS}
@@ -80,7 +80,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
               transform: "rotate(-90deg)",
               transformOrigin: "50% 50%",
             }}
-            stroke-width={STROKE}
+            strokeWidth={STROKE}
             fill="transparent"
             r={NORM_RADIUS}
             cx={RADIUS}

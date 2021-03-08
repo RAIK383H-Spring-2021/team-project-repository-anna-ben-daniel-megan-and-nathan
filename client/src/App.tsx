@@ -25,6 +25,7 @@ function determineTheme() {
 }
 
 const theme = determineTheme();
+document.body.classList.add(theme.name);
 
 function Content() {
   const location = useLocation();

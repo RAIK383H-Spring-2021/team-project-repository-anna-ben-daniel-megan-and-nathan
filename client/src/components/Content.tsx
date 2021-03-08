@@ -3,25 +3,25 @@ import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
-  wrapper: {
-    display: "flex",
-    flexDirection: "column",
+  content: {
+    display: "grid",
+    height: "100vh",
+    gridTemplateRows: "150px 1fr",
+  },
+  scroll: {
+    height: "100%",
+    overflowY: "scroll",
+    paddingBottom: ({ fabExists }) => fabExists && 96,
+  },
+  fabContainer: {
     position: "absolute",
+    bottom: 0,
     width: "100%",
-    height: "100%",
-    top: 0,
-    left: 0,
-  },
-  main: {
-    overflowY: "auto",
-    height: "100%",
-  },
-  scrollContainer: {
-    height: "calc(100%)",
-    marginTop: 75,
-  },
-  toolbar: {
-    position: "absolute",
+    display: "flex",
+    padding: "20px",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
 
@@ -31,15 +31,16 @@ interface ContentComponentProps {
 }
 
 export function Content(props: PropsWithChildren<ContentComponentProps>) {
+  const fabExists = !!props.fab;
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, fabExists });
 
   return (
-    <div className={classes.wrapper}>
-      <div className={classes.toolbar}>{props.toolbar}</div>
-      <div className={classes.scrollContainer}>
-        <main className={classes.main}>{props.children}</main>
-      </div>
+    <div className={classes.content}>
+      <div>{props.toolbar}</div>
+      <main className={classes.scroll}>{props.children}</main>
+      {props.fab && <div className={classes.fabContainer}>{props.fab}</div>}
     </div>
   );
 }

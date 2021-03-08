@@ -27,6 +27,10 @@ export interface UserInvitationsResponse {
   otherEvents: Event[];
 }
 
+export interface UserCreatedEventsResponse {
+  events: Event[];
+}
+
 const exampleInvitationEvents: UserInvitationsResponse = {
   newEvents: [
     {
@@ -92,5 +96,58 @@ export function getUserInvitations(userId: string): FetchRequest {
     method: "GET",
     path: `/users/${userId}/invitations`,
     debug: () => exampleInvitationEvents,
+  };
+}
+
+const exampleCreatedEvents: UserCreatedEventsResponse = {
+  events: [
+    {
+      status: "incomplete",
+      replies: 5,
+      creator: "Author Name",
+      date_time: "2021-03-08T04:01:28.910Z",
+      description: "Event description...",
+      location: "Here",
+      title: "Event Title",
+      invitees: 20,
+    },
+    {
+      status: "complete",
+      score: 3.3,
+      creator: "Author Name",
+      date_time: "2021-03-08T04:01:28.910Z",
+      description: "Event description...",
+      location: "There",
+      title: "Created Event",
+      invitees: 10,
+    },
+    {
+      status: "complete",
+      score: 1.2,
+      creator: "Author Name",
+      date_time: "2021-03-08T04:01:28.910Z",
+      description: "Event description...",
+      location: "There",
+      title: "Event Title",
+      invitees: 10,
+    },
+    {
+      status: "complete",
+      score: 4.5,
+      creator: "Author Name",
+      date_time: "2021-03-08T04:01:28.910Z",
+      description: "Event description...",
+      location: "There",
+      title: "Event Title",
+      invitees: 10,
+    },
+  ],
+};
+
+export function getUserCreatedEvents(userId: string): FetchRequest {
+  return {
+    method: "GET",
+    path: `/users/${userId}/events`,
+    debug: () => exampleCreatedEvents,
   };
 }

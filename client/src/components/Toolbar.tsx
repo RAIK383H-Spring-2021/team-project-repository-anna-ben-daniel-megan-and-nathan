@@ -11,6 +11,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: 20,
     margin: 0,
     height: 75,
+    width: "100%",
   },
   titleStart: {
     ...theme.typography.heading,
