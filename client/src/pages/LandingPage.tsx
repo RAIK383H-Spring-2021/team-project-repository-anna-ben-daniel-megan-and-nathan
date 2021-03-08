@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Logo } from "../components/Logo";
-import { FetchRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -142,24 +141,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-interface GetVotesResponse {
-  code: number;
-  data: { title: string }[];
-}
-
-function getVotes(username: string) {
-  return {
-    path: `users/${username}/votes`,
-    method: "GET",
-  } as FetchRequest;
-}
-
 export const LandingPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
-  const [response] = useRequest<GetVotesResponse>(getVotes, "daitarou");
-
-  const vote = response?.data?.[0].title ?? "social";
 
   return (
     <div className={classes.content}>
@@ -171,7 +155,7 @@ export const LandingPage: FC = (props) => {
         <div className={classes.spacer}></div>
         <div>
           <h1 className={classes.heading}>
-            Putting the <span className={classes.blue}>{vote}</span> back into
+            Putting the <span className={classes.blue}>social</span> back into
             social distancing.
           </h1>
           <p className={classes.description}>

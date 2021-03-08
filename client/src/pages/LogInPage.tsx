@@ -97,13 +97,13 @@ interface LoginResponse {
 }
 
 const login = (username: string, password: string) =>
-({
-  method: "POST",
-  path: "auth/login",
-  body: { username, password },
-  onComplete: (response: LoginResponse) =>
-    response?.data?.token && API.setToken(response.data.token),
-} as MutativeRequest);
+  ({
+    method: "POST",
+    path: "auth/login",
+    body: { username, password },
+    onComplete: (response: LoginResponse) =>
+      response?.data?.token && API.setToken(response.data.token),
+  } as MutativeRequest);
 
 export const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
@@ -115,7 +115,7 @@ export const LogInPage: FC = (props) => {
   const [response, isLoading, makeRequest] = useRequest<LoginResponse>(login);
 
   if (response?.code === 0) {
-    history.push("/");
+    history.push("/dash");
   }
 
   return (
