@@ -71,7 +71,16 @@ function DashboardSmall() {
         <div>
           <Toolbar
             title="Dashboard"
-            end={<IconButton icon="account_circle" />}
+            end={
+              <IconButton
+                icon="account_circle"
+                onClick={() =>
+                  localStorage.getItem("debug") === "debug"
+                    ? localStorage.removeItem("debug")
+                    : localStorage.setItem("debug", "debug")
+                }
+              />
+            }
           />
           <TabBar tabs={tabs} color="primary" onChange={setCurrent} />
         </div>
@@ -91,8 +100,6 @@ function CreatedEventsTab() {
     getUserCreatedEvents,
     14
   );
-
-  console.log(response);
 
   return (
     <div>

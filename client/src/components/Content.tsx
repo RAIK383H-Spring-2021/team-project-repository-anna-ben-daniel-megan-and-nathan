@@ -10,7 +10,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   scroll: {
     height: "100%",
-    overflowY: "scroll",
+    overflowY: "auto",
     paddingBottom: ({ fabExists }) => fabExists && 96,
   },
   fabContainer: {
