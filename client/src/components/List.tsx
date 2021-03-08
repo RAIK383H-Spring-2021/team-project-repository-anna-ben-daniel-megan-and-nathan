@@ -12,6 +12,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderRadius: ({ type }) => type === "contain" && 8,
     overflow: "hidden",
     listStyle: "none",
+    borderTop: `1px solid ${theme.colors.divider.base.color}`,
+    borderBottom: `1px solid ${theme.colors.divider.base.color}`,
   },
 }));
 

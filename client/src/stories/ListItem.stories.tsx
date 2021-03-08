@@ -33,7 +33,7 @@ const Template: Story<PropsWithChildren<ListItemComponentProps>> = (args) => (
 export const HighScore = Template.bind({});
 HighScore.args = {
   children: "High Score",
-  start: <MiniScore value={4.5} />,
+  start: <MiniScore type="score" value={4.5} />,
   end: <Button color="accent">Button</Button>,
   subtitle: "Hi",
 };
@@ -41,7 +41,7 @@ HighScore.args = {
 export const MidScore = Template.bind({});
 MidScore.args = {
   children: "Medium Score",
-  start: <MiniScore value={3.3} />,
+  start: <MiniScore type="score" value={3.3} />,
   end: <Button color="accent">Button</Button>,
   subtitle: "Mid",
 };
@@ -49,7 +49,7 @@ MidScore.args = {
 export const LowScore = Template.bind({});
 LowScore.args = {
   children: "Low Score",
-  start: <MiniScore value={1.7} />,
+  start: <MiniScore type="score" value={1.7} />,
   end: <Button color="accent">Button</Button>,
   subtitle: "Lo",
 };

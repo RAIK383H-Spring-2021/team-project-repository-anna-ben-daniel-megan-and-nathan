@@ -5,13 +5,17 @@ import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {
+    ...theme.colors.background.base,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    zIndex: 1,
+    padding: "8px 18px 28px 18px",
   },
   slider: {
     width: 150,
+    maxWidth: "50%",
     backgroundColor: ({ color }) => theme.colors[color].base.backgroundColor,
     height: 37,
     position: "absolute",
@@ -29,10 +33,12 @@ interface ITab {
 export interface TabBarComponentProps {
   tabs: ITab[];
   color?: "primary" | "secondary" | "accent";
+  onChange?: (key: string) => void;
+  className?: string;
 }
 
 export const TabBar: FC<TabBarComponentProps> = (props) => {
-  const { color = "primary" } = props;
+  const { color = "primary", className = "" } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color });
@@ -70,13 +76,20 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
     sliderRef.current?.style.setProperty("left", value);
   }
 
+  function changeActiveTab(btn: HTMLButtonElement, key: string) {
+    props.onChange?.(key);
+    setActive(btn);
+  }
+
   return (
-    <div className={classes.wrapper} ref={wrapperRef}>
+    <div className={`${classes.wrapper} ${className}`} ref={wrapperRef}>
       <div className={classes.slider} ref={sliderRef}></div>
       {props.tabs.map((tab) => (
         <Tab
           key={tab.key}
-          onClick={(ev) => setActive(ev.target as HTMLButtonElement)}
+          onClick={(ev) =>
+            changeActiveTab(ev.target as HTMLButtonElement, tab.key)
+          }
           color={color}
         >
           {tab.label}

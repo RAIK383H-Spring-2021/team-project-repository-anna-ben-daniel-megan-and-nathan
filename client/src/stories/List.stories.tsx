@@ -21,7 +21,10 @@ const Template: Story<ListStoryArgs> = (args) => (
       <ListItem
         key={i}
         start={
-          <MiniScore value={Math.floor(Math.random() * 4 * 10) / 10 + 1} />
+          <MiniScore
+            type="score"
+            value={Math.floor(Math.random() * 4 * 10) / 10 + 1}
+          />
         }
         subtitle={"Event " + (i + 1)}
         button={args.button}

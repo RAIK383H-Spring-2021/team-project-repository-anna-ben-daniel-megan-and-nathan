@@ -5,6 +5,7 @@ interface GenericRequest {
   path: string;
   query?: { [key: string]: string | number | boolean };
   onComplete?<T = unknown>(data: T): void;
+  debug?: () => unknown;
 }
 
 export interface MutativeRequest extends GenericRequest {
@@ -58,6 +59,16 @@ export function useRequest<T>(
 
     const r = request!(...params);
     const url = API.makeUrl(r.path);
+
+    if (localStorage.getItem("debug") === "debug") {
+      if (r.debug) {
+        const v = r.debug();
+        r.onComplete?.(v);
+        setValue(v as T);
+        setIsLoading(false);
+        return;
+      }
+    }
 
     const data = await fetch(url, makeFetchOptions(r)).then(
       (res) => res.json() as Promise<T>

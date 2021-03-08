@@ -11,6 +11,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { DashboardPage } from "./pages/DashboardPage";
 
 function determineTheme() {
   const systemDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
@@ -37,6 +38,9 @@ function Content() {
           </Route>
           <Route path="/register">
             <SignUpPage />
+          </Route>
+          <Route path="/dash">
+            <DashboardPage />
           </Route>
           <Route exact path="/">
             <LandingPage />
