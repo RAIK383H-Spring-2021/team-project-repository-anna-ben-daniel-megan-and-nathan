@@ -1,5 +1,6 @@
 import { FC, Fragment, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Content } from "../components/Content";
 import { FAB } from "../components/FAB";
 import { IconButton } from "../components/IconButton";
@@ -32,7 +33,61 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
   },
   smallContent: {
-    marginTop: 0,
+    position: "relative",
+    height: "100%",
+    overflowX: "hidden",
+  },
+  mobileCreatedTab: {
+    position: "absolute",
+    height: "100%",
+    overflowY: "auto",
+    paddingBottom: 96,
+    paddingTop: 150,
+    width: "100%",
+    transitionDuration: theme.transitions.timing.normal,
+    transitionTimingFunction: theme.transitions.easing.default,
+
+    "&.slide-enter": {
+      transform: "translateX(-100vw)",
+    },
+
+    "&.slide-enter-done": {
+      transform: "translateX(0)",
+    },
+
+    "&.slide-enter-active": {
+      transform: "translateX(0)",
+    },
+
+    "&.slide-exit-done": {
+      transform: "translateX(-100%)",
+    },
+
+    "&.slide-exit-active": {
+      transform: "translateX(-100%)",
+    },
+  },
+  mobileInvitedTab: {
+    position: "absolute",
+    height: "100%",
+    overflowY: "auto",
+    paddingBottom: 96,
+    paddingTop: 150,
+    width: "100%",
+    transitionDuration: theme.transitions.timing.normal,
+    transitionTimingFunction: theme.transitions.easing.default,
+    transform: "translateX(100vw)",
+
+    "&.slide-enter-done": {
+      transform: "translateX(0)",
+    },
+
+    "&.slide-enter-active": {
+      transform: "translateX(0)",
+    },
+  },
+  mobileTransitionWrapper: {
+    height: "100%",
   },
 }));
 
@@ -46,10 +101,12 @@ function DashboardLarge() {
   return (
     <Content>
       <div>
-        <CreatedEventsTab />
-      </div>
-      <div>
-        <InvitationsTab />
+        <div>
+          <CreatedEventsTab type="contain" />
+        </div>
+        <div>
+          <InvitationsTab type="contain" />
+        </div>
       </div>
     </Content>
   );
@@ -87,15 +144,33 @@ function DashboardSmall() {
       }
       fab={<FAB icon="add" />}
     >
-      <div className={classes.smallContent}>
-        {current === "created" && <CreatedEventsTab />}
-        {current === "invited" && <InvitationsTab />}
-      </div>
+      <TransitionGroup className={classes.mobileTransitionWrapper}>
+        <div className={classes.smallContent}>
+          <CSSTransition
+            in={current === "created"}
+            timeout={500}
+            classNames="slide"
+          >
+            <div className={classes.mobileCreatedTab}>
+              <CreatedEventsTab type="fill" />
+            </div>
+          </CSSTransition>
+          <CSSTransition
+            in={current === "invited"}
+            timeout={500}
+            classNames="slide"
+          >
+            <div className={classes.mobileInvitedTab}>
+              <InvitationsTab type="fill" />
+            </div>
+          </CSSTransition>
+        </div>
+      </TransitionGroup>
     </Content>
   );
 }
 
-function CreatedEventsTab() {
+function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
   const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
     getUserCreatedEvents,
     14
@@ -104,6 +179,7 @@ function CreatedEventsTab() {
   return (
     <div>
       <EventList
+        style={style}
         events={response?.events ?? []}
         loading={isLoading}
         title="Your Events"
@@ -112,7 +188,7 @@ function CreatedEventsTab() {
   );
 }
 
-function InvitationsTab() {
+function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
   const [response, isLoading] = useRequest<UserInvitationsResponse>(
     getUserInvitations,
     14
@@ -121,16 +197,19 @@ function InvitationsTab() {
   return (
     <div>
       <EventList
+        style={style}
         events={response?.newEvents ?? []}
         loading={isLoading}
         title="New Events"
       ></EventList>
       <EventList
+        style={style}
         events={response?.updatedEvents ?? []}
         loading={isLoading}
         title="Updated Events"
       ></EventList>
       <EventList
+        style={style}
         events={response?.otherEvents ?? []}
         loading={isLoading}
         title="Other Events"
@@ -143,8 +222,9 @@ function EventList(props: {
   events: Event[];
   title: string;
   loading: boolean;
+  style: "fill" | "contain";
 }) {
-  const { events, title, loading } = props;
+  const { events, title, loading, style } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
@@ -159,7 +239,7 @@ function EventList(props: {
       {loading ? (
         "Loading..."
       ) : (
-        <List type="fill">
+        <List type={style}>
           {events.map((event, i) => {
             if (event.status === "complete") {
               return (
