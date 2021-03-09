@@ -1,4 +1,3 @@
-import { type } from "node:os";
 import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { getColor } from "../getColor";
@@ -7,10 +6,9 @@ import { AppTheme } from "../theme";
 const useStyles = createUseStyles((theme: AppTheme) => ({
   circle: {
     backgroundColor: ({ color }) => color.backgroundColor,
-    padding: "9px 8px",
-    borderRadius: 40,
-    height: 32,
-    width: 32,
+    borderRadius: 100,
+    height: 36,
+    width: 36,
     display: "flex",
   },
   value: {
@@ -18,9 +16,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     margin: "auto",
     color: ({ color }) => color.color,
     transform: "translateY(-0.5px)",
+    fontSize: 14,
   },
   response: {
     ...theme.typography.button,
+    fontSize: 14,
     position: "absolute",
     width: "100%",
     height: "100%",
@@ -41,7 +41,7 @@ export interface MiniScoreComponentProps {
 }
 
 const STROKE = 3;
-const RADIUS = 16;
+const RADIUS = 18;
 const NORM_RADIUS = RADIUS - STROKE;
 const CIRCUMFERENCE = NORM_RADIUS * 2 * Math.PI;
 
@@ -51,8 +51,6 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
   const color = getColor(value, theme);
   const classes = useStyles({ theme, color });
   const offset = CIRCUMFERENCE - (value / max) * CIRCUMFERENCE;
-
-  console.log();
 
   if (type === "score") {
     return (

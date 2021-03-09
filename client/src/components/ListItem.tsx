@@ -7,6 +7,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {
     ...theme.colors.background.base,
     ...theme.typography.body,
+    fontSize: 18,
+    lineHeight: "26px",
     outline: "none",
     padding: "16px 28px",
     display: "flex",
@@ -37,14 +39,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     flexDirection: "column",
   },
   start: {
-    marginRight: 12,
+    marginRight: 16,
   },
   end: {
-    marginLeft: 12,
+    marginLeft: 16,
   },
   title: {},
   subtitle: {
     ...theme.typography.caption,
+    fontSize: 14,
+    lineHeight: "18px",
   },
 }));
 

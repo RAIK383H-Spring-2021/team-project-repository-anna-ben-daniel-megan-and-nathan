@@ -1,6 +1,7 @@
 import { FC, Fragment, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { Background } from "../components/Background";
 import { Content } from "../components/Content";
 import { FAB } from "../components/FAB";
 import { IconButton } from "../components/IconButton";
@@ -96,6 +97,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: "96px 180px 0 180px",
     columnGap: 60,
   },
+  desktopBackground: {
+    position: "absolute",
+    bottom: -400,
+    left: -400,
+    display: "inline",
+    zIndex: -1,
+    width: 1000,
+    height: 1000,
+  },
 }));
 
 export const DashboardPage: FC = (props) => {
@@ -136,6 +146,7 @@ function DashboardLarge() {
           <InvitationsTab type="contain" />
         </div>
       </div>
+      <Background className={classes.desktopBackground} />
     </Content>
   );
 }

@@ -51,7 +51,7 @@ export function useRipple(
           action: rh.startFocus,
         },
         {
-          event: "focus",
+          event: "blur",
           action: rh.endFocus,
         },
       ];
