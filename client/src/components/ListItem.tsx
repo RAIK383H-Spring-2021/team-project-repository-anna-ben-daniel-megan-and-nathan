@@ -64,7 +64,7 @@ export interface ListItemComponentProps {
 }
 
 export const ListItem: FC<ListItemComponentProps> = (props) => {
-  const { className = "", button = false } = props;
+  const { className = "", button = false, onClick } = props;
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, button });
 
@@ -86,7 +86,11 @@ export const ListItem: FC<ListItemComponentProps> = (props) => {
 
   if (button) {
     return (
-      <button className={`${classes.wrapper} ${className}`} ref={rippleRef}>
+      <button
+        onClick={onClick}
+        className={`${classes.wrapper} ${className}`}
+        ref={rippleRef}
+      >
         {content}
       </button>
     );

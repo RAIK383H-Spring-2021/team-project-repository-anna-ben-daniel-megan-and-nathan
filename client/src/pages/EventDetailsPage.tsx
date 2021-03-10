@@ -83,10 +83,7 @@ function EventDetailsLarge({ event }: { event: Event | "loading" }) {
       toolbar={
         <Toolbar
           start={
-            <IconButton
-              icon="arrow_back"
-              onClick={() => history.push("/dash")}
-            />
+            <IconButton icon="arrow_back" onClick={() => history.goBack()} />
           }
           size="large"
           title={event === "loading" ? "Loading..." : event.title}
@@ -117,10 +114,7 @@ function EventDetailsSmall({ event }: { event: Event | "loading" }) {
       toolbar={
         <Toolbar
           start={
-            <IconButton
-              icon="arrow_back"
-              onClick={() => history.push("/dash")}
-            />
+            <IconButton icon="arrow_back" onClick={() => history.goBack()} />
           }
           end={<IconButton icon="more_vert" />}
           size="normal"

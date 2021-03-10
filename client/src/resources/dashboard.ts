@@ -1,6 +1,7 @@
 import { FetchRequest } from "../hooks/useRequest";
 
 interface EventBase {
+  id: number;
   creator: string;
   date_time: string;
   location: string;
@@ -42,6 +43,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "Here",
       title: "Incomplete Event",
       invitees: 24,
+      id: 0,
     },
     {
       status: "incomplete",
@@ -52,6 +54,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "Here",
       title: "Event Title",
       invitees: 20,
+      id: 1,
     },
   ],
   updatedEvents: [
@@ -64,6 +67,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "There",
       title: "Uncomfortable Event",
       invitees: 10,
+      id: 10,
     },
   ],
   otherEvents: [
@@ -77,6 +81,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "123 Main St.",
       title: "Alicia's Birthday Bash",
       invitees: 12,
+      id: 6,
     },
     {
       status: "complete",
@@ -87,6 +92,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "There",
       title: "Event Title",
       invitees: 10,
+      id: 7,
     },
     {
       status: "complete",
@@ -97,6 +103,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "There",
       title: "Event Title",
       invitees: 10,
+      id: 8,
     },
     {
       status: "complete",
@@ -107,6 +114,7 @@ const exampleInvitationEvents: UserInvitationsResponse = {
       location: "There",
       title: "Event Title",
       invitees: 10,
+      id: 9,
     },
   ],
 };
@@ -130,6 +138,7 @@ const exampleCreatedEvents: UserCreatedEventsResponse = {
       location: "Here",
       title: "Event Title",
       invitees: 20,
+      id: 2,
     },
     {
       status: "complete",
@@ -140,6 +149,7 @@ const exampleCreatedEvents: UserCreatedEventsResponse = {
       location: "There",
       title: "Created Event",
       invitees: 10,
+      id: 3,
     },
     {
       status: "complete",
@@ -150,6 +160,7 @@ const exampleCreatedEvents: UserCreatedEventsResponse = {
       location: "There",
       title: "Event Title",
       invitees: 10,
+      id: 4,
     },
     {
       status: "complete",
@@ -160,6 +171,7 @@ const exampleCreatedEvents: UserCreatedEventsResponse = {
       location: "There",
       title: "Event Title",
       invitees: 10,
+      id: 5,
     },
   ],
 };

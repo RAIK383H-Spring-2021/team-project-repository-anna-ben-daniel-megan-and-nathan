@@ -32,6 +32,28 @@ export const events: Resource = {
 const demoEvents: Event[] = [
   {
     status: "incomplete",
+    replies: 8,
+    creator: "Daniel Noon",
+    date_time: "2021-03-08T04:01:28.910Z",
+    description: "A test event",
+    location: "Here",
+    title: "Incomplete Event",
+    invitees: 24,
+    id: 0,
+  },
+  {
+    status: "incomplete",
+    replies: 12,
+    creator: "Author Name",
+    date_time: "2021-03-08T04:01:28.910Z",
+    description: "Event description...",
+    location: "Here",
+    title: "Event Title",
+    invitees: 20,
+    id: 1,
+  },
+  {
+    status: "incomplete",
     replies: 5,
     creator: "Author Name",
     date_time: "2021-03-08T04:01:28.910Z",
@@ -39,6 +61,7 @@ const demoEvents: Event[] = [
     location: "Here",
     title: "Event Title",
     invitees: 20,
+    id: 2,
   },
   {
     status: "complete",
@@ -49,6 +72,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Created Event",
     invitees: 10,
+    id: 3,
   },
   {
     status: "complete",
@@ -59,6 +83,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Event Title",
     invitees: 10,
+    id: 4,
   },
   {
     status: "complete",
@@ -69,6 +94,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Event Title",
     invitees: 10,
+    id: 5,
   },
   {
     status: "complete",
@@ -80,6 +106,7 @@ const demoEvents: Event[] = [
     location: "123 Main St.",
     title: "Alicia's Birthday Bash",
     invitees: 12,
+    id: 6,
   },
   {
     status: "complete",
@@ -90,6 +117,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Event Title",
     invitees: 10,
+    id: 7,
   },
   {
     status: "complete",
@@ -100,6 +128,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Event Title",
     invitees: 10,
+    id: 8,
   },
   {
     status: "complete",
@@ -110,6 +139,7 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Event Title",
     invitees: 10,
+    id: 9,
   },
   {
     status: "complete",
@@ -120,5 +150,6 @@ const demoEvents: Event[] = [
     location: "There",
     title: "Uncomfortable Event",
     invitees: 10,
+    id: 10,
   },
 ];

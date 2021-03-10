@@ -1,4 +1,5 @@
 import { createUseStyles } from "react-jss";
+import { useHistory } from "react-router";
 import { useTheme } from "theming";
 import { Event } from "../resources/dashboard";
 import { AppTheme } from "../theme";
@@ -29,6 +30,7 @@ export function EventList(props: EventListComponentProps) {
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
+  const history = useHistory();
 
   if (events.length < 1) {
     return null;
@@ -50,6 +52,7 @@ export function EventList(props: EventListComponentProps) {
                   start={<MiniScore value={event.score} type="score" />}
                   end={<InfoIconStack info={getInfo(event, info)} />}
                   subtitle={truncateDescription(event.description)}
+                  onClick={() => history.push(`/events/${event.id}`)}
                 >
                   {event.title}
                 </ListItem>
@@ -61,6 +64,7 @@ export function EventList(props: EventListComponentProps) {
                 button={true}
                 subtitle={truncateDescription(event.description)}
                 end={<InfoIconStack info={getInfo(event, info)} />}
+                onClick={() => history.push(`/events/${event.id}`)}
                 start={
                   <MiniScore
                     value={event.replies}
