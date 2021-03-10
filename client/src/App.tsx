@@ -13,6 +13,7 @@ import {
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { DashboardPage } from "./pages/DashboardPage";
 import { EventDetailsPage } from "./pages/EventDetailsPage";
+import { CreateEventPage } from "./pages/CreateEventPage";
 
 function determineTheme() {
   const systemDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
@@ -46,6 +47,9 @@ function Content() {
           </Route>
           <Route path="/events/:event_id">
             <EventDetailsPage />
+          </Route>
+          <Route path="/create">
+            <CreateEventPage />
           </Route>
           <Route exact path="/">
             <LandingPage />

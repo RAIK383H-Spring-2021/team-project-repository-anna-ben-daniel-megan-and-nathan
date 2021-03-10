@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useHistory } from "react-router";
 import { createUseStyles, useTheme } from "react-jss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Background } from "../components/Background";
@@ -118,6 +119,7 @@ export const DashboardPage: FC = (props) => {
 function DashboardLarge() {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
+  const history = useHistory();
 
   return (
     <Content
@@ -137,7 +139,7 @@ function DashboardLarge() {
           }
         />
       }
-      fab={<FAB icon="add" />}
+      fab={<FAB icon="add" onClick={() => history.push(`/create`)} />}
     >
       <div className={classes.desktopPageWrapper}>
         <div>
@@ -155,6 +157,7 @@ function DashboardLarge() {
 function DashboardSmall() {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
+  const history = useHistory();
 
   const [current, setCurrent] = useState("created");
   const tabs = [
@@ -182,7 +185,7 @@ function DashboardSmall() {
           <TabBar tabs={tabs} color="primary" onChange={setCurrent} />
         </div>
       }
-      fab={<FAB icon="add" />}
+      fab={<FAB icon="add" onClick={() => history.push(`/create`)} />}
     >
       <TransitionGroup className={classes.mobileTransitionWrapper}>
         <div className={classes.smallContent}>

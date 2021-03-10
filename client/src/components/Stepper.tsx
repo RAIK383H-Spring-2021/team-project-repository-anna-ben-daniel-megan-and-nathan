@@ -51,6 +51,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 export interface StepperComponentProps {
+    className?: string,
     disabled: boolean[],
     onChange: (node: number) => void;
 }
@@ -67,7 +68,7 @@ export const Stepper: FC<StepperComponentProps> = (props) => {
     };
 
     return (
-        <div className={classes.wrapper}>
+        <div className={`${classes.wrapper} ${props.className}`}>
             <StepperNode
                 icon="edit"
                 label="Set Event Details"
