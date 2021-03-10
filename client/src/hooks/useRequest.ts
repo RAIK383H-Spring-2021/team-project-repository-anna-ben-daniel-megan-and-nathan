@@ -5,7 +5,7 @@ interface GenericRequest {
   path: string;
   query?: { [key: string]: string | number | boolean };
   onComplete?<T = unknown>(data: T): void;
-  debug?: () => unknown;
+  debug?: () => any;
 }
 
 export interface MutativeRequest extends GenericRequest {
@@ -38,7 +38,7 @@ export interface Resource {
 }
 
 export function useRequest<T>(
-  request: RequestGenerator,
+  request?: RequestGenerator,
   ...params: Parameters<typeof request | any>
 ) {
   if (!request) throw new Error("Please specify a request.");

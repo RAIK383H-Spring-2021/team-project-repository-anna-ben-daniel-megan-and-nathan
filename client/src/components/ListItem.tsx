@@ -40,9 +40,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   start: {
     marginRight: 16,
+    flex: "0 0 auto",
   },
   end: {
     marginLeft: 16,
+    flex: "0 0 auto",
   },
   title: {},
   subtitle: {

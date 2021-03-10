@@ -1,13 +1,11 @@
-import { FC, Fragment, useState } from "react";
+import { FC, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Background } from "../components/Background";
 import { Content } from "../components/Content";
+import { EventList } from "../components/EventList";
 import { FAB } from "../components/FAB";
 import { IconButton } from "../components/IconButton";
-import { List } from "../components/List";
-import { ListItem } from "../components/ListItem";
-import { MiniScore } from "../components/MiniScore";
 import { TabBar } from "../components/TabBar";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
@@ -15,19 +13,12 @@ import { useScreen } from "../hooks/useScreen";
 import {
   getUserInvitations,
   UserInvitationsResponse,
-  Event,
   UserCreatedEventsResponse,
   getUserCreatedEvents,
 } from "../resources/dashboard";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
-  sectionHeader: {
-    ...theme.typography.preTitle,
-    marginTop: 32,
-    marginLeft: 28,
-    marginBottom: 12,
-  },
   tabBar: {
     position: "absolute",
     top: 75,
@@ -62,6 +53,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
     "&.slide-exit-done": {
       transform: "translateX(-100%)",
+      display: "none",
     },
 
     "&.slide-exit-active": {
@@ -86,6 +78,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     "&.slide-enter-active": {
       transform: "translateX(0)",
     },
+
+    "&.slide-exit-done": {
+      display: "none",
+    },
   },
   mobileTransitionWrapper: {
     height: "100%",
@@ -96,6 +92,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     padding: "96px 180px 0 180px",
     columnGap: 60,
+    overflowY: "auto",
+
+    "& > div": {
+      paddingBottom: 50,
+    },
   },
   desktopBackground: {
     position: "absolute",
@@ -222,6 +223,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
         events={response?.events ?? []}
         loading={isLoading}
         title="Your Events"
+        info={["invitees", "date"]}
       ></EventList>
     </div>
   );
@@ -240,84 +242,22 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
         events={response?.newEvents ?? []}
         loading={isLoading}
         title="New Events"
+        info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
         events={response?.updatedEvents ?? []}
         loading={isLoading}
         title="Updated Events"
+        info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
         events={response?.otherEvents ?? []}
         loading={isLoading}
         title="Other Events"
+        info={["creator", "date"]}
       ></EventList>
     </div>
   );
-}
-
-function EventList(props: {
-  events: Event[];
-  title: string;
-  loading: boolean;
-  style: "fill" | "contain";
-}) {
-  const { events, title, loading, style } = props;
-
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
-
-  if (events.length < 1) {
-    return null;
-  }
-
-  return (
-    <Fragment>
-      <h2 className={classes.sectionHeader}>{title}</h2>
-      {loading ? (
-        "Loading..."
-      ) : (
-        <List type={style}>
-          {events.map((event, i) => {
-            if (event.status === "complete") {
-              return (
-                <ListItem
-                  key={i}
-                  button={true}
-                  start={<MiniScore value={event.score} type="score" />}
-                  subtitle={truncateDescription(event.description)}
-                >
-                  {event.title}
-                </ListItem>
-              );
-            }
-            return (
-              <ListItem
-                key={i}
-                button={true}
-                subtitle={truncateDescription(event.description)}
-                start={
-                  <MiniScore
-                    value={event.replies}
-                    max={event.invitees}
-                    type="responses"
-                  />
-                }
-              >
-                {event.title}
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
-    </Fragment>
-  );
-}
-
-function truncateDescription(description: string) {
-  const trimmed = description.replace(/[\n\r]+/g, " ").trim();
-  if (trimmed.length > 70) {
-    return trimmed.slice(0, 100) + "...";
-  } else return trimmed;
 }

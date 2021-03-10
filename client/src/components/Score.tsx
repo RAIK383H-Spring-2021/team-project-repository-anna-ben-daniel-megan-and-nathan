@@ -5,8 +5,9 @@ import { AppTheme } from "../theme";
 const useStyles = createUseStyles((theme: AppTheme) => ({
   box: {
     width: 255,
-    height: 166,
+    height: 200,
     display: "flex",
+    position: "relative",
   },
   number: {
     fontFamily: "DM Sans",
@@ -14,7 +15,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     fontSize: 60,
     letterSpacing: "0.04em",
     margin: "auto",
-    zIndex: 99,
+    zIndex: 0,
     color: theme.colors.background.base.color,
   },
   meterWrapper: {
@@ -57,12 +58,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     left: 30 / 2,
     borderRadius: 200,
   },
+  label: {
+    ...theme.typography.subheading,
+    position: "absolute",
+    margin: "auto",
+    bottom: 36,
+    width: "100%",
+    textAlign: "center",
+  },
 }));
 
 export interface ScoreComponentProps {
   val: number;
   max: number;
   type: "score" | "responses";
+  label: string;
 }
 
 export const Score: FC<ScoreComponentProps> = (props) => {
@@ -74,8 +84,6 @@ export const Score: FC<ScoreComponentProps> = (props) => {
 
   const s1 = Math.min(90, Math.max(0, pctOf180 - 90));
   const s2 = Math.min(90, Math.max(0, pctOf180));
-
-  console.log(s2);
 
   return (
     <div className={classes.box}>
@@ -111,6 +119,7 @@ export const Score: FC<ScoreComponentProps> = (props) => {
         </div>
       </div>
       <div className={classes.number}>{props.val}</div>
+      <div className={classes.label}>{props.label}</div>
     </div>
   );
 };

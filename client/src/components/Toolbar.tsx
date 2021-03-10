@@ -12,6 +12,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     margin: 0,
     height: 75,
     width: "100%",
+    zIndex: 99,
     paddingTop: ({ size }) => size === "large" && 60,
     paddingBottom: ({ size }) => size === "large" && 36,
     paddingLeft: ({ size }) => size === "large" && 180,

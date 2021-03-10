@@ -36,7 +36,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       padding: "80px 60px",
     },
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       width: "100%",
       padding: 48,
       height: "min-content",
@@ -49,7 +49,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     lineHeight: "42px",
     marginBottom: 40,
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginTop: 48,
       marginBottom: 12,
       fontSize: 24,
@@ -63,14 +63,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     maxWidth: 600,
     marginBottom: 40,
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginBottom: 60,
       fontSize: 14,
       lineHeight: "18px",
     },
   },
   loginRegisterWrapper: {
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -82,13 +82,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     marginLeft: 24,
     textDecoration: "none",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginLeft: 0,
       marginTop: 24,
     },
   },
   credits: {
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       display: "none",
     },
   },
@@ -100,7 +100,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     right: -200,
     height: "100%",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 1100px)": {
+      right: -300,
+    },
+
+    "@media (max-width: 830px)": {
       width: "100%",
       left: 0,
       right: 0,
@@ -127,7 +131,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     display: "flex",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       width: "100%",
     },
 
