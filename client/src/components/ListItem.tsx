@@ -7,8 +7,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {
     ...theme.colors.background.base,
     ...theme.typography.body,
+    fontSize: 18,
+    lineHeight: "26px",
     outline: "none",
-    padding: "16px 28px",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -26,6 +27,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     "&:last-child": {
       borderBottom: "none",
     },
+  },
+  padding: {
+    padding: "16px 28px",
+  },
+  button: {
+    ...theme.colors.background.base,
+    textAlign: "left",
+    border: "none",
+    display: "flex",
+    width: "100%",
+    position: "relative",
+    height: "100%",
+    padding: "16px 28px",
+    flexDirection: "row",
+    alignItems: "center",
 
     "&:focus": {
       outline: "none",
@@ -37,14 +53,18 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     flexDirection: "column",
   },
   start: {
-    marginRight: 12,
+    marginRight: 16,
+    flex: "0 0 auto",
   },
   end: {
-    marginLeft: 12,
+    marginLeft: 16,
+    flex: "0 0 auto",
   },
   title: {},
   subtitle: {
     ...theme.typography.caption,
+    fontSize: 14,
+    lineHeight: "18px",
   },
 }));
 
@@ -58,7 +78,7 @@ export interface ListItemComponentProps {
 }
 
 export const ListItem: FC<ListItemComponentProps> = (props) => {
-  const { className = "", button = false } = props;
+  const { className = "", button = false, onClick } = props;
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, button });
 
@@ -80,15 +100,20 @@ export const ListItem: FC<ListItemComponentProps> = (props) => {
 
   if (button) {
     return (
-      <button className={`${classes.wrapper} ${className}`} ref={rippleRef}>
-        {content}
-      </button>
+      <li className={`${classes.wrapper} ${className}`}>
+        <button className={classes.button} onClick={onClick} ref={rippleRef}>
+          {content}
+        </button>
+      </li>
     );
   } else {
     return (
-      <div className={`${classes.wrapper} ${className}`} ref={rippleRef}>
+      <li
+        className={`${classes.wrapper} ${className} ${classes.padding}`}
+        ref={rippleRef}
+      >
         {content}
-      </div>
+      </li>
     );
   }
 };

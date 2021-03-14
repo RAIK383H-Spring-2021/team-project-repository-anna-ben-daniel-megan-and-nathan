@@ -18,32 +18,56 @@ export function useRipple(
 
       const rh = new RippleHandlers(async () => ripple);
       parent.appendChild(ripple);
-      parent.addEventListener("mouseenter", rh.startHover);
-      parent.addEventListener("mouseleave", rh.endHover);
-      parent.addEventListener("mousedown", (e) => {
-        const onMouseUp = () => {
-          window.removeEventListener("mouseup", onMouseUp);
-          rh.endPress();
-        };
 
-        window.addEventListener("mouseup", onMouseUp);
-        rh.startPress(e);
-      });
-      parent.addEventListener("touchstart", (e) => {
-        const onTouchEnd = () => {
-          window.removeEventListener("touchend", onTouchEnd);
-          rh.endPress();
-        };
+      const listeners = [
+        { event: "mouseenter", action: rh.startHover },
+        { event: "mouseleave", action: rh.endHover },
+        {
+          event: "mousedown",
+          action: (e: MouseEvent) => {
+            const onMouseUp = () => {
+              window.removeEventListener("mouseup", onMouseUp);
+              rh.endPress();
+            };
 
-        window.addEventListener("touchend", onTouchEnd);
-        rh.startPress(e);
-      });
-      parent.addEventListener("focus", rh.startFocus);
-      parent.addEventListener("blur", rh.endFocus);
+            window.addEventListener("mouseup", onMouseUp);
+            rh.startPress(e);
+          },
+        },
+        {
+          event: "touchstart",
+          action: (e: TouchEvent) => {
+            const onTouchEnd = () => {
+              window.removeEventListener("touchend", onTouchEnd);
+              rh.endPress();
+            };
+
+            window.addEventListener("touchend", onTouchEnd);
+            rh.startPress(e);
+          },
+        },
+        {
+          event: "focus",
+          action: rh.startFocus,
+        },
+        {
+          event: "blur",
+          action: rh.endFocus,
+        },
+      ];
+
+      listeners.forEach((listener) =>
+        parent.addEventListener(listener.event, listener.action as any)
+      );
 
       return () => {
         if (parent.contains(ripple)) {
-          parent.removeChild(ripple);
+          setTimeout(() => {
+            parent.removeChild(ripple);
+            listeners.forEach((listener) =>
+              parent.removeEventListener(listener.event, listener.action as any)
+            );
+          }, 100);
         }
       };
     }

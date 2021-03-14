@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Logo } from "../components/Logo";
-import { FetchRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -37,7 +36,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       padding: "80px 60px",
     },
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       width: "100%",
       padding: 48,
       height: "min-content",
@@ -50,7 +49,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     lineHeight: "42px",
     marginBottom: 40,
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginTop: 48,
       marginBottom: 12,
       fontSize: 24,
@@ -64,14 +63,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     maxWidth: 600,
     marginBottom: 40,
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginBottom: 60,
       fontSize: 14,
       lineHeight: "18px",
     },
   },
   loginRegisterWrapper: {
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -83,13 +82,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     marginLeft: 24,
     textDecoration: "none",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       marginLeft: 0,
       marginTop: 24,
     },
   },
   credits: {
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       display: "none",
     },
   },
@@ -101,7 +100,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     right: -200,
     height: "100%",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 1100px)": {
+      right: -300,
+    },
+
+    "@media (max-width: 830px)": {
       width: "100%",
       left: 0,
       right: 0,
@@ -128,7 +131,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     display: "flex",
 
-    "@media (max-width: 850px)": {
+    "@media (max-width: 830px)": {
       width: "100%",
     },
 
@@ -142,24 +145,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-interface GetVotesResponse {
-  code: number;
-  data: { title: string }[];
-}
-
-function getVotes(username: string) {
-  return {
-    path: `users/${username}/votes`,
-    method: "GET",
-  } as FetchRequest;
-}
-
 export const LandingPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
-  const [response] = useRequest<GetVotesResponse>(getVotes, "daitarou");
-
-  const vote = response?.data?.[0].title ?? "social";
 
   return (
     <div className={classes.content}>
@@ -171,7 +159,7 @@ export const LandingPage: FC = (props) => {
         <div className={classes.spacer}></div>
         <div>
           <h1 className={classes.heading}>
-            Putting the <span className={classes.blue}>{vote}</span> back into
+            Putting the <span className={classes.blue}>social</span> back into
             social distancing.
           </h1>
           <p className={classes.description}>

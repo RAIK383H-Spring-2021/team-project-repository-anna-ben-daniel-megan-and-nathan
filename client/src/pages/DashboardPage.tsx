@@ -1,12 +1,12 @@
-import { FC, Fragment, useState } from "react";
+import { FC, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
+import { Redirect, useParams } from "react-router";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { Background } from "../components/Background";
 import { Content } from "../components/Content";
+import { EventList } from "../components/EventList";
 import { FAB } from "../components/FAB";
 import { IconButton } from "../components/IconButton";
-import { List } from "../components/List";
-import { ListItem } from "../components/ListItem";
-import { MiniScore } from "../components/MiniScore";
 import { TabBar } from "../components/TabBar";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
@@ -14,19 +14,12 @@ import { useScreen } from "../hooks/useScreen";
 import {
   getUserInvitations,
   UserInvitationsResponse,
-  Event,
   UserCreatedEventsResponse,
   getUserCreatedEvents,
 } from "../resources/dashboard";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
-  sectionHeader: {
-    ...theme.typography.preTitle,
-    marginTop: 32,
-    marginLeft: 28,
-    marginBottom: 12,
-  },
   tabBar: {
     position: "absolute",
     top: 75,
@@ -37,7 +30,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     overflowX: "hidden",
   },
-  mobileCreatedTab: {
+  mobileCreatedTab: ({ initial }) => ({
     position: "absolute",
     height: "100%",
     overflowY: "auto",
@@ -46,6 +39,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     transitionDuration: theme.transitions.timing.normal,
     transitionTimingFunction: theme.transitions.easing.default,
+    transform: initial === "invited" && "translateX(-100vw)",
 
     "&.slide-enter": {
       transform: "translateX(-100vw)",
@@ -60,14 +54,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
 
     "&.slide-exit-done": {
-      transform: "translateX(-100%)",
+      transform: "translateX(-100vw)",
+      display: "none",
     },
 
     "&.slide-exit-active": {
-      transform: "translateX(-100%)",
+      transform: "translateX(-100vw)",
     },
-  },
-  mobileInvitedTab: {
+  }),
+  mobileInvitedTab: ({ initial }) => ({
     position: "absolute",
     height: "100%",
     overflowY: "auto",
@@ -76,7 +71,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     transitionDuration: theme.transitions.timing.normal,
     transitionTimingFunction: theme.transitions.easing.default,
-    transform: "translateX(100vw)",
+    transform: initial === "created" && "translateX(100vw)",
+
+    "&.slide-enter": {
+      transform: "translateX(100vw)",
+    },
 
     "&.slide-enter-done": {
       transform: "translateX(0)",
@@ -85,9 +84,39 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     "&.slide-enter-active": {
       transform: "translateX(0)",
     },
-  },
+
+    "&.slide-exit-done": {
+      transform: "translateX(100vw)",
+      display: "none",
+    },
+
+    "&.slide-exit-active": {
+      transform: "translateX(100vw)",
+    },
+  }),
   mobileTransitionWrapper: {
     height: "100%",
+  },
+  desktopPageWrapper: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    height: "100%",
+    padding: "96px 180px 0 180px",
+    columnGap: 60,
+    overflowY: "auto",
+
+    "& > div": {
+      paddingBottom: 50,
+    },
+  },
+  desktopBackground: {
+    position: "absolute",
+    bottom: -400,
+    left: -400,
+    display: "inline",
+    zIndex: -1,
+    width: 1000,
+    height: 1000,
   },
 }));
 
@@ -98,9 +127,35 @@ export const DashboardPage: FC = (props) => {
 };
 
 function DashboardLarge() {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+  const { tab } = useParams<{ tab: string }>();
+
+  if (tab) {
+    return <Redirect to="/dash" />;
+  }
+
   return (
-    <Content>
-      <div>
+    <Content
+      toolbar={
+        <Toolbar
+          title="Dashboard"
+          size="large"
+          end={
+            <IconButton
+              icon="account_circle"
+              onClick={() =>
+                localStorage.getItem("debug") === "debug"
+                  ? localStorage.removeItem("debug")
+                  : localStorage.setItem("debug", "debug")
+              }
+            />
+          }
+        />
+      }
+      fab={<FAB icon="add" />}
+    >
+      <div className={classes.desktopPageWrapper}>
         <div>
           <CreatedEventsTab type="contain" />
         </div>
@@ -108,15 +163,28 @@ function DashboardLarge() {
           <InvitationsTab type="contain" />
         </div>
       </div>
+      <Background className={classes.desktopBackground} />
     </Content>
   );
 }
 
 function DashboardSmall() {
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const params = useParams<{ tab: string }>();
+  const initial = params.tab || "created";
+  // const history = useHistory();
+  const [current, setCurrent] = useState(initial);
 
-  const [current, setCurrent] = useState("created");
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, initial });
+
+  function setTab(t: string) {
+    setCurrent(t);
+    // history.replace(`/dash/${t}`);
+    setTimeout(() => {
+      window.history.replaceState(null, t, `/dash/${t}`);
+    }, 500);
+  }
+
   const tabs = [
     { key: "created", label: "Created" },
     { key: "invited", label: "Invited" },
@@ -139,7 +207,12 @@ function DashboardSmall() {
               />
             }
           />
-          <TabBar tabs={tabs} color="primary" onChange={setCurrent} />
+          <TabBar
+            tabs={tabs}
+            color="primary"
+            onChange={setTab}
+            current={current}
+          />
         </div>
       }
       fab={<FAB icon="add" />}
@@ -183,6 +256,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
         events={response?.events ?? []}
         loading={isLoading}
         title="Your Events"
+        info={["invitees", "date"]}
       ></EventList>
     </div>
   );
@@ -201,84 +275,22 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
         events={response?.newEvents ?? []}
         loading={isLoading}
         title="New Events"
+        info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
         events={response?.updatedEvents ?? []}
         loading={isLoading}
         title="Updated Events"
+        info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
         events={response?.otherEvents ?? []}
         loading={isLoading}
         title="Other Events"
+        info={["creator", "date"]}
       ></EventList>
     </div>
   );
-}
-
-function EventList(props: {
-  events: Event[];
-  title: string;
-  loading: boolean;
-  style: "fill" | "contain";
-}) {
-  const { events, title, loading, style } = props;
-
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
-
-  if (events.length < 1) {
-    return null;
-  }
-
-  return (
-    <Fragment>
-      <h2 className={classes.sectionHeader}>{title}</h2>
-      {loading ? (
-        "Loading..."
-      ) : (
-        <List type={style}>
-          {events.map((event, i) => {
-            if (event.status === "complete") {
-              return (
-                <ListItem
-                  key={i}
-                  button={true}
-                  start={<MiniScore value={event.score} type="score" />}
-                  subtitle={truncateDescription(event.description)}
-                >
-                  {event.title}
-                </ListItem>
-              );
-            }
-            return (
-              <ListItem
-                key={i}
-                button={true}
-                subtitle={truncateDescription(event.description)}
-                start={
-                  <MiniScore
-                    value={event.replies}
-                    max={event.invitees}
-                    type="responses"
-                  />
-                }
-              >
-                {event.title}
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
-    </Fragment>
-  );
-}
-
-function truncateDescription(description: string) {
-  const trimmed = description.replace(/[\n\r]+/g, " ").trim();
-  if (trimmed.length > 70) {
-    return trimmed.slice(0, 100) + "...";
-  } else return trimmed;
 }
