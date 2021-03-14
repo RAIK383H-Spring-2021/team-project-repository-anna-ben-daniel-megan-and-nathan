@@ -36,10 +36,11 @@ export interface FabComponentProps {
   color?: "primary" | "secondary" | "accent";
   size?: "small" | "normal" | "large" | "giant";
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
 }
 
 export const FAB: FC<FabComponentProps> = (props) => {
-  const { size = "normal", color = "accent" } = props;
+  const { size = "normal", color = "accent", className } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size, color });
@@ -47,7 +48,7 @@ export const FAB: FC<FabComponentProps> = (props) => {
   useRipple(rippleRef, theme.colors[color].base.color);
 
   return (
-    <button className={classes.button} ref={rippleRef} onClick={props.onClick}>
+    <button className={`${classes.button} ${className}`} ref={rippleRef} onClick={props.onClick}>
       <Icon name={props.icon} />
     </button>
   );

@@ -131,6 +131,7 @@ function DashboardLarge() {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const { tab } = useParams<{ tab: string }>();
+  const history = useHistory();
 
   if (tab) {
     return <Redirect to="/dash" />;
@@ -172,7 +173,7 @@ function DashboardLarge() {
 function DashboardSmall() {
   const params = useParams<{ tab: string }>();
   const initial = params.tab || "created";
-  // const history = useHistory();
+  const history = useHistory();
   const [current, setCurrent] = useState(initial);
 
   const theme = useTheme<AppTheme>();

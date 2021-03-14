@@ -39,15 +39,16 @@ export interface ToolbarComponentProps {
   tabs?: React.ReactNode;
   title: string;
   size?: "normal" | "large";
+  className?: string;
 }
 
 export const Toolbar: FC<ToolbarComponentProps> = (props) => {
-  const { size = "normal" } = props;
+  const { size = "normal", className } = props;
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
 
   return (
-    <div className={classes.toolbar}>
+    <div className={`${classes.toolbar} ${className}`}>
       {props.start && <div className={classes.start}>{props.start}</div>}
       <h1 className={props.start ? classes.titleStart : classes.titleNoStart}>
         {props.title}
