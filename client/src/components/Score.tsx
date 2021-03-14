@@ -2,9 +2,12 @@ import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
+const WIDTH = 250;
+const STROKE = 16;
+
 const useStyles = createUseStyles((theme: AppTheme) => ({
   box: {
-    width: 255,
+    width: WIDTH,
     height: 200,
     display: "flex",
     position: "relative",
@@ -20,40 +23,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   meterWrapper: {
     position: "absolute",
+    width: WIDTH,
   },
-  meterOuter: {
-    position: "relative",
-    display: "inline-block",
-    overflow: "hidden",
-    width: 255,
-    height: 255 / 2,
-  },
-  meterInner: {
-    position: "relative",
-    width: 255,
-    height: 255,
-    background: ({ type }) =>
-      type === "responses"
-        ? "rgba(31, 87, 196, 0.25)"
-        : "conic-gradient(from -90deg at 50% 50%, rgba(214, 47, 67, 0.33) 0deg, rgba(247, 196, 76, 0.33) 89.37deg, rgba(75, 177, 105, 0.33) 179.37deg, rgba(214, 47, 67, 0.33) 360deg)",
-    borderRadius: "50%",
-    overflow: "hidden",
-  },
-  meterSegment: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    width: "100vw",
-    height: "100vh",
-    transformOrigin: "0 0",
-    transitionDuration: theme.transitions.timing.short,
-    transitionTimingFunction: "linear",
-  },
+  circle: {},
   meterBackground: {
     position: "absolute",
     backgroundColor: theme.colors.background.base.backgroundColor,
-    width: 225,
-    height: 225,
+    width: WIDTH,
+    height: WIDTH,
     top: 30 / 2,
     left: 30 / 2,
     borderRadius: 200,
@@ -79,44 +56,54 @@ export const Score: FC<ScoreComponentProps> = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, type: props.type });
 
-  const percent = props.val / props.max;
-  const pctOf180 = 180 - 180 * percent;
-
-  const s1 = Math.min(90, Math.max(0, pctOf180 - 90));
-  const s2 = Math.min(90, Math.max(0, pctOf180));
+  const radius = WIDTH / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = ((circumference / 2) * props.val) / props.max;
 
   return (
     <div className={classes.box}>
       <div className={classes.meterWrapper}>
-        <div className={classes.meterOuter}>
-          <div className={classes.meterInner}>
-            <div
-              className={classes.meterSegment}
-              style={{
-                transform: `rotate(180deg) skew(${s1}deg)`,
-                background:
-                  props.type === "responses"
-                    ? "#1F57C4"
-                    : `conic-gradient(from 90deg at 0 0, #D62F43 0deg, #F7C44C ${
-                        90 + s1
-                      }deg, #4BB169 ${180 + s1}deg, #D62F43 ${360 + s1}deg)`,
-              }}
-            ></div>
-            <div
-              className={classes.meterSegment}
-              style={{
-                transform: `rotate(270deg) skew(${s2}deg)`,
-                background:
-                  props.type === "responses"
-                    ? "#1F57C4"
-                    : `conic-gradient(from 90deg at 0 0, #F7C44C 0deg, #4BB169 ${
-                        90 + s2 * 2
-                      }deg`,
-              }}
-            ></div>
-            <div className={classes.meterBackground}></div>
-          </div>
-        </div>
+        <svg
+          width="250"
+          height="250"
+          style={{ overflow: "visible", transform: "rotate(180deg)" }}
+        >
+          <defs>
+            <linearGradient id="bright" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#4BB169" />
+              <stop offset="50%" stop-color="#F7C44C" />
+              <stop offset="100%" stop-color="#D62F43" />
+            </linearGradient>
+            <linearGradient id="muted" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="rgba(75, 177, 105, 0.33)" />
+              <stop offset="50%" stop-color="rgba(247, 196, 76, 0.33)" />
+              <stop offset="100%" stop-color="rgba(214, 47, 67, 0.33)" />
+            </linearGradient>
+          </defs>
+
+          <circle
+            cx={radius}
+            cy={radius}
+            r={radius}
+            transform="rotate(180deg)"
+            fill="transparent"
+            stroke={
+              props.type === "score" ? "url(#muted)" : "rgba(31, 87, 196, 0.25)"
+            }
+            stroke-width={STROKE}
+            stroke-dasharray={`${circumference / 2}, ${circumference}`}
+          />
+          <circle
+            cx={radius}
+            cy={radius}
+            r={radius}
+            fill="transparent"
+            transform="rotate(180deg)"
+            stroke={props.type === "score" ? "url(#bright)" : "#1f57c4"}
+            stroke-width={STROKE}
+            stroke-dasharray={`${progress}, ${circumference}`}
+          />
+        </svg>
       </div>
       <div className={classes.number}>{props.val}</div>
       <div className={classes.label}>{props.label}</div>
