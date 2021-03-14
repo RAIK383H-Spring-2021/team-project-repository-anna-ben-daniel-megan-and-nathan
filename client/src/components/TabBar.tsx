@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useRef } from "react";
+import { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { useRipple } from "../hooks/useRipple";
 import { AppTheme } from "../theme";
@@ -20,8 +20,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 37,
     position: "absolute",
     borderRadius: 50,
-    transitionDuration: theme.transitions.timing.normal,
+    transitionDuration: ({ prepared }) =>
+      prepared ? theme.transitions.timing.normal : 0,
     transitionTimingFunction: theme.transitions.easing.default,
+    transitionProperty: "left",
+    left: "-100vw",
   },
 }));
 
@@ -35,13 +38,16 @@ export interface TabBarComponentProps {
   color?: "primary" | "secondary" | "accent";
   onChange?: (key: string) => void;
   className?: string;
+  current?: string;
 }
 
 export const TabBar: FC<TabBarComponentProps> = (props) => {
   const { color = "primary", className = "" } = props;
 
+  const [prepared, setPrepared] = useState(false);
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, color });
+  const classes = useStyles({ theme, color, prepared });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -64,6 +70,10 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
 
     window.addEventListener("resize", handleResize);
 
+    setTimeout(() => {
+      setPrepared(true);
+    }, 100);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -79,6 +89,17 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
   function changeActiveTab(btn: HTMLButtonElement, key: string) {
     props.onChange?.(key);
     setActive(btn);
+  }
+
+  if (wrapperRef.current && props.current) {
+    const buttons = Array.from(
+      wrapperRef.current.querySelectorAll<HTMLButtonElement>("button")
+    );
+    const idx = props.tabs.findIndex((tab) => tab.key === props.current);
+    const b = buttons.find((button, i) => i === idx);
+    if (b) {
+      setActive(b);
+    }
   }
 
   return (

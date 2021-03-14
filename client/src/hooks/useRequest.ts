@@ -5,7 +5,7 @@ interface GenericRequest {
   path: string;
   query?: { [key: string]: string | number | boolean };
   onComplete?<T = unknown>(data: T): void;
-  debug?: () => any;
+  debug?: () => any | Promise<any>;
 }
 
 export interface MutativeRequest extends GenericRequest {
@@ -60,9 +60,17 @@ export function useRequest<T>(
     const r = request!(...params);
     const url = API.makeUrl(r.path);
 
+    const cached = API.getCacheItem(url);
+
+    if (cached) {
+      setValue(cached as T);
+      setIsLoading(false);
+    }
+
     if (localStorage.getItem("debug") === "debug") {
       if (r.debug) {
-        const v = r.debug();
+        const v = await r.debug();
+        await new Promise<void>((r) => setTimeout(() => r(), 1200));
         r.onComplete?.(v);
         setValue(v as T);
         setIsLoading(false);
@@ -77,6 +85,8 @@ export function useRequest<T>(
     if (r.onComplete) {
       r.onComplete(data);
     }
+
+    API.setCacheItem(url, data);
 
     setIsLoading(false);
     setValue(data);

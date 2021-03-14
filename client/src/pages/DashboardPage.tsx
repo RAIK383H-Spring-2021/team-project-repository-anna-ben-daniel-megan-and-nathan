@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { useHistory } from "react-router";
 import { createUseStyles, useTheme } from "react-jss";
+import { Redirect, useParams } from "react-router";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Background } from "../components/Background";
 import { Content } from "../components/Content";
@@ -30,7 +31,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     overflowX: "hidden",
   },
-  mobileCreatedTab: {
+  mobileCreatedTab: ({ initial }) => ({
     position: "absolute",
     height: "100%",
     overflowY: "auto",
@@ -39,6 +40,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     transitionDuration: theme.transitions.timing.normal,
     transitionTimingFunction: theme.transitions.easing.default,
+    transform: initial === "invited" && "translateX(-100vw)",
 
     "&.slide-enter": {
       transform: "translateX(-100vw)",
@@ -53,15 +55,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
 
     "&.slide-exit-done": {
-      transform: "translateX(-100%)",
+      transform: "translateX(-100vw)",
       display: "none",
     },
 
     "&.slide-exit-active": {
-      transform: "translateX(-100%)",
+      transform: "translateX(-100vw)",
     },
-  },
-  mobileInvitedTab: {
+  }),
+  mobileInvitedTab: ({ initial }) => ({
     position: "absolute",
     height: "100%",
     overflowY: "auto",
@@ -70,7 +72,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     transitionDuration: theme.transitions.timing.normal,
     transitionTimingFunction: theme.transitions.easing.default,
-    transform: "translateX(100vw)",
+    transform: initial === "created" && "translateX(100vw)",
+
+    "&.slide-enter": {
+      transform: "translateX(100vw)",
+    },
 
     "&.slide-enter-done": {
       transform: "translateX(0)",
@@ -81,9 +87,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
 
     "&.slide-exit-done": {
+      transform: "translateX(100vw)",
       display: "none",
     },
-  },
+
+    "&.slide-exit-active": {
+      transform: "translateX(100vw)",
+    },
+  }),
   mobileTransitionWrapper: {
     height: "100%",
   },
@@ -119,7 +130,11 @@ export const DashboardPage: FC = (props) => {
 function DashboardLarge() {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
-  const history = useHistory();
+  const { tab } = useParams<{ tab: string }>();
+
+  if (tab) {
+    return <Redirect to="/dash" />;
+  }
 
   return (
     <Content
@@ -155,11 +170,22 @@ function DashboardLarge() {
 }
 
 function DashboardSmall() {
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
-  const history = useHistory();
+  const params = useParams<{ tab: string }>();
+  const initial = params.tab || "created";
+  // const history = useHistory();
+  const [current, setCurrent] = useState(initial);
 
-  const [current, setCurrent] = useState("created");
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, initial });
+
+  function setTab(t: string) {
+    setCurrent(t);
+    // history.replace(`/dash/${t}`);
+    setTimeout(() => {
+      window.history.replaceState(null, t, `/dash/${t}`);
+    }, 500);
+  }
+
   const tabs = [
     { key: "created", label: "Created" },
     { key: "invited", label: "Invited" },
@@ -182,7 +208,12 @@ function DashboardSmall() {
               />
             }
           />
-          <TabBar tabs={tabs} color="primary" onChange={setCurrent} />
+          <TabBar
+            tabs={tabs}
+            color="primary"
+            onChange={setTab}
+            current={current}
+          />
         </div>
       }
       fab={<FAB icon="add" onClick={() => history.push(`/create`)} />}

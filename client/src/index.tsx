@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { API } from "./api";
 
-API.base = "https://api.coroname.net/v2";
+API.init("https://api.coroname.net/v2");
 
 ReactDOM.render(
   <React.StrictMode>
