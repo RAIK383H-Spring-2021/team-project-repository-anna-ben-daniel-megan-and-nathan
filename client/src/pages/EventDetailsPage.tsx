@@ -1,9 +1,12 @@
 import { createUseStyles } from "react-jss";
+import MDSpinner from "react-md-spinner";
 import { useHistory, useParams } from "react-router";
 import { useTheme } from "theming";
 import { Background } from "../components/Background";
+import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Content } from "../components/Content";
+import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
 import { Score } from "../components/Score";
@@ -18,6 +21,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   desktopWrapper: {
     ...theme.typography.body,
     marginTop: 180,
+    marginBottom: 96,
   },
   mobileWrapper: {
     ...theme.typography.body,
@@ -46,6 +50,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     columnGap: 60,
     overflowY: "auto",
   },
+  loading: {
+    marginTop: 120,
+    height: 100,
+    display: "grid",
+    placeItems: "center",
+  },
+  sectionWrapper: {
+    display: "flex",
+    flexDirection: "column",
+  },
   detailsCard: {
     display: "grid",
     rowGap: 32,
@@ -59,21 +73,52 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     paddingLeft: 4,
     paddingBottom: 12,
   },
+  questionnaireCard: {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    margin: ({ screen }) => screen !== "large" && "12px 28px",
+    padding: ({ screen }) => screen !== "large" && "20px 24px",
+  },
+  questionnaireActionText: {
+    ...theme.typography.preTitle,
+    color: theme.colors.primary.base.color,
+  },
+  questionnaireCallToAction: {
+    ...theme.typography.body,
+    color: theme.colors.primary.base.color,
+    fontSize: ({ screen }) => (screen === "large" ? 28 : 18),
+    lineHeight: ({ screen }) => (screen === "large" ? "34px" : "20px"),
+    fontWeight: "normal",
+    flex: "1",
+  },
+  placeContentsEnd: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
 }));
 
 export function EventDetailsPage() {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
-  const [event] = useRequest<Event>(events.get, event_id);
+  const [event, isLoading] = useRequest<Event>(events.get, event_id);
 
   return screen === "large" ? (
-    <EventDetailsLarge event={event ?? "loading"} />
+    <EventDetailsLarge event={event} loading={isLoading} />
   ) : (
-    <EventDetailsSmall event={event ?? "loading"} />
+    <EventDetailsSmall event={event} loading={isLoading} />
   );
 }
 
-function EventDetailsLarge({ event }: { event: Event | "loading" }) {
+function EventDetailsLarge({
+  event,
+  loading,
+}: {
+  loading: boolean;
+  event?: Event;
+}) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
@@ -86,17 +131,22 @@ function EventDetailsLarge({ event }: { event: Event | "loading" }) {
             <IconButton icon="arrow_back" onClick={() => history.goBack()} />
           }
           size="large"
-          title={event === "loading" ? "Loading..." : event.title}
+          title={event?.title ?? "Loading..."}
         />
       }
     >
-      {event !== "loading" && (
+      {event && (
         <div className={classes.desktopWrapper}>
           <Meter event={event} />
           <div className={classes.desktopGrid}>
-            <SummaryCard event={event} />
-            <div>Right side</div>
+            <SummarySection event={event} />
+            <ComfortMetricSection event={event} />
           </div>
+        </div>
+      )}
+      {loading && (
+        <div className={classes.loading}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
       <Background className={classes.desktopBackground} />
@@ -104,7 +154,13 @@ function EventDetailsLarge({ event }: { event: Event | "loading" }) {
   );
 }
 
-function EventDetailsSmall({ event }: { event: Event | "loading" }) {
+function EventDetailsSmall({
+  event,
+  loading,
+}: {
+  loading: boolean;
+  event?: Event;
+}) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
@@ -118,14 +174,20 @@ function EventDetailsSmall({ event }: { event: Event | "loading" }) {
           }
           end={<IconButton icon="more_vert" />}
           size="normal"
-          title={event !== "loading" ? event.title : ""}
+          title={event?.title ?? "Loading..."}
         />
       }
     >
-      {event !== "loading" && (
+      {event && (
         <div className={classes.mobileWrapper}>
           <Meter event={event} />
-          <SummaryCard event={event} />
+          <ComfortMetricSection event={event} />
+          <SummarySection event={event} />
+        </div>
+      )}
+      {loading && (
+        <div className={classes.loading}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
     </Content>
@@ -149,14 +211,14 @@ function Meter({ event }: { event: Event }) {
   );
 }
 
-function SummaryCard({ event }: { event: Event }) {
+function SummarySection({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const date = new Date(event.date_time);
   const screen = useScreen();
 
   return (
-    <div>
+    <section className={classes.sectionWrapper}>
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Details
       </h2>
@@ -189,10 +251,45 @@ function SummaryCard({ event }: { event: Event }) {
           bodyType="p"
         />
       </Card>
-    </div>
+    </section>
   );
 }
 
-// function EventSummaryPane() {}
+function ComfortMetricSection({ event }: { event: Event }) {
+  const screen = useScreen();
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, screen });
 
-// function EventComfortPane() {}
+  return (
+    <section className={classes.sectionWrapper}>
+      <h2 hidden={screen !== "large"} className={classes.cardLabel}>
+        Comfort Metrics
+      </h2>
+      <QuestionnaireCard />
+    </section>
+  );
+}
+
+function QuestionnaireCard() {
+  const screen = useScreen();
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, screen });
+
+  return (
+    <Card color="primary" className={classes.questionnaireCard}>
+      <small className={classes.questionnaireActionText}>ACTION</small>
+      <h3 className={classes.questionnaireCallToAction}>
+        Fill out your questionnaire to get your Comfort Score.
+      </h3>
+      <div className={classes.placeContentsEnd}>
+        <Button
+          color="primary"
+          transparent={true}
+          end={<Icon size="small" name="arrow_forward" />}
+        >
+          Respond Now
+        </Button>
+      </div>
+    </Card>
+  );
+}

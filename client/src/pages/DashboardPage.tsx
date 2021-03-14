@@ -20,6 +20,16 @@ import {
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
+  "@keyframes slideIn": {
+    from: {
+      opacity: 0,
+      transform: "translateY(10px)",
+    },
+    to: {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
   tabBar: {
     position: "absolute",
     top: 75,
@@ -248,6 +258,8 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
     getUserCreatedEvents,
     14
   );
+
+  console.log(isLoading);
 
   return (
     <div>

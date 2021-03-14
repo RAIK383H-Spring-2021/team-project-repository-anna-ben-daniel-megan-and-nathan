@@ -18,7 +18,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderTop: `1px solid ${theme.colors.divider.base.color}`,
     borderBottom: `1px solid ${theme.colors.divider.base.color}`,
     position: "relative",
-    cursor: ({ button }) => button && "pointer",
     width: "100%",
     marginTop: -1,
     borderRadius: 0,
@@ -42,6 +41,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: "16px 28px",
     flexDirection: "row",
     alignItems: "center",
+    cursor: "pointer",
 
     "&:focus": {
       outline: "none",
