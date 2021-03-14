@@ -22,6 +22,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderRadius: 50,
     transitionDuration: theme.transitions.timing.normal,
     transitionTimingFunction: theme.transitions.easing.default,
+    // opacity: 0,
+    left: "-100vw",
   },
 }));
 
@@ -35,6 +37,7 @@ export interface TabBarComponentProps {
   color?: "primary" | "secondary" | "accent";
   onChange?: (key: string) => void;
   className?: string;
+  current?: string;
 }
 
 export const TabBar: FC<TabBarComponentProps> = (props) => {
@@ -44,6 +47,7 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
   const classes = useStyles({ theme, color });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
+  // const [current, setCurrent] = useState(props.current ?? props.tabs[0].key);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -64,6 +68,8 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
 
     window.addEventListener("resize", handleResize);
 
+    // sliderRef.current?.style.setProperty("opacity", "1");
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -79,6 +85,17 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
   function changeActiveTab(btn: HTMLButtonElement, key: string) {
     props.onChange?.(key);
     setActive(btn);
+  }
+
+  if (wrapperRef.current && props.current) {
+    const buttons = Array.from(
+      wrapperRef.current.querySelectorAll<HTMLButtonElement>("button")
+    );
+    const idx = props.tabs.findIndex((tab) => tab.key === props.current);
+    const b = buttons.find((button, i) => i === idx);
+    if (b) {
+      setActive(b);
+    }
   }
 
   return (

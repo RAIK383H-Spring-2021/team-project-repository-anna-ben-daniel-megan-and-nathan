@@ -41,6 +41,9 @@ function Content() {
           <Route path="/register">
             <SignUpPage />
           </Route>
+          <Route path="/dash/:tab">
+            <DashboardPage />
+          </Route>
           <Route path="/dash">
             <DashboardPage />
           </Route>
