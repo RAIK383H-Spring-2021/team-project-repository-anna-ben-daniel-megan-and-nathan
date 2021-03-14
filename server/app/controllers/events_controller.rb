@@ -24,10 +24,22 @@ class EventsController < ApplicationController
   def show
     #TODO: Get a specific event's details
     @event = Event.find(params[:id])
+
+    @inviteesComplete = Participant.where(event_id: params[:id]).where(questionnaire_complete: true).length
+    @invitees = Participant.where(event_id: params[:id]).length
+
+    if @invitees == 0
+      @questionnaires_percent = 0
+    else 
+      @questionnaires_percent = @inviteesComplete/@invitees.to_f
+    end
+
+    @host = User.find(@event.host_id)
+
     e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
 
     respond_to do |format|
-      format.json { render json: e_JSON }
+      format.json { render json: { event: e_JSON, questionnaires_percent: @questionnaires_percent, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name} }
       end
   end
 

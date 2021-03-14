@@ -42,6 +42,7 @@ export function useRequest<T>(
   ...params: Parameters<typeof request | any>
 ) {
   if (!request) throw new Error("Please specify a request.");
+  console.log(params.length > 0);
 
   const [value, setValue] = useState<T>();
   const [isLoading, setIsLoading] = useState(params.length > 0);
@@ -60,11 +61,14 @@ export function useRequest<T>(
     const r = request!(...params);
     const url = API.makeUrl(r.path);
 
-    const cached = API.getCacheItem(url);
+    if (r.method === "GET") {
+      const cached = API.getCacheItem(url);
+      console.log(cached);
 
-    if (cached) {
-      setValue(cached as T);
-      setIsLoading(false);
+      if (cached) {
+        setValue(cached as T);
+        setIsLoading(false);
+      }
     }
 
     if (localStorage.getItem("debug") === "debug") {
@@ -86,7 +90,9 @@ export function useRequest<T>(
       r.onComplete(data);
     }
 
-    API.setCacheItem(url, data);
+    if (r.method === "GET") {
+      API.setCacheItem(url, data);
+    }
 
     setIsLoading(false);
     setValue(data);

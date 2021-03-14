@@ -41,7 +41,7 @@ export function InfoIconStack(props: InfoIconStackComponentProps) {
       {props.info.map((row) => (
         <div className={classes.row}>
           <span className={classes.text}>{row.text}</span>
-          <Icon className={classes.icon} name={row.icon} />
+          <Icon size="small" className={classes.icon} name={row.icon} />
         </div>
       ))}
     </div>
