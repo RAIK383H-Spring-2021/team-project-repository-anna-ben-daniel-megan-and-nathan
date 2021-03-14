@@ -46,12 +46,15 @@ class UsersController < ApplicationController
     
     if (@id == params[:id].to_i)
       @user = User.find_by(id: @id)
-      @events = @user.events ? @user.events : []
+      @hosted_events = @user.events ? @user.events : []
+
+      @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
+      @invited_events = Event.find(@event_ids)
 
       userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
 
       respond_to do |format|
-        format.json { render json: {user: userJson, events: @events } }
+        format.json { render json: {user: userJson, hosted_events: @hosted_events, invited_events: @invited_events } }
       end
     else
       respond_to do |format|
@@ -110,8 +113,20 @@ class UsersController < ApplicationController
   def invitations
     # TODO: get all events a specified user is invited to
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller invitations successfully received request' } }
+    @id = authorized()
+
+    if (@id == params[:id].to_i)
+      @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
+      @events = Event.find(@event_ids)
+
+      respond_to do |format|
+        format.json { render json: {events: @events } }
+      end
+
+    else
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
     end
   end
 
