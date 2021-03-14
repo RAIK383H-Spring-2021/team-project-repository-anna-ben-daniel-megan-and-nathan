@@ -180,9 +180,9 @@ function DashboardSmall() {
   function setTab(t: string) {
     setCurrent(t);
     // history.replace(`/dash/${t}`);
-    // setTimeout(() => {
-    //   window.history.replaceState(null, t, `/dash/${t}`);
-    // }, 500);
+    setTimeout(() => {
+      window.history.replaceState(null, t, `/dash/${t}`);
+    }, 500);
   }
 
   const tabs = [

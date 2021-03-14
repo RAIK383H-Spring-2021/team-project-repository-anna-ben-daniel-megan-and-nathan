@@ -10,7 +10,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     fontSize: 18,
     lineHeight: "26px",
     outline: "none",
-    padding: "16px 28px",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -28,6 +27,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     "&:last-child": {
       borderBottom: "none",
     },
+  },
+  padding: {
+    padding: "16px 28px",
+  },
+  button: {
+    ...theme.colors.background.base,
+    textAlign: "left",
+    border: "none",
+    display: "flex",
+    width: "100%",
+    position: "relative",
+    height: "100%",
+    padding: "16px 28px",
+    flexDirection: "row",
+    alignItems: "center",
 
     "&:focus": {
       outline: "none",
@@ -86,19 +100,20 @@ export const ListItem: FC<ListItemComponentProps> = (props) => {
 
   if (button) {
     return (
-      <button
-        onClick={onClick}
-        className={`${classes.wrapper} ${className}`}
-        ref={rippleRef}
-      >
-        {content}
-      </button>
+      <li className={`${classes.wrapper} ${className}`}>
+        <button className={classes.button} onClick={onClick} ref={rippleRef}>
+          {content}
+        </button>
+      </li>
     );
   } else {
     return (
-      <div className={`${classes.wrapper} ${className}`} ref={rippleRef}>
+      <li
+        className={`${classes.wrapper} ${className} ${classes.padding}`}
+        ref={rippleRef}
+      >
         {content}
-      </div>
+      </li>
     );
   }
 };

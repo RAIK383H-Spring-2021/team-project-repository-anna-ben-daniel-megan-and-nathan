@@ -1,4 +1,5 @@
 import { createUseStyles } from "react-jss";
+import MDSpinner from "react-md-spinner";
 import { useHistory } from "react-router";
 import { useTheme } from "theming";
 import { Event } from "../resources/dashboard";
@@ -9,11 +10,31 @@ import { ListItem } from "./ListItem";
 import { MiniScore } from "./MiniScore";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
+  "@keyframes slideIn": {
+    from: {
+      opacity: 0,
+      transform: "translateY(10px)",
+    },
+    to: {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
+  wrapper: {
+    animationName: "$slideIn",
+    animationDuration: "375ms",
+    animationTimingFunction: theme.transitions.easing.default,
+  },
   sectionHeader: {
     ...theme.typography.preTitle,
     marginTop: 32,
     marginLeft: 28,
     marginBottom: 12,
+  },
+  loadingWrapper: {
+    height: 100,
+    display: "grid",
+    placeItems: "center",
   },
 }));
 
@@ -32,17 +53,15 @@ export function EventList(props: EventListComponentProps) {
   const classes = useStyles({ theme });
   const history = useHistory();
 
-  if (events.length < 1) {
-    return null;
-  }
-
   return (
     <div>
       <h2 className={classes.sectionHeader}>{title}</h2>
       {loading ? (
-        "Loading..."
+        <div className={classes.loadingWrapper}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+        </div>
       ) : (
-        <List type={style}>
+        <List type={style} className={classes.wrapper}>
           {events.map((event, i) => {
             if (event.status === "complete") {
               return (

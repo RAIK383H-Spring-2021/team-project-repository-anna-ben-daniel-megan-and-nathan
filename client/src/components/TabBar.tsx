@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useRef } from "react";
+import { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { useRipple } from "../hooks/useRipple";
 import { AppTheme } from "../theme";
@@ -20,9 +20,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 37,
     position: "absolute",
     borderRadius: 50,
-    transitionDuration: theme.transitions.timing.normal,
+    transitionDuration: ({ prepared }) =>
+      prepared ? theme.transitions.timing.normal : 0,
     transitionTimingFunction: theme.transitions.easing.default,
-    // opacity: 0,
+    transitionProperty: "left",
     left: "-100vw",
   },
 }));
@@ -43,11 +44,12 @@ export interface TabBarComponentProps {
 export const TabBar: FC<TabBarComponentProps> = (props) => {
   const { color = "primary", className = "" } = props;
 
+  const [prepared, setPrepared] = useState(false);
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, color });
+  const classes = useStyles({ theme, color, prepared });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
-  // const [current, setCurrent] = useState(props.current ?? props.tabs[0].key);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -68,7 +70,9 @@ export const TabBar: FC<TabBarComponentProps> = (props) => {
 
     window.addEventListener("resize", handleResize);
 
-    // sliderRef.current?.style.setProperty("opacity", "1");
+    setTimeout(() => {
+      setPrepared(true);
+    }, 100);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
