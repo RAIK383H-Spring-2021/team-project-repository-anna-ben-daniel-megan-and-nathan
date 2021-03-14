@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
     @user_found = User.find_by(email: params[:email])
 
-    if @user_found != []
+    if @user_found != nil
       respond_to do |format|
         format.json { render json: { status: 'email already registered' } }
       end
@@ -28,7 +28,11 @@ class UsersController < ApplicationController
         privacy_level: params[:privacy_level]
       )
 
-      @token = encode({user_id: @new_user.id})
+      @token = encode({
+          sub: @new_user.id,
+          name: @new_user.first_name,
+          iat: Time.now.to_i
+        })
       respond_to do |format|
         format.json { render json: { user: @new_user, token: @token } }
       end
@@ -57,7 +61,11 @@ class UsersController < ApplicationController
     @user = User.find_by(email: params[:email])
 
     if @user && @user.authenticate(params[:password])
-      token = encode({ user_id: @user.id })
+      token = encode({
+          sub: @user.id,
+          name: @user.first_name,
+          iat: Time.now.to_i
+        })
       respond_to do |format|
         format.json { render json: { user: @user, token: token } }
       end
