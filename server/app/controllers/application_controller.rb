@@ -22,8 +22,8 @@ class ApplicationController < ActionController::API
 
     def logged_in_user
         if decode_token
-            @id = decoded[0]['sub']
-            @user = User.find_by(id: id)
+            @id = decode_token[0]['sub']
+            @user = User.find_by(id: @id)
         end
     end
 

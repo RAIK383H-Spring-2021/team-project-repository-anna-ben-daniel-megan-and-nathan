@@ -34,7 +34,7 @@ class UsersController < ApplicationController
           iat: Time.now.to_i
         })
       respond_to do |format|
-        format.json { render json: { user: @new_user, token: @token } }
+        format.json { render json: { token: @token } }
       end
     end
   end
@@ -42,16 +42,47 @@ class UsersController < ApplicationController
   def show
     # TODO: query database for user corresponding to the :id and return corresponding information
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller show successfully received request' } }
+    @id = authorized()
+    
+    if (@id == params[:id].to_i)
+      @user = User.find_by(id: @id)
+      @events = @user.events ? @user.events : []
+
+      userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
+
+      respond_to do |format|
+        format.json { render json: {user: userJson, events: @events } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
     end
   end
 
   def update
     # TODO: update corresponding user entry with new user information
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller update successfully received request' } }
+    @id = authorized()
+    
+    if (@id == params[:id].to_i)
+      @user = User.find_by(id: @id)
+      @user.update(
+        email: params[:email],
+        first_name: params[:first_name],
+        last_name: params[:last_name],
+        privacy_level: params[:privacy_level]
+      )
+
+      userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
+
+      respond_to do |format|
+        format.json { render json: {user: userJson} }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
     end
   end
 
@@ -67,7 +98,7 @@ class UsersController < ApplicationController
           iat: Time.now.to_i
         })
       respond_to do |format|
-        format.json { render json: { user: @user, token: token } }
+        format.json { render json: { token: token } }
       end
     else
       respond_to do |format|
@@ -87,8 +118,20 @@ class UsersController < ApplicationController
   def events
     # TODO: get all events a specified user has created
 
-    respond_to do |format|
-      format.json { render json: { status: 'users controller events successfully received request' } }
+    @id = authorized()
+    
+    if (@id == params[:id].to_i)
+      @user = User.find_by(id: @id)
+      @events = @user.events ? @user.events : []
+
+      respond_to do |format|
+        format.json { render json: {events: @events } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
     end
   end
+  
 end
