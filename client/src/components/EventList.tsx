@@ -2,7 +2,7 @@ import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
 import { useHistory } from "react-router";
 import { useTheme } from "theming";
-import { Event } from "../resources/dashboard";
+import { Event, host_name } from "../models/Event";
 import { AppTheme } from "../theme";
 import { InfoIconStack } from "./InfoStack";
 import { List } from "./List";
@@ -63,7 +63,9 @@ export function EventList(props: EventListComponentProps) {
       ) : (
         <List type={style} className={classes.wrapper}>
           {events.map((event, i) => {
-            if (event.status === "complete") {
+            const complete = event.responses / event.invitees > 0.8;
+
+            if (complete) {
               return (
                 <ListItem
                   key={i}
@@ -86,7 +88,7 @@ export function EventList(props: EventListComponentProps) {
                 onClick={() => history.push(`/events/${event.id}`)}
                 start={
                   <MiniScore
-                    value={event.replies}
+                    value={event.responses}
                     max={event.invitees}
                     type="responses"
                   />
@@ -104,7 +106,7 @@ export function EventList(props: EventListComponentProps) {
 
 function getInfo(event: Event, selections: string[]) {
   const m = new Map([
-    ["creator", { text: event.creator, icon: "person" }],
+    ["creator", { text: host_name(event), icon: "person" }],
     [
       "date",
       { text: new Date(event.date_time).toLocaleDateString(), icon: "event" },

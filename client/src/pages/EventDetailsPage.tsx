@@ -13,19 +13,35 @@ import { Score } from "../components/Score";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
-import { Event } from "../resources/dashboard";
+import { Event, host_name } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
+  "@keyframes slideIn": {
+    from: {
+      opacity: 0,
+      transform: "translateY(10px)",
+    },
+    to: {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
   desktopWrapper: {
     ...theme.typography.body,
     marginTop: 180,
     marginBottom: 96,
+    animationName: "$slideIn",
+    animationDuration: "375ms",
+    animationTimingFunction: theme.transitions.easing.default,
   },
   mobileWrapper: {
     ...theme.typography.body,
     marginTop: 120,
+    animationName: "$slideIn",
+    animationDuration: "375ms",
+    animationTimingFunction: theme.transitions.easing.default,
   },
   meterCenter: {
     display: "flex",
@@ -198,11 +214,12 @@ function Meter({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
-  const type = event.status === "complete" ? "score" : "responses";
-  const max = event.status === "complete" ? 5 : event.invitees;
-  const score = event.status === "complete" ? event.score : event.replies;
-  const label =
-    event.status === "complete" ? "Comfort Score" : "Invitee Responses";
+  const complete = event.responses / event.invitees > 0.8;
+
+  const type = complete ? "score" : "responses";
+  const max = complete ? 5 : event.invitees;
+  const score = complete ? event.score : event.responses;
+  const label = complete ? "Comfort Score" : "Invitee Responses";
 
   return (
     <div className={classes.meterCenter}>
@@ -228,8 +245,12 @@ function SummarySection({ event }: { event: Event }) {
         className={classes.detailsCard}
       >
         <div className={classes.detailsCardDoubleColumn}>
-          <InfoBlock icon="person" label="host" body={event.creator} />
-          <InfoBlock icon="email" label="contact email" body={event.creator} />
+          <InfoBlock icon="person" label="host" body={host_name(event)} />
+          <InfoBlock
+            icon="email"
+            label="contact email"
+            body={event.host_email}
+          />
         </div>
         <div className={classes.detailsCardDoubleColumn}>
           <InfoBlock

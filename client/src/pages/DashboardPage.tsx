@@ -191,7 +191,6 @@ function DashboardSmall() {
 
   function setTab(t: string) {
     setCurrent(t);
-    // history.replace(`/dash/${t}`);
     setTimeout(() => {
       window.history.replaceState(null, t, `/dash/${t}`);
     }, 500);
@@ -289,13 +288,6 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
         events={response?.newEvents ?? []}
         loading={isLoading}
         title="New Events"
-        info={["creator", "date"]}
-      ></EventList>
-      <EventList
-        style={style}
-        events={response?.updatedEvents ?? []}
-        loading={isLoading}
-        title="Updated Events"
         info={["creator", "date"]}
       ></EventList>
       <EventList
