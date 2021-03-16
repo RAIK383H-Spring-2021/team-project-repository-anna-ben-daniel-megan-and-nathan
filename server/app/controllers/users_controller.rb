@@ -3,8 +3,20 @@ class UsersController < ApplicationController
   def index
     # TODO: get all users matching query (uses ?q=...)
 
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @users = User.where("email LIKE ?", "#{params[:q]}%")
+
+    @users = @users.map{ |user| user.as_json(only: %i[id email first_name last_name]) }
+
     respond_to do |format|
-      format.json { render json: { status: 'users controller index successfully received request' } }
+      format.json { render json: { users: @users } }
     end
   end
 
@@ -94,19 +106,29 @@ class UsersController < ApplicationController
 
     @user = User.find_by(email: params[:email])
 
-    if @user && @user.authenticate(params[:password])
-      token = encode({
-          sub: @user.id,
-          name: @user.first_name,
-          iat: Time.now.to_i
-        })
-      respond_to do |format|
-        format.json { render json: { token: token } }
-      end
-    else
+    if !@user 
       respond_to do |format|
         format.json { render json: { status: 'user not found' } }
       end
+
+      return
+    end
+
+    if !@user.authenticate(params[:password])
+      respond_to do |format|
+        format.json { render json: { status: 'password incorrect' } }
+      end
+
+      return
+    end
+
+    token = encode({
+        sub: @user.id,
+        name: @user.first_name,
+        iat: Time.now.to_i
+      })
+    respond_to do |format|
+      format.json { render json: { token: token } }
     end
   end
 
