@@ -105,7 +105,7 @@ const login = (username: string, password: string) =>
       response?.data?.token && API.setToken(response.data.token),
   } as MutativeRequest);
 
-export const LogInPage: FC = (props) => {
+const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
@@ -160,3 +160,5 @@ export const LogInPage: FC = (props) => {
     </div>
   );
 };
+
+export default LogInPage;

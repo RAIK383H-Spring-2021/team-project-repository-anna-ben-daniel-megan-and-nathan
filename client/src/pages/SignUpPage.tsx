@@ -89,7 +89,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export const SignUpPage: FC = (props) => {
+const SignUpPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
@@ -130,3 +130,5 @@ export const SignUpPage: FC = (props) => {
     </div>
   );
 };
+
+export default SignUpPage;

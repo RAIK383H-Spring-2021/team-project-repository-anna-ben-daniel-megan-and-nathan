@@ -131,7 +131,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export const DashboardPage: FC = (props) => {
+const DashboardPage: FC = (props) => {
   const size = useScreen();
 
   return size === "large" ? <DashboardLarge /> : <DashboardSmall />;
@@ -203,10 +203,12 @@ function DashboardSmall() {
 
   return (
     <Content
+      scrollFade={true}
       toolbar={
         <div>
           <Toolbar
             title="Dashboard"
+            background="filled"
             end={
               <IconButton
                 icon="account_circle"
@@ -300,3 +302,5 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
     </div>
   );
 }
+
+export default DashboardPage;

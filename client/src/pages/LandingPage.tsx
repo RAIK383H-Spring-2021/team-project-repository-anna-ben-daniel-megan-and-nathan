@@ -145,7 +145,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export const LandingPage: FC = (props) => {
+const LandingPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
@@ -199,3 +199,5 @@ export const LandingPage: FC = (props) => {
     </div>
   );
 };
+
+export default LandingPage;

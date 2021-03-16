@@ -25,7 +25,7 @@ export function getUserInvitations(userId: string): FetchRequest {
 }
 
 const exampleCreatedEvents: UserCreatedEventsResponse = {
-  events: [events[0], events[8], events[9], events[10]],
+  events: [events[0], events[8], events[10], events[9]],
 };
 
 export function getUserCreatedEvents(userId: string): FetchRequest {

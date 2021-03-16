@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
 import { useHistory, useParams } from "react-router";
@@ -116,7 +117,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export function EventDetailsPage() {
+const EventDetailsPage: FC = () => {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
   const [event, isLoading] = useRequest<Event>(events.get, event_id);
@@ -126,7 +127,7 @@ export function EventDetailsPage() {
   ) : (
     <EventDetailsSmall event={event} loading={isLoading} />
   );
-}
+};
 
 function EventDetailsLarge({
   event,
@@ -314,3 +315,5 @@ function QuestionnaireCard() {
     </Card>
   );
 }
+
+export default EventDetailsPage;
