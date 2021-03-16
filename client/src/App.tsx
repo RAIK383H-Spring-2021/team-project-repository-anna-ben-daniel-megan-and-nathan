@@ -1,8 +1,5 @@
 import React, { lazy, ReactNode, Suspense } from "react";
 import { ThemeProvider, useTheme } from "react-jss";
-// import SignUpPage from "./pages/SignUpPage";
-// import LogInPage from "./pages/LogInPage";
-// import { LandingPage } from "./pages/LandingPage";
 import { light, dark, AppTheme } from "./theme";
 import {
   BrowserRouter as Router,
@@ -11,10 +8,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-// import { DashboardPage } from "./pages/DashboardPage";
-// import { EventDetailsPage } from "./pages/EventDetailsPage";
-// import { CreateEventPage } from "./pages/CreateEventPage";
-// import MDSpinner from "react-md-spinner";
 
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
