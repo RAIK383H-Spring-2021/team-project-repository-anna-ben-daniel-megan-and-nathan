@@ -1,11 +1,13 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles, useTheme } from "react-jss";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { API } from "../api";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
+import { MutativeRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -41,9 +43,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       borderRadius: 0,
       padding: 32,
     },
-  },
-  inputWrapper: {
-    // margin: "12px 28px",
   },
   input: {
     margin: "12px 0",
@@ -89,9 +88,46 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
+interface SignUpResponse {
+  token: string;
+}
+
+const signUp = (
+  first_name: string,
+  last_name: string,
+  email: string,
+  password: string
+) =>
+  ({
+    method: "POST",
+    path: "users",
+    body: {
+      first_name,
+      last_name,
+      email,
+      password,
+      privacy_level: 1,
+    },
+    onComplete: (response: SignUpResponse) =>
+      (response as any)?.token && API.setToken((response as any).token),
+  } as MutativeRequest);
+
 const SignUpPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
+  const history = useHistory();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordVerify, setPasswordVerify] = useState("");
+
+  const [response, isLoading, makeRequest] = useRequest<SignUpResponse>(signUp);
+
+  if (response?.token) {
+    history.push("/dash");
+  }
 
   return (
     <div className={classes.content}>
@@ -105,21 +141,52 @@ const SignUpPage: FC = (props) => {
             <Logo type="full" />
           </Link>
         </div>
-        <form className={classes.inputWrapper}>
+        <form>
           <div className={classes.nameWrapper}>
-            <Input type="text" className={classes.name} label="First Name" />
-            <Input type="text" className={classes.name} label="Last Name" />
+            <Input
+              type="text"
+              value={firstName}
+              onChange={setFirstName}
+              className={classes.name}
+              label="First Name"
+            />
+            <Input
+              type="text"
+              value={lastName}
+              onChange={setLastName}
+              className={classes.name}
+              label="Last Name"
+            />
           </div>
-          <Input className={classes.input} type="email" label="Email" />
-          <Input className={classes.input} type="password" label="Password" />
           <Input
+            value={email}
+            onChange={setEmail}
+            className={classes.input}
+            type="email"
+            label="Email"
+          />
+          <Input
+            value={password}
+            onChange={setPassword}
+            className={classes.input}
+            type="password"
+            label="Password"
+          />
+          <Input
+            value={passwordVerify}
+            onChange={setPasswordVerify}
             className={classes.input}
             type="password"
             label="Confirm Password"
           />
         </form>
         <div className={classes.buttonWrapper}>
-          <Button color="accent">Sign Up</Button>
+          <Button
+            onClick={() => makeRequest(firstName, lastName, email, password)}
+            color="accent"
+          >
+            {isLoading ? "Loading..." : "Sign Up"}
+          </Button>
         </div>
         <div className={classes.logInLinkWrapper}>
           <Link to="/login" className={classes.logInLink}>

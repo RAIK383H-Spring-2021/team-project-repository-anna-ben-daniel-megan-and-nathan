@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { API } from "./api";
 import * as sw from "./serviceWorkerRegistration";
 
-API.init("https://api.coroname.net/v2");
+API.init("https://shindig-app.herokuapp.com/");
 
 ReactDOM.render(
   <React.StrictMode>
