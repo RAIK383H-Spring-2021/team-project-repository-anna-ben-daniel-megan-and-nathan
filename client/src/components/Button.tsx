@@ -21,6 +21,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
+    textDecoration: "none",
 
     "&:focus": {
       border: "none",
@@ -52,7 +53,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
     end,
   } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, color, transparent });
+  const classes = useStyles({ theme, color, transparent, size });
 
   const rippleRef = useRef(null);
 

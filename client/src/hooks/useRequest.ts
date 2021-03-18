@@ -4,7 +4,7 @@ import { API } from "../api";
 interface GenericRequest {
   path: string;
   query?: { [key: string]: string | number | boolean };
-  onComplete?<T = unknown>(data: T): void;
+  onComplete?<T = unknown>(data: T): unknown;
   debug?: () => any | Promise<any>;
 }
 
@@ -42,7 +42,6 @@ export function useRequest<T>(
   ...params: Parameters<typeof request | any>
 ) {
   if (!request) throw new Error("Please specify a request.");
-  console.log(params.length > 0);
 
   const [value, setValue] = useState<T>();
   const [isLoading, setIsLoading] = useState(params.length > 0);
@@ -115,7 +114,7 @@ function makeFetchOptions(
       method: r.method,
       headers: {
         "Content-Type": "application/json",
-        "Auth-Token": `${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(r.body),
     };

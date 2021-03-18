@@ -92,20 +92,20 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 interface LoginResponse {
-  code: number;
-  data: { token: string };
+  token?: string;
+  status?: string;
 }
 
-const login = (username: string, password: string) =>
+const login = (email: string, password: string) =>
   ({
     method: "POST",
-    path: "auth/login",
-    body: { username, password },
+    path: "users/login",
+    body: { email, password },
     onComplete: (response: LoginResponse) =>
-      response?.data?.token && API.setToken(response.data.token),
+      response?.token && API.setToken(response.token),
   } as MutativeRequest);
 
-export const LogInPage: FC = (props) => {
+const LogInPage: FC = (props) => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
@@ -114,7 +114,7 @@ export const LogInPage: FC = (props) => {
 
   const [response, isLoading, makeRequest] = useRequest<LoginResponse>(login);
 
-  if (response?.code === 0) {
+  if (response?.token) {
     history.push("/dash");
   }
 
@@ -160,3 +160,5 @@ export const LogInPage: FC = (props) => {
     </div>
   );
 };
+
+export default LogInPage;

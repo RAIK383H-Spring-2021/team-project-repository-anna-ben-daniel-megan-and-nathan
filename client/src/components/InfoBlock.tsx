@@ -41,7 +41,7 @@ export const InfoBlock: FC<InfoBlockComponentProps> = (props) => {
   return (
     <div className={classes.wrapper}>
       <div>
-        <Icon className={classes.icon} name={props.icon} />
+        <Icon size="small" className={classes.icon} name={props.icon} />
       </div>
       <div>
         <div className={classes.label}>{props.label}</div>

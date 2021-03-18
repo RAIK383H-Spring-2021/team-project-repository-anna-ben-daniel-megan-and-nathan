@@ -132,7 +132,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 export interface CreateEventPageComponentProps { }
 
-export const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
+const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     const size = useScreen();
     const theme = useTheme<AppTheme>();
     const classes = useStyles({ theme, size });
@@ -256,3 +256,5 @@ function SendInvitations() {
         </div>
     );
 }
+
+export default CreateEventPage;

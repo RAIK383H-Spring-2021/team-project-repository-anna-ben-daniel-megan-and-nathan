@@ -4,7 +4,7 @@ import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   toolbar: {
-    ...theme.colors.background,
+    ...theme.colors.background.base,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -17,6 +17,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     paddingBottom: ({ size }) => size === "large" && 36,
     paddingLeft: ({ size }) => size === "large" && 180,
     paddingRight: ({ size }) => size === "large" && 180,
+    backgroundColor: ({ background }) =>
+      background === "filled"
+        ? theme.colors.background.base.backgroundColor
+        : "transparent",
   },
   titleStart: {
     ...theme.typography.heading,
@@ -40,12 +44,13 @@ export interface ToolbarComponentProps {
   title: string;
   size?: "normal" | "large";
   className?: string;
+  background?: "filled" | "transparent" | "translucent";
 }
 
 export const Toolbar: FC<ToolbarComponentProps> = (props) => {
-  const { size = "normal", className } = props;
+  const { size = "normal", className, background = "transparent" } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, size });
+  const classes = useStyles({ theme, size, background });
 
   return (
     <div className={`${classes.toolbar} ${className}`}>

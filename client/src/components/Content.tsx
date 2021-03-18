@@ -15,12 +15,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     // paddingBottom: ({ fabExists }) => fabExists && 96,
   },
   toolbar: {
-    zIndex: 1,
+    zIndex: 2,
     position: "absolute",
     top: 0,
     left: 0,
     width: "100%",
-    ...theme.colors.background.base,
+
+    "&:after": ({ scrollFade }) =>
+      scrollFade && {
+        content: "",
+        display: "block",
+        width: "100%",
+        height: 30,
+        // background: "linear-gradient(",
+      },
+    // ...theme.colors.background.base,
   },
   fabContainer: {
     position: "absolute",
@@ -45,6 +54,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 interface ContentComponentProps {
   toolbar?: ReactNode;
   fab?: ReactNode;
+  scrollFade?: boolean;
 }
 
 export function Content(props: PropsWithChildren<ContentComponentProps>) {
@@ -52,7 +62,12 @@ export function Content(props: PropsWithChildren<ContentComponentProps>) {
   const screen = useScreen();
 
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, fabExists, screen });
+  const classes = useStyles({
+    theme,
+    fabExists,
+    screen,
+    scrollFade: props.scrollFade,
+  });
 
   return (
     <div className={classes.positioner}>
