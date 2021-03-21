@@ -34,13 +34,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 export interface FabComponentProps {
   icon: string;
   color?: "primary" | "secondary" | "accent";
-  size?: "small" | "normal" | "large" | "giant";
+  size?: "small" | "medium" | "large" | "giant";
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
 }
 
 export const FAB: FC<FabComponentProps> = (props) => {
-  const { size = "normal", color = "accent", className } = props;
+  const { size = "medium", color = "accent", className } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size, color });
@@ -49,7 +49,7 @@ export const FAB: FC<FabComponentProps> = (props) => {
 
   return (
     <button className={`${classes.button} ${className}`} ref={rippleRef} onClick={props.onClick}>
-      <Icon name={props.icon} />
+      <Icon name={props.icon} size={size} />
     </button>
   );
 };

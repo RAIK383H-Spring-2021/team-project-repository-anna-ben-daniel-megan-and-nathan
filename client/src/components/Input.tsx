@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useState, useEffect } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
@@ -122,6 +122,10 @@ export const Input: FC<InputComponentProps> = (props) => {
   const classes = useStyles({ theme });
 
   const [value, setValue] = useState(props.value ?? "");
+
+  useEffect(() => {
+    props.value !== undefined && props.value !== value && setValue(props.value);
+  }, [props.value])
 
   const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
     setValue(ev.target.value);

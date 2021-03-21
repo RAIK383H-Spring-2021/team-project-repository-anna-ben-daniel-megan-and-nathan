@@ -73,9 +73,8 @@ export const Stepper: FC<StepperComponentProps> = (props) => {
         onClick={() => changeStep(0)}
       />
       <div
-        className={`${classes.stepperLine} ${
-          props.disabled[1] ? classes.disabled : classes.primary
-        }`}
+        className={`${classes.stepperLine} ${props.disabled[1] ? classes.disabled : classes.primary
+          }`}
       />
       <StepperNode
         icon="group_add"
@@ -85,9 +84,8 @@ export const Stepper: FC<StepperComponentProps> = (props) => {
         onClick={() => changeStep(1)}
       />
       <div
-        className={`${classes.stepperLine} ${
-          props.disabled[2] ? classes.disabled : classes.primary
-        }`}
+        className={`${classes.stepperLine} ${props.disabled[2] ? classes.disabled : classes.primary
+          }`}
       />
       <StepperNode
         icon="send"
