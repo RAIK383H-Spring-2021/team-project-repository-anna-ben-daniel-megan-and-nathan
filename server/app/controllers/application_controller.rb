@@ -36,7 +36,7 @@ class ApplicationController < ActionController::API
             @user = logged_in_user
             return @user.id
         else
-            render json: { message: 'Please log in' }, status: :unauthorized
+            nil
         end
     end
 end
