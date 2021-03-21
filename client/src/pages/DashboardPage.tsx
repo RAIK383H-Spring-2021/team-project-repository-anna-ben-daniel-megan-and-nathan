@@ -19,6 +19,7 @@ import {
   getUserCreatedEvents,
 } from "../resources/dashboard";
 import { AppTheme } from "../theme";
+import { User } from "../User";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -151,7 +152,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
-          title="Dashboard"
+          title={`Hi, ${User.getUser()?.name}`}
           size="large"
           end={
             <IconButton
@@ -207,7 +208,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
-            title="Dashboard"
+            title={`Hi, ${User.getUser()?.name}`}
             background="filled"
             end={
               <IconButton
