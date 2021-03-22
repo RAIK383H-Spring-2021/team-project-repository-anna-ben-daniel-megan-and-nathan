@@ -69,11 +69,15 @@ class UsersController < ApplicationController
       return
     end
     
-    @user = User.find_by(id: @id)
+    @user = User.find(@id)
     @hosted_events = @user.events ? @user.events : []
+
+    @hosted_events = @hosted_events.map{ |event| formatEvent(event.id) }
 
     @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
     @invited_events = Event.find(@event_ids)
+
+    @invited_events = @invited_events.map{ |event| formatEvent(event.id) }
 
     userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
 
@@ -102,7 +106,7 @@ class UsersController < ApplicationController
       return
     end
     
-    @user = User.find_by(id: @id)
+    @user = User.find(@id)
     @user.update(
       email: params[:email],
       first_name: params[:first_name],
@@ -167,7 +171,9 @@ class UsersController < ApplicationController
     end
 
     @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
-    @events = Event.find(@event_ids)
+    @events = Event.find(@event_ids).map{ |event| formatEvent(event.id) }
+
+    #@events = @events.map{ |event| formatEvent(event.id) }
 
     respond_to do |format|
       format.json { render json: {events: @events } }
@@ -194,12 +200,26 @@ class UsersController < ApplicationController
       return
     end
     
-    @user = User.find_by(id: @id)
+    @user = User.find(@id)
     @events = @user.events ? @user.events : []
+
+    @events = @events.map{ |event| formatEvent(event.id) }
 
     respond_to do |format|
       format.json { render json: {events: @events } }
     end
+  end
+
+  private
+
+  def formatEvent(event_id)
+    @event = Event.find_by(id: event_id)
+    @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
+    @invitees = Participant.where(event_id: @event.id).length
+
+    @event_json = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+
+    return {**@event_json, invitees: @invitees, responses: @responses }
   end
   
 end

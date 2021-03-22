@@ -11,6 +11,27 @@ class InviteesController < ApplicationController
 
   def create
     #TODO: add invitee to an event
+
+    # pretty sure we can use before_action for this stuff, but leaving it like this for now
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+    @host_id = Event.find_by(id: params[:event_id]).host_id
+
+    if (!@id == @host_id)
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @invitee = Participant.new(
       user_id: params[:user_id],
       event_id: params[:event_id],

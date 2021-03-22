@@ -1,6 +1,25 @@
 class EventsController < ApplicationController
   def create
     #TODO: Create a new event
+
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+
+    if (!@id == params[:host_id])
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @event = Event.new(
       title: params[:title],
       host_id: params[:host_id],
