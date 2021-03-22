@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:id].to_i)
+    if (!(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
@@ -98,7 +98,7 @@ class UsersController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:id].to_i)
+    if (!(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
@@ -162,7 +162,7 @@ class UsersController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:id].to_i)
+    if (!(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
@@ -170,13 +170,17 @@ class UsersController < ApplicationController
       return
     end
 
-    @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
-    @events = Event.find(@event_ids).map{ |event| formatEvent(event.id) }
+    @other_event_ids = Participant.where(user_id: params[:id]).where(questionnaire_complete: true).collect(&:event_id)
+    @new_event_ids = Participant.where(user_id: params[:id]).where(questionnaire_complete: false).collect(&:event_id)
 
-    #@events = @events.map{ |event| formatEvent(event.id) }
+    @other_events = Event.find(@other_event_ids)
+    @new_events = Event.find(@new_event_ids)
+
+    @other_events = @other_events.map{ |event| formatEvent(event.id) }
+    @new_events = @new_events.map{ |event| formatEvent(event.id) }
 
     respond_to do |format|
-      format.json { render json: {events: @events } }
+      format.json { render json: {new_events: @new_events, other_events: @other_events } }
     end
   end
 
@@ -192,7 +196,7 @@ class UsersController < ApplicationController
     
     @id = authorized()
 
-    if (!@id == params[:id].to_i)
+    if (!(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
