@@ -217,13 +217,14 @@ class UsersController < ApplicationController
   private
 
   def formatEvent(event_id)
-    @event = Event.find_by(id: event_id)
+    @event = Event.find(event_id)
+    @host = User.find(@event.host_id)
     @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: @event.id).length
 
     @event_json = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
 
-    return {**@event_json, invitees: @invitees, responses: @responses }
+    return {**@event_json, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name, invitees: @invitees, responses: @responses }
   end
   
 end
