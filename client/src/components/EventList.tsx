@@ -73,7 +73,11 @@ export function EventList(props: EventListComponentProps) {
                   start={<MiniScore value={event.score} type="score" />}
                   end={<InfoIconStack info={getInfo(event, info)} />}
                   subtitle={truncateDescription(event.description)}
-                  onClick={() => history.push(`/events/${event.id}`)}
+                  onClick={() =>
+                    history.push(`/events/${event.id}`, {
+                      referrer: "dashboard",
+                    })
+                  }
                 >
                   {event.title}
                 </ListItem>
@@ -85,7 +89,9 @@ export function EventList(props: EventListComponentProps) {
                 button={true}
                 subtitle={truncateDescription(event.description)}
                 end={<InfoIconStack info={getInfo(event, info)} />}
-                onClick={() => history.push(`/events/${event.id}`)}
+                onClick={() =>
+                  history.push(`/events/${event.id}`, { referrer: "dashboard" })
+                }
                 start={
                   <MiniScore
                     value={event.responses}

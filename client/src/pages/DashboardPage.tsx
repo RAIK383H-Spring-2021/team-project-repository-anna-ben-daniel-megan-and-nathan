@@ -20,6 +20,8 @@ import {
 } from "../resources/dashboard";
 import { AppTheme } from "../theme";
 import { User } from "../User";
+import { Link } from "react-router-dom";
+import { Button } from "../components/Button";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -263,15 +265,26 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
     User.getUser()?.sub
   );
 
+  const showCTA = !isLoading && (response?.events.length ?? 0) === 0;
+
   return (
     <div>
-      <EventList
-        style={style}
-        events={response?.events ?? []}
-        loading={isLoading}
-        title="Your Events"
-        info={["invitees", "date"]}
-      ></EventList>
+      {showCTA ? (
+        <div>
+          You haven't created any events.{" "}
+          <Link to="/create">
+            <Button color="accent">Create one now!</Button>
+          </Link>
+        </div>
+      ) : (
+        <EventList
+          style={style}
+          events={response?.events ?? []}
+          loading={isLoading}
+          title="Your Events"
+          info={["invitees", "date"]}
+        ></EventList>
+      )}
     </div>
   );
 }
@@ -288,14 +301,14 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
         style={style}
         events={response?.new_events ?? []}
         loading={isLoading}
-        title="New Events"
+        title="New Invitations"
         info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
         events={response?.other_events ?? []}
         loading={isLoading}
-        title="Other Events"
+        title="Other Invitations"
         info={["creator", "date"]}
       ></EventList>
     </div>

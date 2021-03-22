@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import { Helmet } from "react-helmet";
 import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
 import { useHistory, useParams } from "react-router";
@@ -148,10 +149,17 @@ const EventDetailsPage: FC = () => {
     event_id
   );
 
-  return screen === "large" ? (
-    <EventDetailsLarge event={response?.event} loading={isLoading} />
-  ) : (
-    <EventDetailsSmall event={response?.event} loading={isLoading} />
+  return (
+    <Fragment>
+      <Helmet
+        title={isLoading ? "Loading..." : response ? response.event.title : ""}
+      />
+      {screen === "large" ? (
+        <EventDetailsLarge event={response?.event} loading={isLoading} />
+      ) : (
+        <EventDetailsSmall event={response?.event} loading={isLoading} />
+      )}
+    </Fragment>
   );
 };
 
