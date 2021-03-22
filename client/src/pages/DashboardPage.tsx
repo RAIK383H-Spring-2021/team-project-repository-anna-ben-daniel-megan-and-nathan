@@ -263,8 +263,6 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
     14
   );
 
-  console.log(isLoading);
-
   return (
     <div>
       <EventList

@@ -62,7 +62,6 @@ export function useRequest<T>(
 
     if (r.method === "GET") {
       const cached = API.getCacheItem(url);
-      console.log(cached);
 
       if (cached) {
         setValue(cached as T);
