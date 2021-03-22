@@ -10,6 +10,7 @@ import { Content } from "../components/Content";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
+import { MiniScore } from "../components/MiniScore";
 import { Score } from "../components/Score";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
@@ -115,17 +116,42 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     justifyContent: "flex-end",
     alignItems: "flex-end",
   },
+  comfortMetricsCard: {
+    flex: "1 1 auto",
+    padding: 0,
+  },
+  desktopScoreItem: {
+    display: "flex",
+    margin: 36,
+  },
+  desktopScoreIcon: {
+    marginRight: 24,
+    flex: "0 0",
+  },
+  desktopScoreAside: {
+    flex: "1 1 auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  desktopScoreExplanation: {
+    color: theme.colors.background.light?.color,
+  },
 }));
 
 const EventDetailsPage: FC = () => {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
-  const [event, isLoading] = useRequest<Event>(events.get, event_id);
+  const [response, isLoading] = useRequest<{ event: Event }>(
+    events.get,
+    event_id
+  );
 
   return screen === "large" ? (
-    <EventDetailsLarge event={event} loading={isLoading} />
+    <EventDetailsLarge event={response?.event} loading={isLoading} />
   ) : (
-    <EventDetailsSmall event={event} loading={isLoading} />
+    <EventDetailsSmall event={response?.event} loading={isLoading} />
   );
 };
 
@@ -281,13 +307,14 @@ function ComfortMetricSection({ event }: { event: Event }) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
+  const rand = Math.floor(Math.random() * 2);
 
   return (
     <section className={classes.sectionWrapper}>
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Comfort Metrics
       </h2>
-      <QuestionnaireCard />
+      {rand > 1 ? <QuestionnaireCard /> : <ScoreDetailsCard />}
     </section>
   );
 }
@@ -315,5 +342,64 @@ function QuestionnaireCard() {
     </Card>
   );
 }
+
+function ScoreDetailsCard() {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+  const screen = useScreen();
+
+  if (screen === "large") {
+    return (
+      <Card
+        color="background"
+        borderless={screen !== "large"}
+        className={classes.comfortMetricsCard}
+      >
+        <div className={classes.desktopScoreItem}>
+          <div className={classes.desktopScoreIcon}>
+            <MiniScore type="score" value={5} max={5} icon="nature_people" />
+          </div>
+          <div className={classes.desktopScoreAside}>
+            <div>Outdoor Venue</div>
+          </div>
+        </div>
+        <div className={classes.desktopScoreItem}>
+          <div className={classes.desktopScoreIcon}>
+            <MiniScore type="score" value={3} max={5} icon="masks" />
+          </div>
+          <div className={classes.desktopScoreAside}>
+            <div>Masks required, 6-foot social distancing recommended.</div>
+            <div className={classes.desktopScoreExplanation}>
+              You prefer social distancing to be required.
+            </div>
+          </div>
+        </div>
+        <div className={classes.desktopScoreItem}>
+          <div className={classes.desktopScoreIcon}>
+            <MiniScore type="score" value={1} max={5} icon="restaurant_menu" />
+          </div>
+          <div className={classes.desktopScoreAside}>
+            <div>Food will be served buffet-style.</div>
+            <div className={classes.desktopScoreExplanation}>
+              You prefer food to be pre-packaged.
+            </div>
+          </div>
+        </div>
+        <div className={classes.desktopScoreItem}>
+          <div className={classes.desktopScoreIcon}>
+            <MiniScore type="score" value={5} max={5} icon="people" />
+          </div>
+          <div className={classes.desktopScoreAside}>
+            <div>There are 23 invitees.</div>
+          </div>
+        </div>
+      </Card>
+    );
+  } else {
+    return <Icon name="person" />;
+  }
+}
+
+// function SuggestionsCard() {}
 
 export default EventDetailsPage;

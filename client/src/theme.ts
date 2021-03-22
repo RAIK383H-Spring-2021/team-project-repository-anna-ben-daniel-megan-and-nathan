@@ -2,11 +2,11 @@ import { DefaultTheme } from "react-jss";
 
 const textColors = {
   light: {
-    primary: "rgba(0, 0, 0, 0.9)",
+    primary: "rgba(0, 0, 0, 0.95)",
     secondary: "rgba(0, 0, 0, 0.55)",
   },
   dark: {
-    primary: "rgba(255, 255, 255, 0.9)",
+    primary: "rgba(255, 255, 255, 0.95)",
     secondary: "rgba(255, 255, 255, 0.55)",
   },
 };
@@ -121,13 +121,13 @@ const baseColors = {
     },
     dark: {
       backgroundColor: "#4BB169",
-      color: textColors.dark.primary,
+      color: textColors.light.primary,
     },
   },
   error: {
     base: {
       backgroundColor: "#D62F43",
-      color: textColors.dark.primary,
+      color: textColors.light.primary,
     },
   },
   warning: {

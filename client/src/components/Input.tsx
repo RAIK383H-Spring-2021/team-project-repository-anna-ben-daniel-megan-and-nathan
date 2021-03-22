@@ -125,7 +125,7 @@ export const Input: FC<InputComponentProps> = (props) => {
 
   useEffect(() => {
     props.value !== undefined && props.value !== value && setValue(props.value);
-  }, [props.value])
+  }, [props.value, value]);
 
   const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
     setValue(ev.target.value);

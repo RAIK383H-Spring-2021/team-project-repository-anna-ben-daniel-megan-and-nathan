@@ -260,7 +260,7 @@ function DashboardSmall() {
 function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
   const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
     getUserCreatedEvents,
-    14
+    User.getUser()?.sub
   );
 
   return (
@@ -279,21 +279,21 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
 function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
   const [response, isLoading] = useRequest<UserInvitationsResponse>(
     getUserInvitations,
-    14
+    User.getUser()?.sub
   );
 
   return (
     <div>
       <EventList
         style={style}
-        events={response?.newEvents ?? []}
+        events={response?.new_events ?? []}
         loading={isLoading}
         title="New Events"
         info={["creator", "date"]}
       ></EventList>
       <EventList
         style={style}
-        events={response?.otherEvents ?? []}
+        events={response?.other_events ?? []}
         loading={isLoading}
         title="Other Events"
         info={["creator", "date"]}

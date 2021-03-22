@@ -2,14 +2,16 @@ import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { getColor } from "../getColor";
 import { AppTheme } from "../theme";
+import { Icon } from "./Icon";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   circle: {
     backgroundColor: ({ color }) => color.backgroundColor,
     borderRadius: 100,
-    height: 36,
-    width: 36,
+    height: ({ icon }) => (icon ? 60 : 36),
+    width: ({ icon }) => (icon ? 60 : 36),
     display: "flex",
+    userSelect: "none",
   },
   value: {
     ...theme.typography.button,
@@ -29,7 +31,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
     "& span": {
       margin: "auto",
-      transform: "translateY(-0.5px)",
     },
   },
 }));
@@ -38,6 +39,7 @@ export interface MiniScoreComponentProps {
   value: number;
   type: "score" | "responses";
   max?: number;
+  icon?: string;
 }
 
 const STROKE = 3;
@@ -46,16 +48,19 @@ const NORM_RADIUS = RADIUS - STROKE;
 const CIRCUMFERENCE = NORM_RADIUS * 2 * Math.PI;
 
 export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
-  const { value, type, max = 100 } = props;
+  const { value, type, max = 100, icon } = props;
+
   const theme = useTheme<AppTheme>();
   const color = getColor(value, theme);
-  const classes = useStyles({ theme, color });
+  const classes = useStyles({ theme, color, icon: !!icon });
   const offset = CIRCUMFERENCE - (value / max) * CIRCUMFERENCE;
 
   if (type === "score") {
     return (
       <div className={classes.circle}>
-        <span className={classes.value}>{value}</span>
+        <span className={classes.value}>
+          {icon ? <Icon name={icon} /> : value}
+        </span>
       </div>
     );
   } else {
@@ -86,7 +91,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
           />
         </svg>
         <div className={classes.response}>
-          <span>{value}</span>
+          <span>{icon ? <Icon name={icon} /> : value}</span>
         </div>
       </div>
     );

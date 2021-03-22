@@ -105,7 +105,7 @@ function makeFetchOptions(
   const token = API.getToken();
   if (r.method === "GET") {
     return {
-      headers: { "Auth-Token": `${token}` },
+      headers: { Authorization: `Bearer ${token}` },
       method: "GET",
     };
   } else {

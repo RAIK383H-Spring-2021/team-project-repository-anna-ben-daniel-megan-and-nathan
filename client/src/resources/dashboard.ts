@@ -3,8 +3,8 @@ import { Event } from "../models/Event";
 import { events } from "./examples";
 
 export interface UserInvitationsResponse {
-  newEvents: Event[];
-  otherEvents: Event[];
+  new_events: Event[];
+  other_events: Event[];
 }
 
 export interface UserCreatedEventsResponse {
@@ -12,8 +12,8 @@ export interface UserCreatedEventsResponse {
 }
 
 const exampleInvitationEvents: UserInvitationsResponse = {
-  newEvents: [events[1], events[2], events[3]],
-  otherEvents: [events[6], events[4], events[5], events[7]],
+  new_events: [events[1], events[2], events[3]],
+  other_events: [events[6], events[4], events[5], events[7]],
 };
 
 export function getUserInvitations(userId: string): FetchRequest {
