@@ -3,6 +3,12 @@ import { createUseStyles, useTheme } from "react-jss";
 import { useRipple } from "../hooks/useRipple";
 import { AppTheme } from "../theme";
 
+const fontSizes = new Map([
+  ["large", 18],
+  ["medium", 12],
+  ["small", 8],
+]);
+
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     ...theme.typography.button,
@@ -10,7 +16,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     backgroundColor: ({ color, transparent }) =>
       transparent ? "transparent" : theme.colors[color].base.backgroundColor,
     border: "none",
-    padding: "11px 24px",
+    padding: "14px 24px",
     borderRadius: 4,
     cursor: "pointer",
     transitionTimingFunction: theme.transitions.easing.default,
@@ -22,6 +28,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     alignItems: "center",
     overflow: "hidden",
     textDecoration: "none",
+    fontSize: ({ size }) => fontSizes.get(size),
+    lineHeight: 1,
 
     "&:focus": {
       border: "none",

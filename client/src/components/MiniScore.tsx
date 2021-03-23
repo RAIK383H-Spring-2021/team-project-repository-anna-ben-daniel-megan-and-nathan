@@ -50,16 +50,18 @@ const CIRCUMFERENCE = NORM_RADIUS * 2 * Math.PI;
 export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
   const { value, type, max = 100, icon } = props;
 
+  const clampedValue = value > max ? max : value < 0 ? 0 : value;
+
   const theme = useTheme<AppTheme>();
   const color = getColor(value, theme);
   const classes = useStyles({ theme, color, icon: !!icon });
-  const offset = CIRCUMFERENCE - (value / max) * CIRCUMFERENCE;
+  const offset = CIRCUMFERENCE - (clampedValue / max) * CIRCUMFERENCE;
 
   if (type === "score") {
     return (
       <div className={classes.circle}>
         <span className={classes.value}>
-          {icon ? <Icon name={icon} /> : value}
+          {icon ? <Icon name={icon} /> : value < 0 ? "?" : value}
         </span>
       </div>
     );
@@ -70,7 +72,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
           <circle
             stroke="rgba(31, 87, 196, 0.25)"
             strokeWidth={STROKE}
-            fill="transparent"
+            fill={value < 0 ? "rgba(31, 87, 196, 0.25)" : "transparent"}
             r={NORM_RADIUS}
             cx={RADIUS}
             cy={RADIUS}
@@ -91,7 +93,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
           />
         </svg>
         <div className={classes.response}>
-          <span>{icon ? <Icon name={icon} /> : value}</span>
+          <span>{icon ? <Icon name={icon} /> : value < 0 ? "?" : value}</span>
         </div>
       </div>
     );

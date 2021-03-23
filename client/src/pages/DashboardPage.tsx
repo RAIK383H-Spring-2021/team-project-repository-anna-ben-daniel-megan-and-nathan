@@ -172,7 +172,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
-          title={`Hi, ${User.getUser()?.name}`}
+          title={`Hi, ${User.getUser()?.name}!`}
           size="large"
           end={
             <IconButton
@@ -228,7 +228,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
-            title={`Hi, ${User.getUser()?.name}`}
+            title={`Hi, ${User.getUser()?.name}!`}
             background="filled"
             end={
               <IconButton
@@ -304,6 +304,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Your Events"
           info={["invitees", "date"]}
+          userId={User.getUser()?.sub ?? 0}
         ></EventList>
       )}
     </div>
@@ -319,6 +320,8 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
     User.getUser()?.sub
   );
 
+  const userId = User.getUser()?.sub ?? 0;
+
   function OnlyNewVariant() {
     return (
       <div>
@@ -328,6 +331,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Invitations"
           info={["creator", "date"]}
+          userId={userId}
         />
       </div>
     );
@@ -342,6 +346,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Invitations"
           info={["creator", "date"]}
+          userId={userId}
         />
       </div>
     );
@@ -356,6 +361,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="New Invitations"
           info={["creator", "date"]}
+          userId={userId}
         />
         <EventList
           style={style}
@@ -363,6 +369,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Other Invitations"
           info={["creator", "date"]}
+          userId={userId}
         />
       </div>
     );

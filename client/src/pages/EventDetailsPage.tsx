@@ -11,6 +11,8 @@ import { Content } from "../components/Content";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
+import { List } from "../components/List";
+import { ListItem } from "../components/ListItem";
 import { MiniScore } from "../components/MiniScore";
 import { Score } from "../components/Score";
 import { Toolbar } from "../components/Toolbar";
@@ -19,6 +21,7 @@ import { useScreen } from "../hooks/useScreen";
 import { Event, host_name } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
+import { User } from "../User";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -119,11 +122,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   comfortMetricsCard: {
     flex: "1 1 auto",
-    padding: 0,
+    display: "flex",
+    flexDirection: "column",
+    // justifyContent: "space-between",
   },
   desktopScoreItem: {
     display: "flex",
-    margin: 36,
   },
   desktopScoreIcon: {
     marginRight: 24,
@@ -138,6 +142,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   desktopScoreExplanation: {
     color: theme.colors.background.light?.color,
+  },
+  separator: {
+    flexGrow: 1,
+    flexShrink: 0,
+    height: 24,
   },
 }));
 
@@ -268,11 +277,18 @@ function Meter({ event }: { event: Event }) {
   const classes = useStyles({ theme });
 
   const complete = event.responses / event.invitees > 0.8;
+  const host = event.host_id === User.getUser()?.sub ?? 0;
 
   const type = complete ? "score" : "responses";
   const max = complete ? 5 : event.invitees;
-  const score = complete ? event.score : event.responses;
-  const label = complete ? "Comfort Score" : "Invitee Responses";
+  const score = complete ? event.score : host ? event.responses : -1;
+  const label = complete
+    ? host
+      ? "Group Comfort Score"
+      : "Individual Comfort Score"
+    : host
+    ? "Invitee Responses"
+    : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>
@@ -333,14 +349,26 @@ function ComfortMetricSection({ event }: { event: Event }) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
-  const rand = Math.floor(Math.random() * 2);
+
+  if (event.host_id === User.getUser()?.sub) {
+    return (
+      <section className={classes.sectionWrapper}>
+        <h2 hidden={screen !== "large"} className={classes.cardLabel}>
+          Suggestions
+        </h2>
+        <SuggestionsCard />
+      </section>
+    );
+  }
+
+  const qc = event.responses / event.invitees <= 0.8;
 
   return (
     <section className={classes.sectionWrapper}>
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Comfort Metrics
       </h2>
-      {rand > 1 ? <QuestionnaireCard /> : <ScoreDetailsCard />}
+      {qc ? <QuestionnaireCard /> : <ScoreDetailsCard />}
     </section>
   );
 }
@@ -360,7 +388,8 @@ function QuestionnaireCard() {
         <Button
           color="primary"
           transparent={true}
-          end={<Icon size="small" name="arrow_forward" />}
+          end={<Icon size="medium" name="arrow_forward" />}
+          size="large"
         >
           Respond Now
         </Button>
@@ -389,6 +418,7 @@ function ScoreDetailsCard() {
             <div>Outdoor Venue</div>
           </div>
         </div>
+        <div className={classes.separator} />
         <div className={classes.desktopScoreItem}>
           <div className={classes.desktopScoreIcon}>
             <MiniScore type="score" value={3} max={5} icon="masks" />
@@ -400,6 +430,7 @@ function ScoreDetailsCard() {
             </div>
           </div>
         </div>
+        <div className={classes.separator} />
         <div className={classes.desktopScoreItem}>
           <div className={classes.desktopScoreIcon}>
             <MiniScore type="score" value={1} max={5} icon="restaurant_menu" />
@@ -411,6 +442,7 @@ function ScoreDetailsCard() {
             </div>
           </div>
         </div>
+        <div className={classes.separator} />
         <div className={classes.desktopScoreItem}>
           <div className={classes.desktopScoreIcon}>
             <MiniScore type="score" value={5} max={5} icon="people" />
@@ -426,6 +458,58 @@ function ScoreDetailsCard() {
   }
 }
 
-// function SuggestionsCard() {}
+function SuggestionsCard() {
+  const size = useScreen();
+  const listType = size === "large" ? "contain" : "fill";
+
+  return (
+    <div>
+      <List type={listType}>
+        <ListItem
+          start={<MiniScore type="score" value={4.2} max={5} />}
+          end={
+            <Button
+              color="primary"
+              transparent={true}
+              end={<Icon size="small" name="chevron_right" />}
+            >
+              View Details
+            </Button>
+          }
+        >
+          Outdoors
+        </ListItem>
+        <ListItem
+          start={<MiniScore type="score" value={3.3} max={5} />}
+          end={
+            <Button
+              color="primary"
+              transparent={true}
+              end={<Icon size="small" name="chevron_right" />}
+            >
+              View Details
+            </Button>
+          }
+        >
+          Indoors
+        </ListItem>
+        <ListItem
+          start={<MiniScore type="score" value={4.7} max={5} />}
+          end={
+            <Button
+              color="primary"
+              transparent={true}
+              end={<Icon size="small" name="chevron_right" />}
+            >
+              View Details
+            </Button>
+          }
+        >
+          Remote
+        </ListItem>
+      </List>
+    </div>
+  );
+}
 
 export default EventDetailsPage;

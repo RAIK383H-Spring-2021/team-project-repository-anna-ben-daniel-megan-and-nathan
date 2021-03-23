@@ -47,18 +47,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 export interface ScoreComponentProps {
   val: number;
-  max: number;
+  max?: number;
   type: "score" | "responses";
   label: string;
 }
 
 export const Score: FC<ScoreComponentProps> = (props) => {
+  const { val, max = 5, type, label } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, type: props.type });
+  const classes = useStyles({ theme, type });
+
+  const clampedValue = val > max ? max : val < 0 ? 0 : val;
 
   const radius = WIDTH / 2;
   const circumference = 2 * Math.PI * radius;
-  const progress = ((circumference / 2) * props.val) / props.max;
+  const progress = ((circumference / 2) * clampedValue) / max;
 
   return (
     <div className={classes.box}>
@@ -70,14 +73,14 @@ export const Score: FC<ScoreComponentProps> = (props) => {
         >
           <defs>
             <linearGradient id="bright" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#4BB169" />
-              <stop offset="50%" stop-color="#F7C44C" />
-              <stop offset="100%" stop-color="#D62F43" />
+              <stop offset="0%" stopColor="#4BB169" />
+              <stop offset="50%" stopColor="#F7C44C" />
+              <stop offset="100%" stopColor="#D62F43" />
             </linearGradient>
             <linearGradient id="muted" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="rgba(75, 177, 105, 0.33)" />
-              <stop offset="50%" stop-color="rgba(247, 196, 76, 0.33)" />
-              <stop offset="100%" stop-color="rgba(214, 47, 67, 0.33)" />
+              <stop offset="0%" stopColor="rgba(75, 177, 105, 0.33)" />
+              <stop offset="50%" stopColor="rgba(247, 196, 76, 0.33)" />
+              <stop offset="100%" stopColor="rgba(214, 47, 67, 0.33)" />
             </linearGradient>
           </defs>
 
@@ -90,8 +93,8 @@ export const Score: FC<ScoreComponentProps> = (props) => {
             stroke={
               props.type === "score" ? "url(#muted)" : "rgba(31, 87, 196, 0.25)"
             }
-            stroke-width={STROKE}
-            stroke-dasharray={`${circumference / 2}, ${circumference}`}
+            strokeWidth={STROKE}
+            strokeDasharray={`${circumference / 2}, ${circumference}`}
           />
           <circle
             cx={radius}
@@ -100,13 +103,13 @@ export const Score: FC<ScoreComponentProps> = (props) => {
             fill="transparent"
             transform="rotate(180deg)"
             stroke={props.type === "score" ? "url(#bright)" : "#1f57c4"}
-            stroke-width={STROKE}
-            stroke-dasharray={`${progress}, ${circumference}`}
+            strokeWidth={STROKE}
+            strokeDasharray={`${progress}, ${circumference}`}
           />
         </svg>
       </div>
-      <div className={classes.number}>{props.val}</div>
-      <div className={classes.label}>{props.label}</div>
+      <div className={classes.number}>{val < 0 ? "?" : val}</div>
+      <div className={classes.label}>{label}</div>
     </div>
   );
 };

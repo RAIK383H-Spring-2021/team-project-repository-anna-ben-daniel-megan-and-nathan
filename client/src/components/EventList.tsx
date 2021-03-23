@@ -44,10 +44,11 @@ export interface EventListComponentProps {
   loading: boolean;
   style: "fill" | "contain";
   info: string[];
+  userId: number;
 }
 
 export function EventList(props: EventListComponentProps) {
-  const { events, title, loading, style, info } = props;
+  const { events, title, loading, style, info, userId } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
@@ -64,6 +65,7 @@ export function EventList(props: EventListComponentProps) {
         <List type={style} className={classes.wrapper}>
           {events.map((event, i) => {
             const complete = event.responses / event.invitees > 0.8;
+            const host = event.host_id === userId;
 
             if (complete) {
               return (
@@ -83,6 +85,7 @@ export function EventList(props: EventListComponentProps) {
                 </ListItem>
               );
             }
+
             return (
               <ListItem
                 key={i}
@@ -94,7 +97,7 @@ export function EventList(props: EventListComponentProps) {
                 }
                 start={
                   <MiniScore
-                    value={event.responses}
+                    value={host ? event.responses : -1}
                     max={event.invitees}
                     type="responses"
                   />
