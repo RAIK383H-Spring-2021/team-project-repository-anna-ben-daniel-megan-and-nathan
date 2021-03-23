@@ -1,7 +1,26 @@
 class QuestionnaireController < ApplicationController
   def show
     #TODO: Get current questionnaire responses
+    # auth matches either id OR the user has questionnaire sharing on
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
     @user = User.find_by(id: params[:id])
+
+    if(!@id == params[:id] && !@user.privacy_level == 1)
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @questionnaire = Questionnaire.find(@user.questionnaire_id)
     q_JSON = @questionnaire.as_json(only: %i[id q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12 q13])
 
@@ -12,6 +31,25 @@ class QuestionnaireController < ApplicationController
 
   def update
     #TODO: Update questionnaire responses
+    #Just the user can update it
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+
+    if(!@id == params[:id])
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @user = User.find_by(id: params[:id])
     @questionnaire = Questionnaire.find(@user.questionnaire_id)
     @questionnaire.update(

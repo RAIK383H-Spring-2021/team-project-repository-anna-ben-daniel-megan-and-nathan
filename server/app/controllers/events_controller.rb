@@ -42,6 +42,27 @@ class EventsController < ApplicationController
 
   def show
     #TODO: Get a specific event's details
+
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+    @authorizedInvitees = Participant.where(event_id: params[:id]).collect(&:user_id)
+
+    if (!@id == params[:host_id] && !@authorizedInvitees.include?(@id))
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    # authorization: match id of host or invitee
     @event = Event.find(params[:id])
 
     @responses = Participant.where(event_id: params[:id]).where(questionnaire_complete: true).length
@@ -57,7 +78,25 @@ class EventsController < ApplicationController
   end
 
   def update
-    #TODO: update an event
+    #TODO: update an event 
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+
+    if (!@id == params[:host_id])
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @event = Event.find_by(id: params[:id])
     @event.update(
       title: params[:title],
@@ -82,6 +121,24 @@ class EventsController < ApplicationController
 
   def destroy
     #TODO: delete an event
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+
+    if (!@id == params[:host_id])
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @event = params[:id]
 
     Event.destroy(@event)

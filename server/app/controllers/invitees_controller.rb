@@ -1,6 +1,25 @@
 class InviteesController < ApplicationController
   def index
     #TODO: get list of invitees
+    if !authorized()
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
+    @id = authorized()
+    @host_id = Event.find_by(id: params[:event_id]).host_id
+
+    if (!@id == @host_id)
+      respond_to do |format|
+        format.json { render json: { status: :unauthorized } }
+      end
+
+      return
+    end
+
     @part = Participant.where(event_id: params[:event_id]).collect(&:user_id)
     @invitees = User.find(@part)
 
