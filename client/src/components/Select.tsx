@@ -75,6 +75,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 export interface SelectComponentProps {
   label: string;
   caption?: string;
+  onChange?: (value: string) => unknown;
 }
 
 export const Select: FC<SelectComponentProps> = (props) => {
@@ -84,7 +85,12 @@ export const Select: FC<SelectComponentProps> = (props) => {
   return (
     <div className={classes.wrapper}>
       {props.label && <label className={classes.label}>{props.label}</label>}
-      <select className={classes.select}>{props.children}</select>
+      <select
+        onChange={(ev) => props.onChange?.(ev.target.value)}
+        className={classes.select}
+      >
+        {props.children}
+      </select>
       <div className={classes.captionWrapper}>
         <span className={classes.caption}>{props.caption}</span>
       </div>

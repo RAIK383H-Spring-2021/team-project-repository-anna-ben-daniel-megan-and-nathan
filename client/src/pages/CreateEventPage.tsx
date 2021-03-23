@@ -14,6 +14,11 @@ import { List } from "../components/List";
 import { ListItem } from "../components/ListItem";
 import { FAB } from "../components/FAB";
 import { Icon } from "../components/Icon";
+import { FetchRequest, MutativeRequest, useRequest } from "../hooks/useRequest";
+import { User } from "../User";
+import MDSpinner from "react-md-spinner";
+import { API } from "../api";
+import { Helmet } from "react-helmet";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: ({ size }) => {
@@ -167,19 +172,25 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       opacity: 1.0,
     },
   },
+  searchResultSpinner: {
+    display: "grid",
+    padding: 18,
+    placeContent: "center",
+  },
 }));
 
 export interface CreateEventPageComponentProps {}
 
 interface EventDetailsObject {
-  title: string | undefined;
-  description: string | undefined;
-  date_time: string | undefined;
-  location: string | undefined;
-  location_type: string | undefined;
-  masks: string | undefined;
-  distancing: string | undefined;
-  food: string | undefined;
+  title?: string;
+  description?: string;
+  date?: string;
+  time?: string;
+  location?: string;
+  location_type?: string;
+  masks?: string;
+  distancing?: string;
+  food?: string;
 }
 
 const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
@@ -188,16 +199,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
   const classes = useStyles({ theme, size });
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
-  const [eventDetails, setEventDetails] = useState<EventDetailsObject>({
-    title: undefined,
-    description: undefined,
-    date_time: undefined,
-    location: undefined,
-    location_type: undefined,
-    masks: undefined,
-    distancing: undefined,
-    food: undefined,
-  });
+  const [eventDetails, setEventDetails] = useState<EventDetailsObject>({});
   const [invitees, setInvitees] = useState<UserObject[]>([]);
 
   const [stepperDisabled, setStepperDisabled] = useState<boolean[]>([
@@ -236,6 +238,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
         />
       }
     >
+      <Helmet title="Create Event" />
       <Stepper
         className={classes.stepper}
         disabled={stepperDisabled}
@@ -277,7 +280,8 @@ function SetEventDetails(props: SetEventDetailsProps) {
     key:
       | "title"
       | "description"
-      | "date_time"
+      | "date"
+      | "time"
       | "location"
       | "location_type"
       | "masks"
@@ -309,14 +313,14 @@ function SetEventDetails(props: SetEventDetailsProps) {
         <Input
           type="date"
           label="Date"
-          value={props.eventDetails.location}
-          onChange={(value) => updateEventDetails("location", value)}
+          value={props.eventDetails.date}
+          onChange={(value) => updateEventDetails("date", value)}
         />
         <Input
           type="time"
           label="Time"
-          value={props.eventDetails.location}
-          onChange={(value) => updateEventDetails("location", value)}
+          value={props.eventDetails.time}
+          onChange={(value) => updateEventDetails("time", value)}
         />
       </div>
       <div className={classes.eventDetailsDivider} />
@@ -326,34 +330,44 @@ function SetEventDetails(props: SetEventDetailsProps) {
         value={props.eventDetails.location}
         onChange={(value) => updateEventDetails("location", value)}
       />
-      <Select label="Location Type">
-        <option>Outdoor</option>
-        <option>Indoor</option>
-        <option>Remote</option>
+      <Select
+        label="Location Type"
+        onChange={(value) => updateEventDetails("location_type", value)}
+      >
+        <option value="outdoor">Outdoor</option>
+        <option value="indoor">Indoor</option>
+        <option value="remote">Remote</option>
       </Select>
       <div className={classes.eventDetailsDivider} />
       <Select
         label="Mask Wearing"
         caption="CDC guidance recommends that double masking occur to prevent the spread of COVID-19."
+        onChange={(value) => updateEventDetails("masks", value)}
       >
-        <option>Double mask, enforced</option>
-        <option>Double mask, recommended</option>
-        <option>Single mask, enforced</option>
-        <option>Single mask, recommended</option>
-        <option>No masks</option>
+        <option value="2me">Double mask, enforced</option>
+        <option value="2mr">Double mask, recommended</option>
+        <option value="1me">Single mask, enforced</option>
+        <option value="1mr">Single mask, recommended</option>
+        <option value="none">No masks</option>
       </Select>
-      <Select label="Social Distancing">
-        <option>6 feet, enforced</option>
-        <option>6 feet, recommended</option>
-        <option>12 feet, enforced</option>
-        <option>12 feet, recommended</option>
-        <option>No requirement</option>
+      <Select
+        label="Social Distancing"
+        onChange={(value) => updateEventDetails("distancing", value)}
+      >
+        <option value="6e">6 feet, enforced</option>
+        <option value="6r">6 feet, recommended</option>
+        <option value="12e">12 feet, enforced</option>
+        <option value="12r">12 feet, recommended</option>
+        <option value="none">No requirement</option>
       </Select>
       <div className={classes.eventDetailsDivider} />
-      <Select label="Is food being served?">
-        <option>Yes, Self-serve</option>
-        <option>Yes, Pre-packaged</option>
-        <option>No food allowed</option>
+      <Select
+        label="Is food being served?"
+        onChange={(value) => updateEventDetails("food", value)}
+      >
+        <option value="ss">Yes, Self-serve</option>
+        <option value="pp">Yes, Pre-packaged</option>
+        <option value="none">No food allowed</option>
       </Select>
     </div>
   );
@@ -363,6 +377,7 @@ interface UserObject {
   first_name: string;
   last_name: string;
   email: string;
+  id: number;
 }
 
 interface AddParticipantsProps {
@@ -370,61 +385,29 @@ interface AddParticipantsProps {
   setInvitees: (invitees: UserObject[]) => void;
 }
 
+interface SearchUsersResponse {
+  users: User[];
+}
+
+const searchUsers = (query: string) =>
+  ({
+    method: "GET",
+    path: "users",
+    query: { q: query },
+  } as FetchRequest);
+
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
   const [query, setQuery] = useState("");
+  const [results, isLoading, makeRequest] = useRequest<SearchUsersResponse>(
+    searchUsers
+  );
 
-  const users: UserObject[] = [
-    {
-      first_name: "Ben",
-      last_name: "Lohrman",
-      email: "bwlohrman@gmail.com",
-    },
-    {
-      first_name: "Daniel",
-      last_name: "Noon",
-      email: "delpinothedragon1@gmail.com",
-    },
-    {
-      first_name: "Anna",
-      last_name: "Krueger",
-      email: "anna.r.krueger1@gmail.com",
-    },
-    {
-      first_name: "Megan",
-      last_name: "Chaffey",
-      email: "mchaffey11@gmail.com",
-    },
-    {
-      first_name: "Nathan",
-      last_name: "Gentry",
-      email: "gentryn31@gmail.com",
-    },
-  ];
-
-  const search = (query: string) => {
-    if (query.length > 1) {
-      const usersList = users
-        .filter(
-          (user) =>
-            props.invitees.length === 0 ||
-            props.invitees.filter((invitee) => invitee.email === user.email)
-              .length === 0
-        )
-        .filter((user) => user.email.search(query) > -1);
-      if (query.indexOf("@") > -1 && query.indexOf(".") > query.indexOf("@")) {
-        usersList.push({
-          first_name: "",
-          last_name: "",
-          email: query,
-        });
-      }
-      return usersList;
-    } else {
-      return [];
-    }
+  const debounce = (email: string) => {
+    setQuery(email);
+    makeRequest(email);
   };
 
   const addInvitee = (add: UserObject) => {
@@ -450,48 +433,61 @@ function AddParticipants(props: AddParticipantsProps) {
           type="search"
           placeholder="Invite with email address"
           value={query}
-          onChange={(value) => setQuery(value)}
+          onChange={(value) => debounce(value)}
         />
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>
             <List type="contain">
-              {search(query).map((user) => {
-                if (user.first_name.length === 0) {
-                  return (
-                    <ListItem
-                      end={
-                        <IconButton
-                          icon="add"
-                          onClick={() => {
-                            addInvitee(user);
-                          }}
-                        />
-                      }
-                      key={user.email}
-                    >
-                      {user.email}
-                    </ListItem>
-                  );
-                } else {
-                  return (
-                    <ListItem
-                      subtitle={user.email}
-                      end={
-                        <IconButton
-                          icon="add"
-                          onClick={() => {
-                            addInvitee(user);
-                          }}
-                        />
-                      }
-                      key={user.email}
-                    >
-                      {user.first_name} {user.last_name}
-                    </ListItem>
-                  );
-                }
-              })}
+              {results && !isLoading ? (
+                results.users
+                  .filter(
+                    (user) =>
+                      !props.invitees.find((i) => i.email === user.email)
+                  )
+                  .map((user) => {
+                    if (user.first_name.length === 0) {
+                      return (
+                        <ListItem
+                          end={
+                            <IconButton
+                              icon="add"
+                              onClick={() => {
+                                addInvitee(user);
+                              }}
+                            />
+                          }
+                          key={user.email}
+                        >
+                          {user.email}
+                        </ListItem>
+                      );
+                    } else {
+                      return (
+                        <ListItem
+                          subtitle={user.email}
+                          end={
+                            <IconButton
+                              icon="add"
+                              onClick={() => {
+                                addInvitee(user);
+                              }}
+                            />
+                          }
+                          key={user.email}
+                        >
+                          {user.first_name} {user.last_name}
+                        </ListItem>
+                      );
+                    }
+                  })
+              ) : (
+                <div className={classes.searchResultSpinner}>
+                  <MDSpinner
+                    singleColor={theme.colors.primary.base.backgroundColor}
+                  />
+                </div>
+              )}
             </List>
           </>
         ) : (
@@ -531,6 +527,7 @@ function AddParticipants(props: AddParticipantsProps) {
               return (
                 <ListItem
                   subtitle={invitee.email}
+                  key={invitee.email}
                   end={
                     <IconButton
                       icon="delete"
@@ -556,10 +553,67 @@ interface SendInvitationsProps {
   invitees: UserObject[];
 }
 
+interface CreateEventResponse {
+  id: number;
+}
+
+const createEvent = (eventObject: EventDetailsObject) =>
+  ({
+    method: "POST",
+    path: "events",
+    body: {
+      title: eventObject.title,
+      host_id: User.getUser()?.id,
+      description: eventObject.description,
+      date_time: new Date(
+        `${eventObject.date}T${eventObject.time}`
+      ).toISOString(),
+      food_prepackaged: eventObject.food === "pp",
+      food_buffet: eventObject.food === "ss",
+      location: eventObject.location,
+      indoor: eventObject.location_type === "indoor",
+      outdoor: eventObject.location_type === "outdoor",
+      remote: eventObject.location_type === "remote",
+      score: -1,
+    },
+  } as MutativeRequest);
+
+let invitesPushed = false;
+
 function SendInvitations(props: SendInvitationsProps) {
   const size = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
+  const history = useHistory();
+
+  const [ceResponse, ceLoading, ceMakeRequest] = useRequest<
+    CreateEventResponse
+  >(createEvent);
+
+  if (ceResponse && !ceLoading) {
+    if (!invitesPushed) {
+      invitesPushed = true;
+      inviteUsers();
+    }
+  }
+
+  async function inviteUsers() {
+    const url = API.makeUrl(`events/${ceResponse?.id}/invitees`);
+    for (const user of props.invitees) {
+      await fetch(url, {
+        body: JSON.stringify({
+          user_id: user.id,
+          questionnaire_complete: false,
+        }),
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+    }
+    history.push(`/events/${ceResponse?.id}`);
+  }
 
   return (
     <div className={classes.sendInvitationsWrapper}>
@@ -571,7 +625,13 @@ function SendInvitations(props: SendInvitationsProps) {
         to {props.invitees.length}{" "}
         {props.invitees.length === 1 ? "person" : "people"}
       </h2>
-      <FAB icon="send" className={classes.giantFAB} size="giant" />
+      <FAB
+        icon="send"
+        loading={ceLoading}
+        onClick={() => ceMakeRequest(props.eventDetails)}
+        className={classes.giantFAB}
+        size="giant"
+      />
     </div>
   );
 }

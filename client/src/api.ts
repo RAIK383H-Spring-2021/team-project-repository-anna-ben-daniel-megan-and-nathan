@@ -16,8 +16,12 @@ export class API {
     }
   }
 
-  public static makeUrl(path: string) {
-    return this.base + ("/" + path).replace(/[/]+/g, "/");
+  public static makeUrl(
+    path: string,
+    query?: { [key: string]: string | number | boolean }
+  ) {
+    const q = makeQuery(query);
+    return this.base + ("/" + path).replace(/[/]+/g, "/") + q;
   }
 
   public static setToken(token: string) {
@@ -48,5 +52,17 @@ export class API {
         return cached.data;
       }
     }
+  }
+}
+
+const ec = encodeURIComponent;
+
+function makeQuery(query?: { [key: string]: string | number | boolean }) {
+  if (!query) return "";
+  else {
+    const str = Object.keys(query)
+      .map((key) => `${ec(key)}=${ec(query[key])}`)
+      .join("&");
+    return `?${str}`;
   }
 }

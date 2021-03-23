@@ -22,6 +22,7 @@ import { AppTheme } from "../theme";
 import { User } from "../User";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
+import { Helmet } from "react-helmet";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -155,7 +156,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 const DashboardPage: FC = (props) => {
   const size = useScreen();
 
-  return size === "large" ? <DashboardLarge /> : <DashboardSmall />;
+  return (
+    <>
+      <Helmet title="Shindig" />
+      {size === "large" ? <DashboardLarge /> : <DashboardSmall />}
+    </>
+  );
 };
 
 function DashboardLarge() {
@@ -172,7 +178,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
-          title={`Hi, ${User.getUser()?.name}!`}
+          title={`Hi, ${User.getUser()?.first_name}!`}
           size="large"
           end={
             <IconButton
@@ -228,7 +234,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
-            title={`Hi, ${User.getUser()?.name}!`}
+            title={`Hi, ${User.getUser()?.first_name}!`}
             background="filled"
             end={
               <IconButton
@@ -283,7 +289,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
 
   const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
     getUserCreatedEvents,
-    User.getUser()?.sub
+    User.getUser()?.id
   );
 
   const showCTA = !isLoading && (response?.events.length ?? 0) === 0;
@@ -304,7 +310,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Your Events"
           info={["invitees", "date"]}
-          userId={User.getUser()?.sub ?? 0}
+          userId={User.getUser()?.id ?? 0}
         ></EventList>
       )}
     </div>
@@ -317,10 +323,10 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
 
   const [response, isLoading] = useRequest<UserInvitationsResponse>(
     getUserInvitations,
-    User.getUser()?.sub
+    User.getUser()?.id
   );
 
-  const userId = User.getUser()?.sub ?? 0;
+  const userId = User.getUser()?.id ?? 0;
 
   function OnlyNewVariant() {
     return (

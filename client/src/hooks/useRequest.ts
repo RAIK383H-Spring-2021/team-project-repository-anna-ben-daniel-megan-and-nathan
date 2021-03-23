@@ -58,9 +58,9 @@ export function useRequest<T>(
     setIsLoading(true);
 
     const r = request!(...params);
-    const url = API.makeUrl(r.path);
+    const url = API.makeUrl(r.path, r.query);
 
-    if (r.method === "GET") {
+    if (r.method === "GET" && !r.query) {
       const cached = API.getCacheItem(url);
 
       if (cached) {
@@ -88,7 +88,7 @@ export function useRequest<T>(
       r.onComplete(data);
     }
 
-    if (r.method === "GET") {
+    if (r.method === "GET" && !r.query) {
       API.setCacheItem(url, data);
     }
 

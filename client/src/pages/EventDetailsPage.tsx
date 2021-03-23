@@ -277,7 +277,7 @@ function Meter({ event }: { event: Event }) {
   const classes = useStyles({ theme });
 
   const complete = event.responses / event.invitees > 0.8;
-  const host = event.host_id === User.getUser()?.sub ?? 0;
+  const host = event.host_id === User.getUser()?.id ?? 0;
 
   const type = complete ? "score" : "responses";
   const max = complete ? 5 : event.invitees;
@@ -350,7 +350,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
 
-  if (event.host_id === User.getUser()?.sub) {
+  if (event.host_id === User.getUser()?.id) {
     return (
       <section className={classes.sectionWrapper}>
         <h2 hidden={screen !== "large"} className={classes.cardLabel}>
