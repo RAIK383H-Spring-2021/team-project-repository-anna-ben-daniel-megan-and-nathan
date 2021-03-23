@@ -132,6 +132,24 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: 1000,
     height: 1000,
   },
+  noCreatedEventsMessage: {
+    display: "grid",
+    height: 160,
+    placeItems: "center",
+    margin: "60px 0",
+    gridTemplateRows: "100px 1fr",
+
+    "& h2": {
+      ...theme.typography.heading,
+    },
+
+    "& strong": {
+      fontFamily: "Material Icons",
+      color: theme.colors.background.base.color,
+      fontSize: 72,
+      fontWeight: "normal",
+    },
+  },
 }));
 
 const DashboardPage: FC = (props) => {
@@ -260,6 +278,9 @@ function DashboardSmall() {
 }
 
 function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+
   const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
     getUserCreatedEvents,
     User.getUser()?.sub
@@ -270,8 +291,8 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
   return (
     <div>
       {showCTA ? (
-        <div>
-          You haven't created any events.{" "}
+        <div className={classes.noCreatedEventsMessage}>
+          <h2>You haven't created any events.</h2>
           <Link to="/create">
             <Button color="accent">Create one now!</Button>
           </Link>
@@ -290,29 +311,89 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
 }
 
 function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+
   const [response, isLoading] = useRequest<UserInvitationsResponse>(
     getUserInvitations,
     User.getUser()?.sub
   );
 
-  return (
-    <div>
-      <EventList
-        style={style}
-        events={response?.new_events ?? []}
-        loading={isLoading}
-        title="New Invitations"
-        info={["creator", "date"]}
-      ></EventList>
-      <EventList
-        style={style}
-        events={response?.other_events ?? []}
-        loading={isLoading}
-        title="Other Invitations"
-        info={["creator", "date"]}
-      ></EventList>
-    </div>
-  );
+  function OnlyNewVariant() {
+    return (
+      <div>
+        <EventList
+          style={style}
+          events={response?.new_events ?? []}
+          loading={isLoading}
+          title="Invitations"
+          info={["creator", "date"]}
+        />
+      </div>
+    );
+  }
+
+  function OnlyOtherVairant() {
+    return (
+      <div>
+        <EventList
+          style={style}
+          events={response?.other_events ?? []}
+          loading={isLoading}
+          title="Invitations"
+          info={["creator", "date"]}
+        />
+      </div>
+    );
+  }
+
+  function AllVariant() {
+    return (
+      <div>
+        <EventList
+          style={style}
+          events={response?.new_events ?? []}
+          loading={isLoading}
+          title="New Invitations"
+          info={["creator", "date"]}
+        />
+        <EventList
+          style={style}
+          events={response?.other_events ?? []}
+          loading={isLoading}
+          title="Other Invitations"
+          info={["creator", "date"]}
+        />
+      </div>
+    );
+  }
+
+  function NoneVariant() {
+    return (
+      <div className={classes.noCreatedEventsMessage}>
+        <h2>You haven't been invited to any events.</h2>
+        <strong>sentiment_dissatisfied</strong>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return AllVariant();
+  } else {
+    if (!response) {
+      return NoneVariant();
+    }
+
+    if (response.new_events.length > 0 && response.other_events.length > 0) {
+      return AllVariant();
+    } else if (response.new_events.length > 0) {
+      return OnlyNewVariant();
+    } else if (response.other_events.length > 0) {
+      return OnlyOtherVairant();
+    } else {
+      return NoneVariant();
+    }
+  }
 }
 
 export default DashboardPage;
