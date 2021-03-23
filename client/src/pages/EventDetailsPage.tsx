@@ -174,13 +174,22 @@ function EventDetailsLarge({
   const classes = useStyles({ theme });
   const history = useHistory();
 
+  function goBack() {
+    if (window.history.state?.state?.referrer) {
+      if (window.history.state.state.referrer === "dashboard") {
+        history.goBack();
+        return;
+      }
+    }
+
+    history.push("/dash");
+  }
+
   return (
     <Content
       toolbar={
         <Toolbar
-          start={
-            <IconButton icon="arrow_back" onClick={() => history.goBack()} />
-          }
+          start={<IconButton icon="arrow_back" onClick={goBack} />}
           size="large"
           title={event?.title ?? "Loading..."}
         />
@@ -216,13 +225,22 @@ function EventDetailsSmall({
   const classes = useStyles({ theme });
   const history = useHistory();
 
+  function goBack() {
+    if (window.history.state?.state?.referrer) {
+      if (window.history.state.state.referrer === "dashboard") {
+        history.goBack();
+        return;
+      }
+    }
+
+    history.push("/dash");
+  }
+
   return (
     <Content
       toolbar={
         <Toolbar
-          start={
-            <IconButton icon="arrow_back" onClick={() => history.goBack()} />
-          }
+          start={<IconButton icon="arrow_back" onClick={goBack} />}
           end={<IconButton icon="more_vert" />}
           size="normal"
           title={event?.title ?? "Loading..."}
