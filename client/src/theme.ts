@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { DefaultTheme } from "react-jss";
 
 const textColors = {
@@ -254,3 +255,46 @@ export const dark: AppTheme = {
   transitions,
   typography,
 };
+
+function determineTheme() {
+  const systemDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
+  const userTheme = localStorage.getItem("theme");
+
+  if (userTheme) {
+    return userTheme === "dark" ? dark : light;
+  }
+
+  return systemDarkTheme ? dark : light;
+}
+
+type Listener = (theme: AppTheme) => void;
+
+const themeListeners = new Set<Listener>();
+
+export function useThemeListener() {
+  const [theme, setTheme] = useState(determineTheme());
+
+  useEffect(() => {
+    const cb = (theme: AppTheme) => setTheme(theme);
+    themeListeners.add(cb);
+
+    return () => {
+      themeListeners.delete(cb);
+    };
+  });
+
+  return theme;
+}
+
+export function toggleTheme() {
+  const theme = determineTheme();
+  const newTheme = theme.name === "dark" ? light : dark;
+
+  document.body.classList.remove(theme.name);
+  document.body.classList.add(newTheme.name);
+  localStorage.setItem("theme", newTheme.name);
+
+  for (const listener of themeListeners) {
+    listener(newTheme);
+  }
+}

@@ -1,6 +1,7 @@
-import React, { lazy, ReactNode, Suspense } from "react";
-import { ThemeProvider, useTheme } from "react-jss";
-import { light, dark, AppTheme } from "./theme";
+import { lazy, ReactNode, Suspense } from "react";
+import { createUseStyles, ThemeProvider, useTheme } from "react-jss";
+import { GuardProvider, GuardedRoute } from "react-router-guards";
+import { light, dark, AppTheme, useThemeListener } from "./theme";
 import {
   BrowserRouter as Router,
   Route,
@@ -8,6 +9,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import MDSpinner from "react-md-spinner";
+import { GuardFunction } from "react-router-guards/dist/types";
+import { User } from "./User";
 
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
@@ -30,56 +34,83 @@ function determineTheme() {
 const theme = determineTheme();
 document.body.classList.add(theme.name);
 
+const requireAuth: GuardFunction = (to, from, next) => {
+  if (to.meta.auth) {
+    if (User.getUser()) {
+      next();
+    }
+
+    next.redirect("/login");
+  } else {
+    next();
+  }
+};
+
 function Content() {
   const location = useLocation();
 
   return (
     <TransitionGroup>
       <CSSTransition key={location.key} classNames="fade" timeout={500}>
-        <Switch location={location}>
-          <Route path="/login">
-            <Page>
-              <LogInPage />
-            </Page>
-          </Route>
-          <Route path="/register">
-            <Page>
-              <SignUpPage />
-            </Page>
-          </Route>
-          <Route path="/dash/:tab">
-            <Page>
-              <DashboardPage />
-            </Page>
-          </Route>
-          <Route path="/dash">
-            <Page>
-              <DashboardPage />
-            </Page>
-          </Route>
-          <Route path="/events/:event_id">
-            <Page>
-              <EventDetailsPage />
-            </Page>
-          </Route>
-          <Route path="/create">
-            <Page>
-              <CreateEventPage />
-            </Page>
-          </Route>
-          <Route exact path="/">
-            <Page>
-              <LandingPage />
-            </Page>
-          </Route>
-        </Switch>
+        <GuardProvider guards={[requireAuth]}>
+          <Switch location={location}>
+            <Route exact path="/login">
+              <Page>
+                <LogInPage />
+              </Page>
+            </Route>
+            <Route exact path="/register">
+              <Page>
+                <SignUpPage />
+              </Page>
+            </Route>
+            <GuardedRoute path="/dash/:tab" meta={{ auth: true }}>
+              <Page>
+                <DashboardPage />
+              </Page>
+            </GuardedRoute>
+            <GuardedRoute path="/dash" meta={{ auth: true }}>
+              <Page>
+                <DashboardPage />
+              </Page>
+            </GuardedRoute>
+            <Route path="/events/:event_id">
+              <Page>
+                <EventDetailsPage />
+              </Page>
+            </Route>
+            <Route path="/create">
+              <Page>
+                <CreateEventPage />
+              </Page>
+            </Route>
+            <Route exact path="/">
+              <Page>
+                <LandingPage />
+              </Page>
+            </Route>
+          </Switch>
+        </GuardProvider>
       </CSSTransition>
     </TransitionGroup>
   );
 }
 
+const usePageFallbackStyles = createUseStyles({
+  spinner: {
+    opacity: 0,
+    animationName: "fade-in",
+    animationDelay: 1200,
+    animationFillMode: "forwards",
+    animationDuration: 600,
+    animationTimingFunction: "linear",
+    zIndex: 1,
+  },
+});
+
 function PageFallback() {
   const theme = useTheme<AppTheme>();
+  const classes = usePageFallbackStyles();
 
   return (
     <div
@@ -91,7 +122,9 @@ function PageFallback() {
         backgroundColor: theme.colors.background.base.backgroundColor,
       }}
     >
-      {/* <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} /> */}
+      <div className={classes.spinner}>
+        <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+      </div>
     </div>
   );
 }
@@ -115,6 +148,8 @@ function Page({ children }: { children: ReactNode | ReactNode[] }) {
 }
 
 function App() {
+  const theme = useThemeListener();
+
   return (
     <ThemeProvider theme={theme}>
       <Router>

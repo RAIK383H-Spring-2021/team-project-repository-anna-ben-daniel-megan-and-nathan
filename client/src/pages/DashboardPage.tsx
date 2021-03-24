@@ -18,7 +18,7 @@ import {
   UserCreatedEventsResponse,
   getUserCreatedEvents,
 } from "../resources/dashboard";
-import { AppTheme } from "../theme";
+import { AppTheme, toggleTheme } from "../theme";
 import { User } from "../User";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -181,14 +181,7 @@ function DashboardLarge() {
           title={`Hi, ${User.getUser()?.first_name}!`}
           size="large"
           end={
-            <IconButton
-              icon="account_circle"
-              onClick={() =>
-                localStorage.getItem("debug") === "debug"
-                  ? localStorage.removeItem("debug")
-                  : localStorage.setItem("debug", "debug")
-              }
-            />
+            <IconButton icon="account_circle" onClick={() => toggleTheme()} />
           }
         />
       }
@@ -237,14 +230,7 @@ function DashboardSmall() {
             title={`Hi, ${User.getUser()?.first_name}!`}
             background="filled"
             end={
-              <IconButton
-                icon="account_circle"
-                onClick={() =>
-                  localStorage.getItem("debug") === "debug"
-                    ? localStorage.removeItem("debug")
-                    : localStorage.setItem("debug", "debug")
-                }
-              />
+              <IconButton icon="account_circle" onClick={() => toggleTheme()} />
             }
           />
           <TabBar
