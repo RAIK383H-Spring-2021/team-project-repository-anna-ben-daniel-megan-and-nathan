@@ -8,19 +8,19 @@
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "1028x1028 512x512 192x192 64x64 32x32 24x24 16x16",
+      "sizes": "1028x1028",
       "type": "image/svg",
       "purpose": "any"
     },
     {
       "src": "icons/maskable_icon.png",
-      "sizes": "1028x1028",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
       "src": "icons/maskable_icon_x512.png",
-      "sizes": "512x512 192x192",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
@@ -32,7 +32,7 @@
     },
     {
       "src": "icons/maskable_icon_x72.png",
-      "sizes": "72x72 64x64 32x32 24x24 16x16",
+      "sizes": "72x72",
       "type": "image/png",
       "purpose": "maskable"
     }
