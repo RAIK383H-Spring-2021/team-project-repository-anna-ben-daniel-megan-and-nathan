@@ -8,9 +8,7 @@
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "1028x1028",
-      "type": "image/svg",
-      "purpose": "any"
+      "sizes": "any"
     },
     {
       "src": "icons/maskable_icon.png",
