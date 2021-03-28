@@ -12,17 +12,9 @@ class EventsController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:host_id])
-      respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
-      end
-
-      return
-    end
-
     @event = Event.new(
       title: params[:title],
-      host_id: params[:host_id],
+      host_id: @id,
       description: params[:description],
       date_time: params[:date_time],
       food_prepackaged: params[:food_prepackaged],
@@ -31,7 +23,7 @@ class EventsController < ApplicationController
       indoor: params[:indoor],
       outdoor: params[:outdoor],
       remote: params[:remote],
-      score: params[:score]
+      score: nil
     )
 
     @event.save!
