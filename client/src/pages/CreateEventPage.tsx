@@ -163,6 +163,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
   },
   emptySearchIconWrapper: {
+    width: 72,
+    height: 72,
+    boxSizing: "content-box",
     padding: 36,
     backgroundColor: "rgba(103, 152, 248, 0.25)",
     display: "inline-block",
