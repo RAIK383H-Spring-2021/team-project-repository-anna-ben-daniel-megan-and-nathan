@@ -15,7 +15,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     // paddingBottom: ({ fabExists }) => fabExists && 96,
   },
   toolbar: {
-    zIndex: 2,
+    zIndex: 3,
     position: "absolute",
     top: 0,
     left: 0,
