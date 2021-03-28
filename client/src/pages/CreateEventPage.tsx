@@ -98,18 +98,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-        minHeight: "60vh",
+        height: "60vh",
         display: "flex",
         flexDirection: "column",
       }
       : {},
+  searchResultList: {
+    flexShrink: 1,
+    overflowY: "auto",
+  },
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
         height: "60vh",
         display: "flex",
         flexDirection: "column",
-        overflowY: "auto",
       }
       : {},
   sectionHeader: {
@@ -122,6 +125,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       ? {
         flexGrow: 1,
         backgroundColor: theme.colors.background.base.backgroundColor,
+        overflowY: "auto",
       }
       : {},
   sendInvitationsWrapper: {
@@ -441,7 +445,7 @@ function AddParticipants(props: AddParticipantsProps) {
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>
-            <List type="contain">
+            <List type="contain" className={classes.searchResultList}>
               {results && !isLoading ? (
                 results.users
                   .filter(
@@ -452,14 +456,11 @@ function AddParticipants(props: AddParticipantsProps) {
                     if (user.first_name.length === 0) {
                       return (
                         <ListItem
-                          end={
-                            <IconButton
-                              icon="add"
-                              onClick={() => {
-                                addInvitee(user);
-                              }}
-                            />
-                          }
+                          button={true}
+                          onClick={() => {
+                            addInvitee(user);
+                          }}
+                          end={<Icon name="add" />}
                           key={user.email}
                         >
                           {user.email}
@@ -468,15 +469,12 @@ function AddParticipants(props: AddParticipantsProps) {
                     } else {
                       return (
                         <ListItem
+                          button={true}
                           subtitle={user.email}
-                          end={
-                            <IconButton
-                              icon="add"
-                              onClick={() => {
-                                addInvitee(user);
-                              }}
-                            />
-                          }
+                          onClick={() => {
+                            addInvitee(user);
+                          }}
+                          end={<Icon name="add" />}
                           key={user.email}
                         >
                           {user.first_name} {user.last_name}
@@ -513,14 +511,11 @@ function AddParticipants(props: AddParticipantsProps) {
             if (invitee.first_name.length === 0) {
               return (
                 <ListItem
-                  end={
-                    <IconButton
-                      icon="delete"
-                      onClick={() => {
-                        removeInvitee(invitee);
-                      }}
-                    />
-                  }
+                  button={true}
+                  onClick={() => {
+                    removeInvitee(invitee);
+                  }}
+                  end={<Icon name="delete" />}
                   key={invitee.email}
                 >
                   {invitee.email}
@@ -529,16 +524,13 @@ function AddParticipants(props: AddParticipantsProps) {
             } else {
               return (
                 <ListItem
+                  button={true}
+                  onClick={() => {
+                    removeInvitee(invitee);
+                  }}
                   subtitle={invitee.email}
+                  end={<Icon name="delete" />}
                   key={invitee.email}
-                  end={
-                    <IconButton
-                      icon="delete"
-                      onClick={() => {
-                        removeInvitee(invitee);
-                      }}
-                    />
-                  }
                 >
                   {invitee.first_name} {invitee.last_name}
                 </ListItem>
