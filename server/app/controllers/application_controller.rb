@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
     include ActionController::MimeResponds
 
     def encode(payload)
-        JWT.encode(payload, 'test')
+        JWT.encode(payload, ENV.fetch('JWT_SECRET', 'test'))
     end
 
     def auth_header
@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
         if auth_header
             token = auth_header.split(' ')[1]
             begin
-                JWT.decode(token, 'test', true, algorithm: 'HS256')
+                JWT.decode(token, ENV.fetch('JWT_SECRET', 'test'), true, algorithm: 'HS256')
             rescue JWT::DecodeError
                 nil
             end
