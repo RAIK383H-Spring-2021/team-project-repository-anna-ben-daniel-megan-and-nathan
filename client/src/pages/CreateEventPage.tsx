@@ -75,13 +75,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   background: ({ size }) =>
     size === "large"
       ? {
-          height: "90vh",
-          width: "90vh",
-          position: "fixed",
-          top: "-20vh",
-          right: "-20vh",
-          zIndex: 1,
-        }
+        height: "90vh",
+        width: "90vh",
+        position: "fixed",
+        top: "-20vh",
+        right: "-20vh",
+        zIndex: 1,
+      }
       : {},
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
@@ -98,19 +98,22 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-          minHeight: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {},
+  searchResultList: {
+    flexShrink: 1,
+    overflowY: "auto",
+  },
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {},
   sectionHeader: {
     ...theme.typography.preTitle,
@@ -120,9 +123,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesList: ({ size }) =>
     size === "large"
       ? {
-          flexGrow: 1,
-          backgroundColor: theme.colors.background.base.backgroundColor,
-        }
+        flexGrow: 1,
+        backgroundColor: theme.colors.background.base.backgroundColor,
+        overflowY: "auto",
+      }
       : {},
   sendInvitationsWrapper: {
     display: "flex",
@@ -163,6 +167,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
   },
   emptySearchIconWrapper: {
+    width: 72,
+    height: 72,
+    boxSizing: "content-box",
     padding: 36,
     backgroundColor: "rgba(103, 152, 248, 0.25)",
     display: "inline-block",
@@ -179,7 +186,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface CreateEventPageComponentProps {}
+export interface CreateEventPageComponentProps { }
 
 interface EventDetailsObject {
   title?: string;
@@ -390,11 +397,11 @@ interface SearchUsersResponse {
 }
 
 const searchUsers = (query: string) =>
-  ({
-    method: "GET",
-    path: "users",
-    query: { q: query },
-  } as FetchRequest);
+({
+  method: "GET",
+  path: "users",
+  query: { q: query },
+} as FetchRequest);
 
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
@@ -438,7 +445,7 @@ function AddParticipants(props: AddParticipantsProps) {
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>
-            <List type="contain">
+            <List type="contain" className={classes.searchResultList}>
               {results && !isLoading ? (
                 results.users
                   .filter(
@@ -449,14 +456,11 @@ function AddParticipants(props: AddParticipantsProps) {
                     if (user.first_name.length === 0) {
                       return (
                         <ListItem
-                          end={
-                            <IconButton
-                              icon="add"
-                              onClick={() => {
-                                addInvitee(user);
-                              }}
-                            />
-                          }
+                          button={true}
+                          onClick={() => {
+                            addInvitee(user);
+                          }}
+                          end={<Icon name="add" />}
                           key={user.email}
                         >
                           {user.email}
@@ -465,15 +469,12 @@ function AddParticipants(props: AddParticipantsProps) {
                     } else {
                       return (
                         <ListItem
+                          button={true}
                           subtitle={user.email}
-                          end={
-                            <IconButton
-                              icon="add"
-                              onClick={() => {
-                                addInvitee(user);
-                              }}
-                            />
-                          }
+                          onClick={() => {
+                            addInvitee(user);
+                          }}
+                          end={<Icon name="add" />}
                           key={user.email}
                         >
                           {user.first_name} {user.last_name}
@@ -510,14 +511,11 @@ function AddParticipants(props: AddParticipantsProps) {
             if (invitee.first_name.length === 0) {
               return (
                 <ListItem
-                  end={
-                    <IconButton
-                      icon="delete"
-                      onClick={() => {
-                        removeInvitee(invitee);
-                      }}
-                    />
-                  }
+                  button={true}
+                  onClick={() => {
+                    removeInvitee(invitee);
+                  }}
+                  end={<Icon name="delete" />}
                   key={invitee.email}
                 >
                   {invitee.email}
@@ -526,16 +524,13 @@ function AddParticipants(props: AddParticipantsProps) {
             } else {
               return (
                 <ListItem
+                  button={true}
+                  onClick={() => {
+                    removeInvitee(invitee);
+                  }}
                   subtitle={invitee.email}
+                  end={<Icon name="delete" />}
                   key={invitee.email}
-                  end={
-                    <IconButton
-                      icon="delete"
-                      onClick={() => {
-                        removeInvitee(invitee);
-                      }}
-                    />
-                  }
                 >
                   {invitee.first_name} {invitee.last_name}
                 </ListItem>
@@ -558,25 +553,25 @@ interface CreateEventResponse {
 }
 
 const createEvent = (eventObject: EventDetailsObject) =>
-  ({
-    method: "POST",
-    path: "events",
-    body: {
-      title: eventObject.title,
-      host_id: User.getUser()?.id,
-      description: eventObject.description,
-      date_time: new Date(
-        `${eventObject.date}T${eventObject.time}`
-      ).toISOString(),
-      food_prepackaged: eventObject.food === "pp",
-      food_buffet: eventObject.food === "ss",
-      location: eventObject.location,
-      indoor: eventObject.location_type === "indoor",
-      outdoor: eventObject.location_type === "outdoor",
-      remote: eventObject.location_type === "remote",
-      score: -1,
-    },
-  } as MutativeRequest);
+({
+  method: "POST",
+  path: "events",
+  body: {
+    title: eventObject.title,
+    host_id: User.getUser()?.id,
+    description: eventObject.description,
+    date_time: new Date(
+      `${eventObject.date}T${eventObject.time}`
+    ).toISOString(),
+    food_prepackaged: eventObject.food === "pp",
+    food_buffet: eventObject.food === "ss",
+    location: eventObject.location,
+    indoor: eventObject.location_type === "indoor",
+    outdoor: eventObject.location_type === "outdoor",
+    remote: eventObject.location_type === "remote",
+    score: -1,
+  },
+} as MutativeRequest);
 
 let invitesPushed = false;
 
