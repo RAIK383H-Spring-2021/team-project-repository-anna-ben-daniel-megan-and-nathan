@@ -59,22 +59,6 @@ RSpec.describe "user controller requests", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it "successfully creates a new user entry when all fields are valid" do
-      post '/users', params: { email: "testemail@email.com", first_name: "name", last_name: "namename", password: "password" }
-
-      @user = User.find_by(email: 'testemail@email.com')
-
-      expect(@user).to be_truthy
-    end
-
-    it "sets privacy_level to be true (1) if not provided" do
-      post '/users', params: { email: "testemail@email.com", first_name: "name", last_name: "namename", password: "password" }
-
-      @user = User.find_by(email: 'testemail@email.com')
-
-      expect(@user.privacy_level).to be 1
-    end
-
     it "successfully encodes token and sends back after user creation" do
       post '/users', params: { email: "testemail@email.com", first_name: "name", last_name: "namename", password: "password" }
 

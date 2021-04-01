@@ -79,12 +79,10 @@ class UsersController < ApplicationController
     
     @user = User.find(@id)
     @hosted_events = @user.events ? @user.events : []
-
     @hosted_events = @hosted_events.map{ |event| formatEvent(event.id) }
 
     @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
     @invited_events = Event.find(@event_ids)
-
     @invited_events = @invited_events.map{ |event| formatEvent(event.id) }
 
     userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
