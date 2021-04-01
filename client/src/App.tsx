@@ -1,17 +1,17 @@
 import { lazy, ReactNode, Suspense } from "react";
 import { createUseStyles, ThemeProvider, useTheme } from "react-jss";
-import { GuardProvider, GuardedRoute } from "react-router-guards";
 import { light, dark, AppTheme, useThemeListener } from "./theme";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
   useLocation,
 } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import MDSpinner from "react-md-spinner";
-import { GuardFunction } from "react-router-guards/dist/types";
 import { User } from "./User";
+import { Guard } from "./components/Guard";
 
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
@@ -34,15 +34,15 @@ function determineTheme() {
 const theme = determineTheme();
 document.body.classList.add(theme.name);
 
-const requireAuth: GuardFunction = (to, from, next) => {
-  if (to.meta.auth) {
-    if (User.getUser()) {
-      next();
-    }
-
-    next.redirect("/login");
+const requireAuth = () => {
+  if (User.getUser()) {
+    return new Promise<boolean | string>(async (resolve, reject) => {
+      const authorized = await User.isAuthorized;
+      if (authorized) resolve(true);
+      else resolve("/login");
+    });
   } else {
-    next();
+    return "/login";
   }
 };
 
@@ -52,45 +52,52 @@ function Content() {
   return (
     <TransitionGroup>
       <CSSTransition key={location.key} classNames="fade" timeout={500}>
-        <GuardProvider guards={[requireAuth]}>
-          <Switch location={location}>
-            <Route exact path="/login">
-              <Page>
-                <LogInPage />
-              </Page>
-            </Route>
-            <Route exact path="/register">
-              <Page>
-                <SignUpPage />
-              </Page>
-            </Route>
-            <GuardedRoute path="/dash/:tab" meta={{ auth: true }}>
+        <Switch location={location}>
+          <Route exact path="/login">
+            <Page>
+              <LogInPage />
+            </Page>
+          </Route>
+          <Route exact path="/register">
+            <Page>
+              <SignUpPage />
+            </Page>
+          </Route>
+          <Route path="/dash/:tab">
+            <Page>
+              <DashboardPage />
+            </Page>
+          </Route>
+          <Route path="/dash">
+            <Guard fallback={<PageFallback />} canActivate={requireAuth}>
               <Page>
                 <DashboardPage />
               </Page>
-            </GuardedRoute>
-            <GuardedRoute path="/dash" meta={{ auth: true }}>
-              <Page>
-                <DashboardPage />
-              </Page>
-            </GuardedRoute>
-            <Route path="/events/:event_id">
+            </Guard>
+          </Route>
+          <Route path="/events/:event_id">
+            <Guard fallback={<PageFallback />} canActivate={requireAuth}>
               <Page>
                 <EventDetailsPage />
               </Page>
-            </Route>
-            <Route path="/create">
+            </Guard>
+          </Route>
+          <Route exact path="/events">
+            <Redirect to="/dash" />
+          </Route>
+          <Route path="/create">
+            <Guard fallback={<PageFallback />} canActivate={requireAuth}>
               <Page>
                 <CreateEventPage />
               </Page>
-            </Route>
-            <Route exact path="/">
-              <Page>
-                <LandingPage />
-              </Page>
-            </Route>
-          </Switch>
-        </GuardProvider>
+            </Guard>
+          </Route>
+          <Route exact path="/">
+            <Page>
+              <LandingPage />
+            </Page>
+          </Route>
+        </Switch>
       </CSSTransition>
     </TransitionGroup>
   );

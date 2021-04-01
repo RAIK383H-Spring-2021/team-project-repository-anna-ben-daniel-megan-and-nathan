@@ -13,6 +13,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 75,
     width: "100%",
     zIndex: 99,
+    transition: "200ms linear backgroundColor",
     paddingTop: ({ size }) => size === "large" && 60,
     paddingBottom: ({ size }) => size === "large" && 36,
     paddingLeft: ({ size }) => size === "large" && 180,
@@ -24,11 +25,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   titleStart: {
     ...theme.typography.heading,
+    lineHeight: 1,
     flex: "1 1 auto",
     margin: 0,
   },
   titleNoStart: {
     ...theme.typography.heading,
+    lineHeight: 1,
     flex: "1 1 auto",
     margin: "0 0 0 8px",
   },
