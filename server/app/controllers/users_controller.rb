@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   def index
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { status: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -126,7 +126,7 @@ class UsersController < ApplicationController
 
     if !@user 
       respond_to do |format|
-        format.json { render json: { status: 'user not found' } }
+        format.json { render json: { status: 'user not found' }, status: :not_found }
       end
 
       return
@@ -134,7 +134,7 @@ class UsersController < ApplicationController
 
     if !@user.authenticate(params[:password])
       respond_to do |format|
-        format.json { render json: { status: 'password incorrect' } }
+        format.json { render json: { status: 'password incorrect' }, status: :unauthorized }
       end
 
       return
