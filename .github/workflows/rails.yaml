@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: |
           cd ./server
-          bundler exec rake
+          bundler exec rspec
       - name: Upload coverage results
         uses: actions/upload-artifact@master
         if: always()
