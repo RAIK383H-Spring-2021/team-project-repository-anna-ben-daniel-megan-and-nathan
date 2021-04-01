@@ -249,6 +249,7 @@ function EventDetailsSmall({
     <Content
       toolbar={
         <Toolbar
+          background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
           end={<IconButton icon="more_vert" />}
           size="normal"
