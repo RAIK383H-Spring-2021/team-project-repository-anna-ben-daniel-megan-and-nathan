@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   def index
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized }, status: :unauthorized }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -23,14 +23,14 @@ class UsersController < ApplicationController
 
     if @user_found != nil
       respond_to do |format|
-        format.json { render json: { status: 'email already registered' } }
+        format.json { render json: { error: 'email already registered' }, status: :conflict }
       end
 
       return
     end
     
     @new_questionnaire = Questionnaire.create()
-    @new_user = User.create(email: params[:email], 
+    @new_user = User.new(email: params[:email], 
       first_name: params[:first_name], 
       last_name: params[:last_name],
       password: params[:password],
@@ -38,6 +38,14 @@ class UsersController < ApplicationController
       questionnaire_id: @new_questionnaire.id,
       privacy_level: params[:privacy_level]
     )
+
+    if !@new_user.save
+      respond_to do |format|
+        format.json { render json: { error: 'missing fields' }, status: :unprocessable_entity }
+      end
+
+      return
+    end
 
     @token = encode({
         sub: @new_user.id,
@@ -53,7 +61,7 @@ class UsersController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -63,7 +71,7 @@ class UsersController < ApplicationController
 
     if (!(@id == params[:id].to_i))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
