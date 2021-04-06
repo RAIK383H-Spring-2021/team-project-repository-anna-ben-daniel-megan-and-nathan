@@ -58,7 +58,28 @@
   score: 1
 )
 
+@event3 = Event.create(
+  title: "invited test incomplete",
+  host_id: @invited_user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: true,
+  food_buffet: false,
+  location: "test",
+  indoor: true,
+  outdoor: false,
+  remote: false,
+  score: 1
+)
+
 # seed two invitations, each user invited to the other event
+
+Participant.create(
+  user_id: @invited_user.id,
+  event_id: @event1.id,
+  questionnaire_complete: 1
+)
+
 Participant.create(
   user_id: @user.id,
   event_id: @event2.id,
@@ -66,7 +87,7 @@ Participant.create(
 )
 
 Participant.create(
-  user_id: @invited_user.id,
-  event_id: @event1.id,
-  questionnaire_complete: 1
+  user_id: @user.id,
+  event_id: @event3.id,
+  questionnaire_complete: 0
 )

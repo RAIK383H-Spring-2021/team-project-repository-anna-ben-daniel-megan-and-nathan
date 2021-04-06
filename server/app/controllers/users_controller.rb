@@ -96,7 +96,7 @@ class UsersController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -106,7 +106,7 @@ class UsersController < ApplicationController
 
     if (!(@id == params[:id].to_i))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -115,8 +115,10 @@ class UsersController < ApplicationController
     @user = User.find(@id)
     @user.update(
       email: params[:email],
-      first_name: params[:first_name],
+      first_name: params[:first_name], 
       last_name: params[:last_name],
+      password: params[:password],
+      password_confirmation: params[:password],
       privacy_level: params[:privacy_level]
     )
 
@@ -160,7 +162,7 @@ class UsersController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -170,7 +172,7 @@ class UsersController < ApplicationController
 
     if (!(@id == params[:id].to_i))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return

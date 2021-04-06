@@ -9,6 +9,7 @@ RSpec.describe "user controller requests", type: :request do
 
     # get user corresponding to above auth token
     @user = User.find_by(email: "test@test.test")
+    @other_user = User.find_by(email: "hello@hello.hello")
   end
 
   describe "GET #index" do
@@ -79,6 +80,31 @@ RSpec.describe "user controller requests", type: :request do
     end
   end
 
+  describe "PUT #update" do
+    it "returns unauthorized http error if no auth token provided" do
+      put "/users/#{@user.id}"
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns unauthorized http error if auth token provided but attempts to get information for user other than self" do
+      put "/users/#{@user.id + 1}", headers: { "Authorization": "Bearer #{@token}"}
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "should properly update provided user information" do
+      put "/users/#{@user.id}", params: {email: "updated", first_name: "updated", last_name: "updated", password: "password", privacy_level: 1}, headers: { "Authorization": "Bearer #{@token}"}
+
+      @updated_user = User.find(@user.id)
+
+      expect(response).to have_http_status(:success)
+      expect(@updated_user.email).to eq("updated")
+      expect(@updated_user.first_name).to eq("updated")
+      expect(@updated_user.last_name).to eq("updated")
+    end
+  end
+
   describe "POST #login" do
     it "returns not found http error when invalid email provided" do
       post '/users/login', params: { email: "lol" }
@@ -97,6 +123,36 @@ RSpec.describe "user controller requests", type: :request do
 
       @res = JSON.parse(response.body)
       expect(@res.keys).to match_array(["token"])
+    end
+  end
+
+  describe "GET #invitations" do
+    it "returns unauthorized http error if no auth token provided" do
+      get "/users/#{@user.id}/invitations"
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns unauthorized http error if auth token provided but attempts to get information for user other than self" do
+      get "/users/#{@user.id + 1}/invitations", headers: { "Authorization": "Bearer #{@token}"}
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "properly gets new (questionnaire incomplete) events for user" do
+      get "/users/#{@user.id}/invitations", headers: { "Authorization": "Bearer #{@token}"}
+
+      @res = JSON.parse(response.body)
+
+      expect(@res["new_events"][0]["title"]).to eq("invited test incomplete")
+    end
+
+    it "properly gets other (questionnaire complete) events for user" do
+      get "/users/#{@user.id}/invitations", headers: { "Authorization": "Bearer #{@token}"}
+
+      @res = JSON.parse(response.body)
+
+      expect(@res["other_events"][0]["title"]).to eq("invited test")
     end
   end
 end
