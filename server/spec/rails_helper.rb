@@ -39,7 +39,7 @@ RSpec.configure do |config|
 
   # tell coverage tracker what to track
   SimpleCov.start do
-    add_filter '/tes/'
+    add_filter '/test/'
     add_filter '/config/'
     add_filter '/vendor/'
   
