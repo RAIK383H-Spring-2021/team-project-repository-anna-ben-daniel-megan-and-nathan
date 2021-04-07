@@ -9,7 +9,6 @@ RSpec.describe "user controller requests", type: :request do
 
     # get user corresponding to above auth token
     @user = User.find_by(email: "test@test.test")
-    @other_user = User.find_by(email: "hello@hello.hello")
   end
 
   describe "GET #index" do
@@ -153,6 +152,46 @@ RSpec.describe "user controller requests", type: :request do
       @res = JSON.parse(response.body)
 
       expect(@res["other_events"][0]["title"]).to eq("invited test")
+    end
+  end
+
+  describe "GET #events" do
+    before do
+      # gets token/user object for a user with no hosted events
+      post '/users/login', params: { email: "no@event.user", password: "password" }
+      @res = JSON.parse(response.body)
+      @no_event_token = @res["token"]
+
+      # get user
+      @no_event_user = User.find_by(email: "no@event.user")
+    end
+
+    it "returns unauthorized http error if no auth token provided" do
+      get "/users/#{@user.id}/events"
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns unauthorized http error if auth token provided but attempts to get information for user other than self" do
+      get "/users/#{@user.id + 1}/events", headers: { "Authorization": "Bearer #{@token}"}
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "properly gets events when user has hosted events" do
+      get "/users/#{@user.id}/events", headers: { "Authorization": "Bearer #{@token}"}
+
+      @res = JSON.parse(response.body)
+
+      expect(@res["events"][0]["title"]).to eq("test")
+    end
+
+    it "properly returns empty array when user has no hosted events" do
+      get "/users/#{@no_event_user.id}/events", headers: { "Authorization": "Bearer #{@no_event_token}"}
+
+      @res = JSON.parse(response.body)
+
+      expect(@res["events"]).to be_empty
     end
   end
 end

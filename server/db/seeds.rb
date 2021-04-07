@@ -29,6 +29,16 @@
   privacy_level: 1
 )
 
+@no_event_user_quest = Questionnaire.create()
+@no_event_user = User.create(email: "no@event.user", 
+  first_name: "first", 
+  last_name: "last",
+  password: "password",
+  password_confirmation: "password",
+  questionnaire_id: @no_event_user_quest.id,
+  privacy_level: 1
+)
+
 # seed two events, one hosted by each
 @event1 = Event.create(
   title: "test",

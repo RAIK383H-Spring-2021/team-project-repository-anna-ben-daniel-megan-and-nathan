@@ -196,7 +196,7 @@ class UsersController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -206,7 +206,7 @@ class UsersController < ApplicationController
 
     if (!(@id == params[:id].to_i))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
