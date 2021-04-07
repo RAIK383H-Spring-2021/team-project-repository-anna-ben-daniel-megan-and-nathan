@@ -6,6 +6,7 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 require 'database_cleaner/active_record'
+require 'simplecov'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -32,13 +33,26 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 RSpec.configure do |config|
+
+  # configure database cleaner strategy
   DatabaseCleaner.strategy = :truncation
+
+  # tell coverage tracker what to track
+  SimpleCov.start do
+    add_filter '/tes/'
+    add_filter '/config/'
+    add_filter '/vendor/'
+  
+    add_group 'Controllers', 'app/controllers'
+    add_group 'Models', 'app/models'
+  end
 
   # seed the test db
   config.before(:suite) do
     Rails.application.load_seed
   end
 
+  # clean the test db
   config.after(:suite) do
     DatabaseCleaner.clean
   end
