@@ -1,22 +1,16 @@
 import { ThemeProvider } from "react-jss";
-import { dark, light } from "../src/theme";
+import { light } from "../src/theme";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   theme: {
-    values: [
-      { name: "light", value: light },
-      { name: "dark", value: dark },
-    ],
+    values: [{ name: "light", value: light }],
   },
 };
 
-const useDarkTheme = matchMedia("(prefers-color-scheme: dark)").matches;
-const theme = useDarkTheme ? dark : light;
-
 export const decorators = [
   (Story) => (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={light}>
       <Story />
     </ThemeProvider>
   ),
