@@ -19,6 +19,7 @@ import { User } from "../User";
 import MDSpinner from "react-md-spinner";
 import { API } from "../api";
 import { Helmet } from "react-helmet";
+import { Slider } from "../components/Slider";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: ({ size }) => {
@@ -40,7 +41,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: 510,
     display: "flex",
     flexDirection: "column",
-    marginBottom: "10vh",
+    marginBottom: "calc(20vh - 24px)",
     "& > *": {
       marginBottom: 24,
     },
@@ -82,7 +83,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         right: "-20vh",
         zIndex: 1,
       }
-      : {},
+      : {
+        display: "none",
+      },
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
       return {
@@ -238,7 +241,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       toolbar={
         <Toolbar
           title="Create Event"
-          size="large"
+          size={size === "large" ? "large" : "normal"}
           start={
             <IconButton icon="arrow_back" onClick={() => history.goBack()} />
           }
@@ -351,22 +354,17 @@ function SetEventDetails(props: SetEventDetailsProps) {
         caption="CDC guidance recommends that double masking occur to prevent the spread of COVID-19."
         onChange={(value) => updateEventDetails("masks", value)}
       >
-        <option value="2me">Double mask, enforced</option>
-        <option value="2mr">Double mask, recommended</option>
-        <option value="1me">Single mask, enforced</option>
-        <option value="1mr">Single mask, recommended</option>
+        <option value="1me">Masks required</option>
         <option value="none">No masks</option>
       </Select>
-      <Select
+      <Slider
         label="Social Distancing"
+        value={props.eventDetails.distancing}
         onChange={(value) => updateEventDetails("distancing", value)}
-      >
-        <option value="6e">6 feet, enforced</option>
-        <option value="6r">6 feet, recommended</option>
-        <option value="12e">12 feet, enforced</option>
-        <option value="12r">12 feet, recommended</option>
-        <option value="none">No requirement</option>
-      </Select>
+        min={0}
+        max={12}
+        units="feet"
+      />
       <div className={classes.eventDetailsDivider} />
       <Select
         label="Is food being served?"
