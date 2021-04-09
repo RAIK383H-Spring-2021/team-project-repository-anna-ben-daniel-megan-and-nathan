@@ -17,6 +17,7 @@
     "@types/workbox-google-analytics": "^4.3.0",
     "@types/workbox-navigation-preload": "^4.3.0",
     "jwt-decode": "^3.1.2",
+    "rc-slider": "^9.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",

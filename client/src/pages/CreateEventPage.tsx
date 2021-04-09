@@ -363,7 +363,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
         onChange={(value) => updateEventDetails("distancing", value)}
         min={0}
         max={12}
-        units="feet"
+        units={parseInt(props.eventDetails.distancing ?? "") === 1 ? "foot" : "feet"}
       />
       <div className={classes.eventDetailsDivider} />
       <Select
