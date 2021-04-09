@@ -13,7 +13,7 @@ class QuestionnaireController < ApplicationController
     @id = authorized()
     @user = User.find_by(id: params[:id])
 
-    if(!(@id == params[:id]) && !(@user.privacy_level == 1))
+    if(!(@id == params[:id].to_i) && !(@user.privacy_level == 1))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
@@ -42,7 +42,7 @@ class QuestionnaireController < ApplicationController
 
     @id = authorized()
 
-    if(!(@id == params[:id]))
+    if(!(@id==params[:id].to_i))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
