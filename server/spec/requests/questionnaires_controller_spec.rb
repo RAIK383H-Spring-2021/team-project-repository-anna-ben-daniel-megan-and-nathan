@@ -64,7 +64,7 @@ RSpec.describe "questionnaires controller requests", type: :request do
             post '/users/login', params: { email: "test@test.test", password: "password" }
             @resFirst = JSON.parse(response.body)
             @tokenFirst = @resFirst["token"]
-            puts(@tokenFirst)
+
             put "/users/1/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
                 params: {     "q1":1,
                               "q2":1,
