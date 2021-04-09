@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/models/user.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/models/user.rb": {
         "lines": [
           1,
           1,
@@ -22,14 +22,14 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/models/application_record.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/spec/models/user_spec.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/spec/models/user_spec.rb": {
         "lines": [
           1,
           null,
@@ -73,7 +73,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/spec/requests/events_controller_spec.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/spec/requests/events_controller_spec.rb": {
         "lines": [
           1,
           null,
@@ -227,7 +227,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/spec/requests/users_controller_spec.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/spec/requests/users_controller_spec.rb": {
         "lines": [
           1,
           null,
@@ -428,7 +428,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/db/seeds.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/db/seeds.rb": {
         "lines": [
           null,
           null,
@@ -535,13 +535,13 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/models/questionnaire.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/models/questionnaire.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/models/event.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/models/event.rb": {
         "lines": [
           1,
           1,
@@ -565,7 +565,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/models/participant.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/models/participant.rb": {
         "lines": [
           1,
           1,
@@ -573,7 +573,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/controllers/users_controller.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/controllers/users_controller.rb": {
         "lines": [
           1,
           null,
@@ -815,7 +815,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/controllers/application_controller.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/controllers/application_controller.rb": {
         "lines": [
           1,
           1,
@@ -861,7 +861,7 @@
           null
         ]
       },
-      "C:/Users/annar/Documents/GitHub/SE4Project/server/app/controllers/events_controller.rb": {
+      "/Users/benlohrman/Documents/GitHub/se4proj/server/app/controllers/events_controller.rb": {
         "lines": [
           1,
           1,
@@ -1026,6 +1026,6 @@
         ]
       }
     },
-    "timestamp": 1617931384
+    "timestamp": 1617931760
   }
 }
