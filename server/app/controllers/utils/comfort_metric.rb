@@ -10,11 +10,9 @@ module ComfortMetric
     if event.indoor
       indoor =  true
       locationScore = @quest.q1
-      scores = generateScoreIndoor(@quest, @event)
     elsif event.outdoor
       indoor = false
       locationScore = @quest.q2
-      scores = generateScoreOutdoor(@quest, @event)
     else
       locationScore = @quest.q3
       return locationScore
@@ -26,16 +24,6 @@ module ComfortMetric
 
     masksSocialDistScore = generateMasksSocialDistancingScore(@quest, @event, indoor)
     groupSizeScore = generateGroupSizeScore(@quest, @event, indoor)
-  end
-
-  def generateLocationScore(quest, event, indoor)
-    if event.indoor
-      return quest.q1
-    elsif event.outdoor
-      return quest.q2
-    else
-      return quest.q3
-    end
   end
 
   def generateFoodScore(quest, event, indoor)
