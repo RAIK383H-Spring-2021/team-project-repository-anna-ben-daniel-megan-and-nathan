@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
-// import { Icon } from "./Icon";
-import { IconButton } from "./IconButton";
+import { Button } from "./Button";
+import { Icon } from "./Icon";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {
@@ -16,20 +16,40 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     width: 50,
     height: 50,
-    border: `4px solid ${theme.colors.primary.base.backgroundColor}`,
+    border: ({ color }) =>
+      `2px solid ${theme.colors[color].base.backgroundColor}`,
     borderRadius: 50,
     display: "grid",
+    padding: 0,
+    margin: 0,
+    transitionDuration: theme.transitions.timing.short,
+    transitionTimingFunction: "linear",
   },
   line: {
     height: 0,
-    border: `1px solid ${theme.colors.primary.base.backgroundColor}`,
+    border: ({ color }) =>
+      `1px solid ${theme.colors[color].base.backgroundColor}`,
     flex: "1 1 auto",
+  },
+  labels: {
+    display: "flex",
+    justifyContent: "space-between",
+    margin: "5px 20px",
+  },
+  label: {
+    userSelect: "none",
+    ...theme.typography.preTitle,
+    cursor: "pointer",
+  },
+  primaryLabel: {
+    margin: "12px 0",
   },
 }));
 
 export interface SentimentPickerComponentProps {
   label: string;
   value: number;
+  color: "primary" | "secondary" | "accent";
   onChange: (value: number) => void;
 }
 
@@ -46,14 +66,12 @@ const options = [
 ];
 
 export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
-  const { label, value, onChange } = props;
+  const { label, value = 0, onChange, color = "primary" } = props;
 
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, color });
 
   const [val, setVal] = useState(value);
-
-  console.log(val);
 
   function update(val: number) {
     setVal(val);
@@ -62,18 +80,31 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
 
   return (
     <div>
-      <label>{label}</label>
+      <div className={classes.primaryLabel}>
+        <label>{label}</label>
+      </div>
       <div className={classes.control}>
         {options.map((option, i) =>
           option?.icon ? (
-            <IconButton
+            <Button
               onClick={() => update(option.value)}
-              icon={option.icon}
-            />
+              className={classes.button}
+              color="primary"
+              transparent={val !== option.value}
+            >
+              <Icon name={option.icon} />
+            </Button>
           ) : (
             <div key={i} className={classes.line}></div>
           )
         )}
+      </div>
+      <div className={classes.labels}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <label key={i} onClick={() => update(i)} className={classes.label}>
+            {i}
+          </label>
+        ))}
       </div>
     </div>
   );
