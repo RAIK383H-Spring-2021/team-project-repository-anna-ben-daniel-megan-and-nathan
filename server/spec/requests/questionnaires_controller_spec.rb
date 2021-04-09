@@ -19,7 +19,7 @@ RSpec.describe "questionnaires controller requests", type: :request do
         end
 
         it "returns unauthorized error if questionnaire is private" do
-            get "/users/#{@user.id}/questionnaire", headers: { "Authorization": "Bearer #{@token}"}
+            get "/users/1/questionnaire", headers: { "Authorization": "Bearer #{@token}"}
 
             expect(response).to have_http_status(:unauthorized)
         end

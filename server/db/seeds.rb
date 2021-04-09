@@ -16,7 +16,7 @@
   password: "password",
   password_confirmation: "password",
   questionnaire_id: @quest.id,
-  privacy_level: 1
+  privacy_level: 0
 )
 
 @invited_quest = Questionnaire.create()
@@ -26,6 +26,16 @@
   password: "password",
   password_confirmation: "password",
   questionnaire_id: @invited_quest.id,
+  privacy_level: 1
+)
+
+@invited_quest2 = Questionnaire.create()
+@invited_user2 = User.create(email: "hi@hi.hi", 
+  first_name: "new", 
+  last_name: "last",
+  password: "password",
+  password_confirmation: "password",
+  questionnaire_id: @invited_quest2.id,
   privacy_level: 1
 )
 
@@ -93,10 +103,30 @@
   score: 1
 )
 
+@event4 = Event.create(
+  title: "test2",
+  host_id: @user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: true,
+  food_buffet: false,
+  location: "test",
+  indoor: true,
+  outdoor: false,
+  remote: false,
+  score: 1
+)
+
 # seed two invitations, each user invited to the other event
 
 Participant.create(
   user_id: @invited_user.id,
+  event_id: @event1.id,
+  questionnaire_complete: 1
+)
+
+Participant.create(
+  user_id: @invited_user2.id,
   event_id: @event1.id,
   questionnaire_complete: 1
 )
@@ -110,5 +140,11 @@ Participant.create(
 Participant.create(
   user_id: @user.id,
   event_id: @event3.id,
+  questionnaire_complete: 0
+)
+
+Participant.create(
+  user_id: @invited_user.id,
+  event_id: @event4.id,
   questionnaire_complete: 0
 )
