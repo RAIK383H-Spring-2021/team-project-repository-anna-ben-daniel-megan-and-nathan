@@ -4,7 +4,7 @@ class QuestionnaireController < ApplicationController
     # auth matches either id OR the user has questionnaire sharing on
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -15,7 +15,7 @@ class QuestionnaireController < ApplicationController
 
     if(!(@id == params[:id]) && !(@user.privacy_level == 1))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -34,7 +34,7 @@ class QuestionnaireController < ApplicationController
     #Just the user can update it
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -44,7 +44,7 @@ class QuestionnaireController < ApplicationController
 
     if(!(@id == params[:id]))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
