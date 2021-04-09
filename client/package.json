@@ -17,6 +17,7 @@
     "@types/workbox-google-analytics": "^4.3.0",
     "@types/workbox-navigation-preload": "^4.3.0",
     "jwt-decode": "^3.1.2",
+    "rc-slider": "^9.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
@@ -78,12 +79,12 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^6.1.21",
-    "@storybook/addon-essentials": "^6.1.21",
-    "@storybook/addon-links": "^6.1.21",
-    "@storybook/node-logger": "^6.1.21",
+    "@storybook/addon-actions": "^6.2.1",
+    "@storybook/addon-essentials": "^6.2.1",
+    "@storybook/addon-links": "^6.2.1",
+    "@storybook/node-logger": "^6.2.1",
     "@storybook/preset-create-react-app": "^3.1.7",
-    "@storybook/react": "^6.1.21",
+    "@storybook/react": "^6.2.1",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-transition-group": "^4.4.1"
   }

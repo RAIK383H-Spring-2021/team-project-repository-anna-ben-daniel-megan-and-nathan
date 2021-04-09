@@ -91,6 +91,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         top: 12,
       },
     },
+
+
   },
   captionWrapper: {
     display: "flex",
@@ -113,6 +115,8 @@ export interface InputComponentProps {
   maxLength?: number;
   disabled?: boolean;
   value?: string;
+  min?: number;
+  max?: number;
   onChange?: (value: string) => void;
   className?: string;
 }
@@ -128,8 +132,16 @@ export const Input: FC<InputComponentProps> = (props) => {
   }, [props.value, value]);
 
   const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
-    setValue(ev.target.value);
-    props.onChange?.(ev.target.value);
+    let newValue = ev.target.value;
+    if (props.type === "number") {
+      if (props.min !== undefined && parseInt(newValue) < props.min) {
+        newValue = props.min.toString();
+      } else if (props.max !== undefined && parseInt(newValue) > props.max) {
+        newValue = props.max.toString();
+      }
+    }
+    setValue(newValue);
+    props.onChange?.(newValue);
   };
 
   return (
@@ -143,6 +155,8 @@ export const Input: FC<InputComponentProps> = (props) => {
         onChange={(ev) => handleChange(ev)}
         value={value}
         disabled={props.disabled}
+        min={props.min}
+        max={props.max}
       />
       <div className={classes.captionWrapper}>
         <span className={classes.caption}>{props.caption}</span>
