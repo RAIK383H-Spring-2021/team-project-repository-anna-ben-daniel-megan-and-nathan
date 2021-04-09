@@ -12,7 +12,7 @@ class InviteesController < ApplicationController
     @id = authorized()
     @host_id = Event.find_by(id: params[:event_id]).host_id
 
-    if (!@id == @host_id)
+    if (!(@id == @host_id))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
@@ -43,7 +43,7 @@ class InviteesController < ApplicationController
     @id = authorized()
     @host_id = Event.find_by(id: params[:event_id]).host_id
 
-    if (!@id == @host_id)
+    if (!(@id == @host_id))
       respond_to do |format|
         format.json { render json: { status: :unauthorized } }
       end
