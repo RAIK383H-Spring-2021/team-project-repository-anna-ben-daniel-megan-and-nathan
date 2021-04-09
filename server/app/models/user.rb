@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
     has_many :participants
     has_many :events
+    belongs_to :questionnaire
 
     alias_attribute :password_digest, :password_hash
 

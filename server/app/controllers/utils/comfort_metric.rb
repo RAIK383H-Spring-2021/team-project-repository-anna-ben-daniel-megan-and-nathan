@@ -1,21 +1,32 @@
 module ComfortMetric
-  def generateTotalScore
-    # TODO: everything
+  def generateTotalScore(userID, eventID)
+    @event = Event.find(eventID)
+    @user = User.find(userID)
+    @quest = @user.questionnaire
+
+    locationScore = generateLocationScore(@user, @event)
+    foodScore = generateFoodScore(@user, @event)
+    masksSocialDistScore = generateMasksSocialDistancingScore(@user, @event)
+    groupSizeScore = generateGroupSizeScore(@user, @event)
   end
 
-  def generateLocationScore
+  def generateLocationScore(user, event)
     # TODO: everything
+    return 1
   end
 
-  def generateFoodScore
+  def generateFoodScore(user, event)
     # TODO: everything
+    return 1
   end
 
-  def generateMasksSocialDistancingScore
+  def generateMasksSocialDistancingScore(user, event)
     # TODO: everything
+    return 1
   end
 
-  def generateGroupSizeScore
+  def generateGroupSizeScore(user, event)
     # TODO: everything
+    return 1
   end
 end
