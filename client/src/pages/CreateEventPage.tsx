@@ -55,7 +55,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     }
   },
   eventDetailsWrapper: {
-    maxWidth: 510,
+    maxWidth: ({ size }) => size === "large" ? 510 : "100%",
     display: "flex",
     flexDirection: "column",
     marginBottom: ({ size }) => size === "large" ? "calc(20vh - 24px)" : 88,
