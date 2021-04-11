@@ -12,7 +12,10 @@ const fontSizes = new Map([
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     ...theme.typography.button,
-    color: ({ color }) => theme.colors[color].base.color,
+    color: ({ color, transparent }) =>
+      transparent
+        ? theme.colors[color].base.backgroundColor
+        : theme.colors[color].base.color,
     backgroundColor: ({ color, transparent }) =>
       transparent ? "transparent" : theme.colors[color].base.backgroundColor,
     border: "none",
@@ -32,7 +35,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     lineHeight: 1,
 
     "&:focus": {
-      border: "none",
       outline: "none",
     },
   },
@@ -50,6 +52,7 @@ export interface ButtonComponentProps {
   transparent?: boolean;
   size?: "small" | "medium" | "large";
   end?: ReactNode;
+  className?: string;
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -59,6 +62,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
     transparent = false,
     size = "medium",
     end,
+    className = "",
   } = props;
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color, transparent, size });
@@ -70,7 +74,11 @@ export const Button: FC<ButtonComponentProps> = (props) => {
   useRipple(rippleRef, colorBase.color);
 
   return (
-    <button className={classes.button} ref={rippleRef} onClick={props.onClick}>
+    <button
+      className={[classes.button, className].join(" ")}
+      ref={rippleRef}
+      onClick={props.onClick}
+    >
       {props.children}
       {end && <div className={classes.end}>{end}</div>}
     </button>

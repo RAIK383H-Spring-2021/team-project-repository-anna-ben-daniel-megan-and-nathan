@@ -4,7 +4,7 @@ class EventsController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -23,10 +23,18 @@ class EventsController < ApplicationController
       indoor: params[:indoor],
       outdoor: params[:outdoor],
       remote: params[:remote],
-      score: nil
+      score: nil,
+      social_distancing_masks: params[:social_distancing_masks],
+      social_distancing_no_masks: params[:social_distancing_no_masks]
     )
 
-    @event.save!
+    if !@event.save
+      respond_to do |format|
+        format.json { render json: { error: :unprocessable_entity }, status: :unprocessable_entity }
+      end
+      return
+    end
+
     respond_to do |format|
       format.json { render json: { id: @event[:id] } }
     end
@@ -37,7 +45,7 @@ class EventsController < ApplicationController
 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -45,24 +53,31 @@ class EventsController < ApplicationController
 
     @id = authorized()
     @authorizedInvitees = Participant.where(event_id: params[:id]).collect(&:user_id)
-
-    if (!@id == params[:host_id] && !@authorizedInvitees.include?(@id))
+    @event = Event.find_by(id: params[:id])
+    
+    if(@event == nil)
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :not_found }, status: :not_found }
       end
 
       return
     end
 
     # authorization: match id of host or invitee
-    @event = Event.find(params[:id])
+    if (!(@id == @event.host_id) && !(@authorizedInvitees.include?(@id)))
+      respond_to do |format|
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
+      end
+
+      return
+    end
 
     @responses = Participant.where(event_id: params[:id]).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: params[:id]).length
 
-    @host = User.find(@event.host_id)
+    @host = User.find_by(id: @event.host_id)
 
-    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
 
     respond_to do |format|
       format.json { render json: { event: {**e_JSON, responses: @responses, invitees: @invitees, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name} } }
@@ -73,7 +88,7 @@ class EventsController < ApplicationController
     #TODO: update an event 
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -81,15 +96,16 @@ class EventsController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:host_id])
+    @event = Event.find_by(id: params[:id])
+
+    if (!(@id == @event.host_id))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
     end
 
-    @event = Event.find_by(id: params[:id])
     @event.update(
       title: params[:title],
       host_id: params[:host_id],
@@ -101,10 +117,12 @@ class EventsController < ApplicationController
       indoor: params[:indoor],
       outdoor: params[:outdoor],
       remote: params[:remote],
-      score: params[:score]
+      score: params[:score],
+      social_distancing_masks: params[:social_distancing_masks],
+      social_distancing_no_masks: params[:social_distancing_no_masks]
     )
 
-    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
     
     respond_to do |format|
       format.json { render json: e_JSON }
@@ -115,7 +133,7 @@ class EventsController < ApplicationController
     #TODO: delete an event
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -123,20 +141,24 @@ class EventsController < ApplicationController
 
     @id = authorized()
 
-    if (!@id == params[:host_id])
+    @event = Event.find_by(id: params[:id])
+
+    if (!(@id == @event.host_id))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
     end
 
-    @event = params[:id]
+    @eventId = params[:id]
+    @invitees = Participant.where(event_id: params[:id]).collect(&:id)
 
-    Event.destroy(@event)
+    Participant.destroy(@invitees)
+    Event.destroy(@eventId)
 
     respond_to do |format|
-      format.json { render json: { status: '/events/destroy received request' } }
+      format.json { render json: { status: :ok } }
       end
   end
 end

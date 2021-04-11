@@ -124,7 +124,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     flex: "1 1 auto",
     display: "flex",
     flexDirection: "column",
-    // justifyContent: "space-between",
   },
   desktopScoreItem: {
     display: "flex",
@@ -161,7 +160,13 @@ const EventDetailsPage: FC = () => {
   return (
     <Fragment>
       <Helmet
-        title={isLoading ? "Loading..." : response ? response.event.title : ""}
+        title={
+          isLoading
+            ? "Loading..."
+            : response
+            ? response?.event?.title ?? "Loading..."
+            : "Loading..."
+        }
       />
       {screen === "large" ? (
         <EventDetailsLarge event={response?.event} loading={isLoading} />

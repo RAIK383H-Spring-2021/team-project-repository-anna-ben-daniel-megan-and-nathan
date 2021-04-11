@@ -3,7 +3,7 @@ class InviteesController < ApplicationController
     #TODO: get list of invitees
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -12,9 +12,9 @@ class InviteesController < ApplicationController
     @id = authorized()
     @host_id = Event.find_by(id: params[:event_id]).host_id
 
-    if (!@id == @host_id)
+    if (!(@id == @host_id))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -34,7 +34,7 @@ class InviteesController < ApplicationController
     # pretty sure we can use before_action for this stuff, but leaving it like this for now
     if !authorized()
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
@@ -43,9 +43,9 @@ class InviteesController < ApplicationController
     @id = authorized()
     @host_id = Event.find_by(id: params[:event_id]).host_id
 
-    if (!@id == @host_id)
+    if (!(@id == @host_id))
       respond_to do |format|
-        format.json { render json: { status: :unauthorized } }
+        format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
 
       return
