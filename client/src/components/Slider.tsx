@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import ReactSlider from "rc-slider";
 import 'rc-slider/assets/index.css';
@@ -17,9 +17,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
     input: {
         position: "relative",
-        width: 120,
+        width: 90,
         "&:after": {
-            content: `"feet"`,
+            content: ({ units }) => `"${units}"`,
             ...theme.typography.body,
             color: theme.colors.background.light?.color,
             position: "absolute",
@@ -31,7 +31,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         }
     },
     sliderWrapper: {
-        width: "100%",
+        flexGrow: 1,
         marginLeft: 24,
         height: "fit-content",
     },
@@ -40,6 +40,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 6,
+        color: theme.colors.background.light?.color,
     },
     minLabel: {},
     maxLabel: {},

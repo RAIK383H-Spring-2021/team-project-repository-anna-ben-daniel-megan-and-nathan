@@ -23,25 +23,43 @@ import { Slider } from "../components/Slider";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: ({ size }) => {
+    const base = {
+      position: "relative",
+      width: "100vw",
+      overflowY: "auto",
+      overflowX: "hidden",
+      zIndex: 2,
+    };
     if (size === "large") {
       return {
-        position: "relative",
+        ...base,
         top: "20vh",
-        width: "100%",
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
-        overflowY: "auto",
-        overflowX: "hidden",
-        zIndex: 2,
       };
+    } else {
+      return {
+        ...base,
+        height: "calc(100vh-75px-88px)",
+        top: 81,
+      }
+    }
+  },
+  toolbar: {
+    backgroundColor: theme.colors.background.base.backgroundColor,
+    position: "sticky",
+    top: 0,
+    "&.scrolled": {
+      boxShadow: "0 4 8 rgba(0, 0, 0, 0.1)"
     }
   },
   eventDetailsWrapper: {
-    width: 510,
+    maxWidth: 510,
     display: "flex",
     flexDirection: "column",
-    marginBottom: "calc(20vh - 24px)",
+    marginBottom: ({ size }) => size === "large" ? "calc(20vh - 24px)" : 88,
+    padding: "0 24px",
     "& > *": {
       marginBottom: 24,
     },
@@ -50,10 +68,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 1,
     alignSelf: "stretch",
     backgroundColor: theme.colors.divider.base.backgroundColor,
+    width: ({ size }) => size === "large" ? "100%" : "100vw",
+    marginLeft: ({ size }) => size === "large" ? 0 : -24,
   },
   horizontalInputs: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: ({ size }) => size === "large" ? "1fr 1fr" : "1fr",
     gridGap: 24,
   },
   stepper: ({ size }) => {
@@ -70,6 +90,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         bottom: 0,
         left: 0,
         zIndex: 5,
+        width: "100vw",
+        backgroundColor: theme.colors.background.base.backgroundColor,
+        padding: "16px 48px 24px 48px",
+        margin: 0,
+        boxShadow: "0 -2px 8px rgba(0,0,0,0.10)"
       };
     }
   },
@@ -79,7 +104,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         height: "90vh",
         width: "90vh",
         position: "fixed",
-        top: "-20vh",
+        bottom: "-20vh",
         right: "-20vh",
         zIndex: 1,
       }
@@ -96,6 +121,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         marginRight: "20vw",
         marginLeft: "calc(20vw + ((60vw - (60px * 3)) / 4))",
       };
+    } else {
+      return {
+        marginBottom: 112,
+      }
     }
   },
   searchPanel: ({ size }) =>
@@ -105,7 +134,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         display: "flex",
         flexDirection: "column",
       }
-      : {},
+      : {
+        minHeight: 350,
+        "& input": {
+          margin: "0 24px",
+        }
+      },
   searchResultList: {
     flexShrink: 1,
     overflowY: "auto",
@@ -122,6 +156,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     ...theme.typography.preTitle,
     marginLeft: 28,
     marginBottom: 12,
+    marginTop: 24,
   },
   inviteesList: ({ size }) =>
     size === "large"
@@ -164,22 +199,21 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     justifyContent: "center",
     padding: "0 24px",
     textAlign: "center",
+    marginTop: ({ size }) => size !== "large" ? 60 : 0,
     "& > h2": {
       ...theme.typography.subheading,
-      marginTop: 24,
     },
   },
   emptySearchIconWrapper: {
     width: 72,
     height: 72,
     boxSizing: "content-box",
-    padding: 36,
+    padding: ({ size }) => size === "large" ? 36 : 24,
     backgroundColor: "rgba(103, 152, 248, 0.25)",
     display: "inline-block",
     borderRadius: "50%",
     "& > span": {
       color: theme.colors.primary.base.backgroundColor,
-      opacity: 1.0,
     },
   },
   searchResultSpinner: {
@@ -240,6 +274,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     <Content
       toolbar={
         <Toolbar
+          className={classes.toolbar}
           title="Create Event"
           size={size === "large" ? "large" : "normal"}
           start={
@@ -418,7 +453,6 @@ function AddParticipants(props: AddParticipantsProps) {
   const addInvitee = (add: UserObject) => {
     const newInviteeList = props.invitees;
     newInviteeList.push(add);
-    console.log(newInviteeList);
     props.setInvitees(newInviteeList);
     setQuery("");
   };
@@ -443,7 +477,7 @@ function AddParticipants(props: AddParticipantsProps) {
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>
-            <List type="contain" className={classes.searchResultList}>
+            <List type={size === "large" ? "contain" : "fill"} className={classes.searchResultList}>
               {results && !isLoading ? (
                 results.users
                   .filter(
@@ -500,43 +534,45 @@ function AddParticipants(props: AddParticipantsProps) {
           </div>
         )}
       </div>
-      <div className={classes.inviteesPanel}>
-        <h2 className={classes.sectionHeader}>
-          Invitees ({props.invitees.length})
-        </h2>
-        <List type="contain" className={classes.inviteesList}>
-          {props.invitees.map((invitee) => {
-            if (invitee.first_name.length === 0) {
-              return (
-                <ListItem
-                  button={true}
-                  onClick={() => {
-                    removeInvitee(invitee);
-                  }}
-                  end={<Icon name="delete" />}
-                  key={invitee.email}
-                >
-                  {invitee.email}
-                </ListItem>
-              );
-            } else {
-              return (
-                <ListItem
-                  button={true}
-                  onClick={() => {
-                    removeInvitee(invitee);
-                  }}
-                  subtitle={invitee.email}
-                  end={<Icon name="delete" />}
-                  key={invitee.email}
-                >
-                  {invitee.first_name} {invitee.last_name}
-                </ListItem>
-              );
-            }
-          })}
-        </List>
-      </div>
+      {(size === "large" || props.invitees.length > 0) &&
+        <div className={classes.inviteesPanel}>
+          <h2 className={classes.sectionHeader}>
+            Invitees ({props.invitees.length})
+          </h2>
+          <List type={size === "large" ? "contain" : "fill"} className={classes.inviteesList}>
+            {props.invitees.map((invitee) => {
+              if (invitee.first_name.length === 0) {
+                return (
+                  <ListItem
+                    button={true}
+                    onClick={() => {
+                      removeInvitee(invitee);
+                    }}
+                    end={<Icon name="delete" />}
+                    key={invitee.email}
+                  >
+                    {invitee.email}
+                  </ListItem>
+                );
+              } else {
+                return (
+                  <ListItem
+                    button={true}
+                    onClick={() => {
+                      removeInvitee(invitee);
+                    }}
+                    subtitle={invitee.email}
+                    end={<Icon name="delete" />}
+                    key={invitee.email}
+                  >
+                    {invitee.first_name} {invitee.last_name}
+                  </ListItem>
+                );
+              }
+            })}
+          </List>
+        </div>
+      }
     </div>
   );
 }
