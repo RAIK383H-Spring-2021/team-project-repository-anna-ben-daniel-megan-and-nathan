@@ -13,7 +13,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     ...theme.typography.button,
     color: ({ color, transparent }) =>
-      transparent
+      color === "black"
+        ? "black"
+        : color === "white"
+        ? "white"
+        : transparent
         ? theme.colors[color].base.backgroundColor
         : theme.colors[color].base.color,
     backgroundColor: ({ color, transparent }) =>
@@ -48,7 +52,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 export interface ButtonComponentProps {
-  color?: "primary" | "secondary" | "accent" | "background";
+  color?: "primary" | "secondary" | "accent" | "background" | "black" | "white";
   transparent?: boolean;
   size?: "small" | "medium" | "large";
   end?: ReactNode;
@@ -69,7 +73,9 @@ export const Button: FC<ButtonComponentProps> = (props) => {
 
   const rippleRef = useRef(null);
 
-  const colorBase = theme.colors[color].base;
+  const colorBase = ["black", "white"].includes(color)
+    ? { color }
+    : theme.colors[color].base;
 
   useRipple(rippleRef, colorBase.color);
 

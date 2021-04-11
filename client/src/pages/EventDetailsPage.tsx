@@ -1,4 +1,4 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
@@ -8,6 +8,7 @@ import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Content } from "../components/Content";
+import { Dialog } from "../components/Dialog";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
@@ -383,6 +384,7 @@ function QuestionnaireCard() {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
+  const [qOpen, setQOpen] = useState(false);
 
   return (
     <Card color="primary" className={classes.questionnaireCard}>
@@ -392,13 +394,24 @@ function QuestionnaireCard() {
       </h3>
       <div className={classes.placeContentsEnd}>
         <Button
-          color="primary"
+          color="white"
           transparent={true}
           end={<Icon size="medium" name="arrow_forward" />}
           size="large"
+          onClick={() => setQOpen(true)}
         >
           Respond Now
         </Button>
+        <Dialog open={qOpen}>
+          <Toolbar
+            title="Questionnaire"
+            end={
+              <Button onClick={() => setQOpen(false)} color="accent">
+                Submit
+              </Button>
+            }
+          />
+        </Dialog>
       </div>
     </Card>
   );

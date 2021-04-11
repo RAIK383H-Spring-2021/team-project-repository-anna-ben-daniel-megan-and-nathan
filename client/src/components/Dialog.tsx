@@ -25,6 +25,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     top: 0,
     left: 0,
+    zIndex: 999,
   },
   backdrop: {
     position: "absolute",
@@ -68,7 +69,7 @@ export const Dialog: FC<DialogComponentProps> = (props) => {
   const { open } = props;
 
   const [closing, setClosing] = useState(false);
-  const [closed, setClosed] = useState(false);
+  const [closed, setClosed] = useState(!open);
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, closing });
