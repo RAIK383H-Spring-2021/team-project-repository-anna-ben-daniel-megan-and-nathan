@@ -57,6 +57,7 @@ export interface ButtonComponentProps {
   size?: "small" | "medium" | "large";
   end?: ReactNode;
   className?: string;
+  disabled?: boolean;
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -67,6 +68,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
     size = "medium",
     end,
     className = "",
+    disabled = false,
   } = props;
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color, transparent, size });
@@ -84,6 +86,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
       className={[classes.button, className].join(" ")}
       ref={rippleRef}
       onClick={props.onClick}
+      disabled={disabled}
     >
       {props.children}
       {end && <div className={classes.end}>{end}</div>}

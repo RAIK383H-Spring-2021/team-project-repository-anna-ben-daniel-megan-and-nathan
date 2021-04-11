@@ -16,6 +16,7 @@ import { List } from "../components/List";
 import { ListItem } from "../components/ListItem";
 import { MiniScore } from "../components/MiniScore";
 import { Score } from "../components/Score";
+import { SentimentPicker } from "../components/SentimentPicker";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
@@ -380,6 +381,14 @@ function ComfortMetricSection({ event }: { event: Event }) {
   );
 }
 
+// const questionnaireForm = {
+//   q1: 0,
+//   q2: 0,
+//   q3: 0,
+//   q4: 0,
+//   q5: 0,
+// };
+
 function QuestionnaireCard() {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
@@ -405,12 +414,23 @@ function QuestionnaireCard() {
         <Dialog open={qOpen}>
           <Toolbar
             title="Questionnaire"
+            start={<IconButton onClick={() => setQOpen(false)} icon="close" />}
             end={
-              <Button onClick={() => setQOpen(false)} color="accent">
+              <Button
+                disabled={true}
+                onClick={() => setQOpen(false)}
+                color="accent"
+              >
                 Submit
               </Button>
             }
           />
+          <div style={{ padding: 36 }}>
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+          </div>
         </Dialog>
       </div>
     </Card>

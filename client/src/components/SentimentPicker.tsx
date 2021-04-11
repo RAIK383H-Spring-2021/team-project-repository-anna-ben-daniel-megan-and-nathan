@@ -49,8 +49,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 export interface SentimentPickerComponentProps {
   label: string;
   value: number;
-  color: "primary" | "secondary" | "accent";
-  onChange: (value: number) => void;
+  color?: "primary" | "secondary" | "accent";
+  onChange?: (value: number) => void;
 }
 
 const options = [
@@ -66,7 +66,7 @@ const options = [
 ];
 
 export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
-  const { label, value = 0, onChange, color = "primary" } = props;
+  const { label, value = 0, onChange = () => {}, color = "primary" } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color });
