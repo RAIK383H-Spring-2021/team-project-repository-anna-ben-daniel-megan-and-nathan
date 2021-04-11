@@ -20,7 +20,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         flexDirection: "row",
         alignItems: "center",
         height: "fit-content",
-        margin: "0 48px",
       };
     }
   },
@@ -84,14 +83,14 @@ export const Stepper: FC<StepperComponentProps> = (props) => {
         onClick={() => changeStep(1)}
       />
       <div
-        className={`${classes.stepperLine} ${props.disabled[2] ? classes.disabled : classes.primary
+        className={`${classes.stepperLine} ${props.disabled[1] || props.disabled[2] ? classes.disabled : classes.primary
           }`}
       />
       <StepperNode
         icon="send"
         label="Send Invites"
         active={activeNode === 2}
-        disabled={props.disabled[2]}
+        disabled={props.disabled[1] || props.disabled[2]}
         onClick={() => changeStep(2)}
       />
     </div>

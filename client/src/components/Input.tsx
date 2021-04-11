@@ -91,8 +91,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         top: 12,
       },
     },
-
-
   },
   captionWrapper: {
     display: "flex",
