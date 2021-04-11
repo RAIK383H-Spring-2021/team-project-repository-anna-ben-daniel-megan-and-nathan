@@ -23,7 +23,9 @@ class EventsController < ApplicationController
       indoor: params[:indoor],
       outdoor: params[:outdoor],
       remote: params[:remote],
-      score: nil
+      score: nil,
+      social_distancing_masks: params[:social_distancing_masks],
+      social_distancing_no_masks: params[:social_distancing_no_masks]
     )
 
     if !@event.save
@@ -75,7 +77,7 @@ class EventsController < ApplicationController
 
     @host = User.find_by(id: @event.host_id)
 
-    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
 
     respond_to do |format|
       format.json { render json: { event: {**e_JSON, responses: @responses, invitees: @invitees, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name} } }
@@ -115,10 +117,12 @@ class EventsController < ApplicationController
       indoor: params[:indoor],
       outdoor: params[:outdoor],
       remote: params[:remote],
-      score: params[:score]
+      score: params[:score],
+      social_distancing_masks: params[:social_distancing_masks],
+      social_distancing_no_masks: params[:social_distancing_no_masks]
     )
 
-    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+    e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
     
     respond_to do |format|
       format.json { render json: e_JSON }
