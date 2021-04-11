@@ -447,7 +447,9 @@ function AddParticipants(props: AddParticipantsProps) {
 
   const debounce = (email: string) => {
     setQuery(email);
-    makeRequest(email);
+    if (email.length > 0) {
+      makeRequest(email);
+    }
   };
 
   const addInvitee = (add: UserObject) => {
