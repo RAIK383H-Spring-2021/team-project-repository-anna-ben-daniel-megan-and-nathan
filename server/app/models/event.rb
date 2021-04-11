@@ -16,7 +16,5 @@ class Event < ApplicationRecord
       self.indoor = false if self.indoor.nil?
       self.outdoor = false if self.outdoor.nil?
       self.remote = false if self.remote.nil?
-      self.social_distancing_masks = 6 if self.social_distancing_masks.nil?
-      self.social_distancing_no_masks = 6 if self.social_distancing_no_masks.nil?
     end
 end
