@@ -44,7 +44,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     pointerEvents: "none",
   },
   positioner: {
-    position: "fixed",
+    position: "absolute",
     display: "block",
     height: "100%",
     width: "100%",
