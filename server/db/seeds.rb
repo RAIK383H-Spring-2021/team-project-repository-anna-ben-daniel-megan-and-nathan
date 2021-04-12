@@ -86,7 +86,9 @@
   indoor: true,
   outdoor: false,
   remote: false,
-  score: 1
+  score: 1,
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
 )
 
 @event3 = Event.create(

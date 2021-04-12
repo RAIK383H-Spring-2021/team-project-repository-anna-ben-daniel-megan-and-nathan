@@ -37,35 +37,13 @@ RSpec.describe "questionnaires controller requests", type: :request do
 
     describe "PUT #update" do
         it "returns unauthorized http error if no auth token given" do
-            put "/users/#{@user.id + 1}/questionnaire"
+            put "/events/1/invitees/#{@user.id + 1}/questionnaire"
 
             expect(response).to have_http_status(:unauthorized)
         end
 
         it "returns unauthorized http error if auth id is not the user id" do
-            put "/users/1/questionnaire", headers: { "Authorization": "Bearer #{@token}"}, params: { "q1":1,
-                                                                                            "q2":1,
-                                                                                            "q3":1,
-                                                                                            "q4":1,
-                                                                                            "q5":1,
-                                                                                            "q6":1,
-                                                                                            "q7":1,
-                                                                                            "q8":1,
-                                                                                            "q9":1,
-                                                                                            "q10":1,
-                                                                                            "q11":1,
-                                                                                            "q12":1,
-                                                                                            "q13":1}
-
-            expect(response).to have_http_status(:unauthorized)
-        end
-
-        it "update no event user" do
-            post '/users/login', params: { email: "test@test.test", password: "password" }
-            @resFirst = JSON.parse(response.body)
-            @tokenFirst = @resFirst["token"]
-
-            put "/users/1/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
+            put "/events/1/invitees/1/questionnaire", headers: { "Authorization": "Bearer #{@token}"},
                 params: {     "q1":1,
                               "q2":1,
                               "q3":1,
@@ -78,7 +56,33 @@ RSpec.describe "questionnaires controller requests", type: :request do
                               "q10":1,
                               "q11":1,
                               "q12":1,
-                              "q13":1}
+                              "q13":1,
+                              "q14":1,
+                              "q15":1}
+            expect(response).to have_http_status(:unauthorized)
+        end
+
+        it "update no event user" do
+            post '/users/login', params: { email: "test@test.test", password: "password" }
+            @resFirst = JSON.parse(response.body)
+            @tokenFirst = @resFirst["token"]
+
+            put "/events/2/invitees/1/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
+                params: {     "q1":1,
+                              "q2":1,
+                              "q3":1,
+                              "q4":1,
+                              "q5":1,
+                              "q6":1,
+                              "q7":1,
+                              "q8":1,
+                              "q9":1,
+                              "q10":1,
+                              "q11":1,
+                              "q12":1,
+                              "q13":1,
+                              "q14":1,
+                              "q15":1}
 
             @res = JSON.parse(response.body)
             expect(@res["q1"]).to eq(1)
