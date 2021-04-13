@@ -28,13 +28,15 @@ module ComfortMetric
     groupSizeScore = generateGroupSizeScore(@quest, @event, indoor)
 
     if (foodScore)
-      subscores = [locationScore, masksSocialDistScore, groupSizeScore, foodScore]
-      avg = subscores.sum(0.0) / subscores.size
-      return {subscores: subscores, totalScore: avg}
+      scoreArr = [locationScore, masksSocialDistScore, groupSizeScore, foodScore]
+      subscores = { location_score: locationScore, masks_social_dist_score: masksSocialDistScore, group_size_score: groupSizeScore, food_score: foodScore }
+      avg = scoreArr.sum(0.0) / scoreArr.size
+      return {subscores: subscores, total_score: avg}
     else
-      subscores = [locationScore, masksSocialDistScore, groupSizeScore]
-      avg = subscores.sum(0.0) / subscores.size
-      return {subscores: subscores, totalScore: avg}
+      scoreArr = [locationScore, masksSocialDistScore, groupSizeScore]
+      subscores = { location_score: locationScore, masks_social_dist_score: masksSocialDistScore, group_size_score: groupSizeScore }
+      avg = scoreArr.sum(0.0) / scoreArr.size
+      return {subscores: subscores, total_score: avg}
     end
   end
 
@@ -83,15 +85,16 @@ module ComfortMetric
   end
 
   def generateGroupSizeScore(quest, event, indoor)
+
+    comfortSize = -1
     if (indoor)
       comfortSize = quest.q9
-      eventSize = Participant.where(event_id: event.id).length
-      return comfortSize > eventSize ? 5 : groupSigmoid(comfortSize - eventSize)
     else
       comfortSize = quest.q15
-      eventSize = Participant.where(event_id: event.id).length
-      return comfortSize > eventSize ? 5 : groupSigmoid(comfortSize - eventSize)
     end
+
+    eventSize = Participant.where(event_id: event.id).length
+    return (comfortSize > eventSize) || (comfortSize == -1) ? 5 : groupSigmoid(comfortSize - eventSize)
   end
 
   private

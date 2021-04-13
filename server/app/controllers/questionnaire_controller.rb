@@ -1,4 +1,4 @@
-require_relative './utils/comfort_metric'
+require_relative 'utils/comfort_metric'
 include ComfortMetric
 
 class QuestionnaireController < ApplicationController
@@ -88,7 +88,7 @@ class QuestionnaireController < ApplicationController
     q_JSON = @questionnaire.as_json(only: %i[id q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12 q13 q14 q15])
 
     respond_to do |format|
-      format.json { render json: q_JSON }
+      format.json { render json: { questionnaire: {**q_JSON}, metrics: metrics } }
     end
   end
 end
