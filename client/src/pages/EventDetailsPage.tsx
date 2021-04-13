@@ -9,6 +9,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Content } from "../components/Content";
 import { Dialog } from "../components/Dialog";
+import { Divider } from "../components/Divider";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
@@ -411,7 +412,7 @@ function QuestionnaireCard() {
         >
           Respond Now
         </Button>
-        <Dialog open={qOpen}>
+        <Dialog open={qOpen} onClose={() => setQOpen(false)}>
           <Toolbar
             title="Questionnaire"
             start={<IconButton onClick={() => setQOpen(false)} icon="close" />}
@@ -426,6 +427,47 @@ function QuestionnaireCard() {
             }
           />
           <div style={{ padding: 36 }}>
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with indoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with remote events?"
+              value={0}
+            />
+            <Divider />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
+            <SentimentPicker
+              label="How comfortable are you with outdoor events?"
+              value={0}
+            />
             <SentimentPicker
               label="How comfortable are you with outdoor events?"
               value={0}

@@ -12,17 +12,24 @@ const fontSizes = new Map([
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     ...theme.typography.button,
-    color: ({ color, transparent }) =>
-      color === "black"
+    color: ({ color, transparent, disabled }) =>
+      disabled
+        ? theme.colors.divider.base.color
+        : color === "black"
         ? "black"
         : color === "white"
         ? "white"
         : transparent
         ? theme.colors[color].base.backgroundColor
         : theme.colors[color].base.color,
-    backgroundColor: ({ color, transparent }) =>
-      transparent ? "transparent" : theme.colors[color].base.backgroundColor,
-    border: "none",
+    backgroundColor: ({ color, transparent, disabled }) =>
+      disabled
+        ? "transparent"
+        : transparent
+        ? "transparent"
+        : theme.colors[color].base.backgroundColor,
+    border: ({ disabled }) =>
+      disabled ? `2px solid ${theme.colors.divider.base.color}` : "none",
     padding: "14px 24px",
     borderRadius: 4,
     cursor: "pointer",
@@ -71,7 +78,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
     disabled = false,
   } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, color, transparent, size });
+  const classes = useStyles({ theme, color, transparent, size, disabled });
 
   const rippleRef = useRef(null);
 

@@ -33,7 +33,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.4)",
     animationName: ({ closing }) => (closing ? "$fadeOut" : "$fadeIn"),
-    animationDuration: theme.transitions.timing.long,
+    animationDuration: theme.transitions.timing.normal,
     animationTimingFunction: "linear",
     animationFillMode: "forwards",
   },
@@ -45,10 +45,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     overflowY: "auto",
     animationName: ({ closing }) => (closing ? "$slideOut" : "$slideIn"),
-    animationDuration: theme.transitions.timing.long,
+    animationDuration: theme.transitions.timing.normal,
     animationTimingFunction: theme.transitions.easing.default,
     display: "flex",
     animationFillMode: "forwards",
+    pointerEvents: "none",
   },
   content: {
     ...theme.colors.background.base,
@@ -58,15 +59,17 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     outline: "none",
     border: "none",
     borderRadius: 8,
+    pointerEvents: "initial",
   },
 }));
 
 export interface DialogComponentProps {
   open: boolean;
+  onClose?: () => void;
 }
 
 export const Dialog: FC<DialogComponentProps> = (props) => {
-  const { open } = props;
+  const { open, onClose = () => {} } = props;
 
   const [closing, setClosing] = useState(false);
   const [closed, setClosed] = useState(!open);
@@ -85,13 +88,25 @@ export const Dialog: FC<DialogComponentProps> = (props) => {
         setClosed(true);
       }, 500);
     }
-  }, [open, closed]);
+
+    function escapeListener(ev: KeyboardEvent) {
+      if (ev.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", escapeListener);
+
+    return () => {
+      window.removeEventListener("keydown", escapeListener);
+    };
+  }, [open, closed, onClose]);
 
   if (closed) return null;
 
   return (
     <div className={classes.positioner}>
-      <div className={classes.backdrop}></div>
+      <div onClick={onClose} className={classes.backdrop}></div>
       <div className={classes.scrollWrapper}>
         <dialog open className={classes.content}>
           {props.children}
