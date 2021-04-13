@@ -14,17 +14,20 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   divider: {
     border: "none",
     borderTop: ({ color }) => `1px solid ${getColor(theme, color)}`,
+    margin: 0,
+    padding: 0,
   },
 }));
 
 export interface DividerComponentProps {
   color?: "primary" | "secondary" | "accent" | "divider" | "foreground";
+  className?: string;
 }
 
 export const Divider: FC<DividerComponentProps> = (props) => {
-  const { color = "divider" } = props;
+  const { color = "divider", className = "" } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color });
-  return <hr className={classes.divider} />;
+  return <hr className={`${classes.divider} ${className}`.trim()} />;
 };

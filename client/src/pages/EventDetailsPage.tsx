@@ -4,12 +4,11 @@ import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
 import { useHistory, useParams } from "react-router";
 import { useTheme } from "theming";
+import { API } from "../api";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Content } from "../components/Content";
-import { Dialog } from "../components/Dialog";
-import { Divider } from "../components/Divider";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
@@ -17,7 +16,6 @@ import { List } from "../components/List";
 import { ListItem } from "../components/ListItem";
 import { MiniScore } from "../components/MiniScore";
 import { Score } from "../components/Score";
-import { SentimentPicker } from "../components/SentimentPicker";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
@@ -25,6 +23,7 @@ import { Event, host_name } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
+import { IQuestionnaire, Questionnaire } from "./partials/Questionnaire";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -377,24 +376,26 @@ function ComfortMetricSection({ event }: { event: Event }) {
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Comfort Metrics
       </h2>
-      {qc ? <QuestionnaireCard /> : <ScoreDetailsCard />}
+      {qc ? <QuestionnaireCard eventId={event.id} /> : <ScoreDetailsCard />}
     </section>
   );
 }
 
-// const questionnaireForm = {
-//   q1: 0,
-//   q2: 0,
-//   q3: 0,
-//   q4: 0,
-//   q5: 0,
-// };
-
-function QuestionnaireCard() {
+function QuestionnaireCard({ eventId }: { eventId: number }) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
   const [qOpen, setQOpen] = useState(false);
+
+  async function submitQ(q: IQuestionnaire) {
+    const res = await API.put(
+      `events/${eventId}/invitees/${User.getUser()?.id}/questionnaire`,
+      q
+    );
+    if (res.status === "success") {
+      setQOpen(false);
+    }
+  }
 
   return (
     <Card color="primary" className={classes.questionnaireCard}>
@@ -412,68 +413,11 @@ function QuestionnaireCard() {
         >
           Respond Now
         </Button>
-        <Dialog open={qOpen} onClose={() => setQOpen(false)}>
-          <Toolbar
-            title="Questionnaire"
-            start={<IconButton onClick={() => setQOpen(false)} icon="close" />}
-            end={
-              <Button
-                disabled={true}
-                onClick={() => setQOpen(false)}
-                color="accent"
-              >
-                Submit
-              </Button>
-            }
-          />
-          <div style={{ padding: 36 }}>
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with indoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with remote events?"
-              value={0}
-            />
-            <Divider />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-            <SentimentPicker
-              label="How comfortable are you with outdoor events?"
-              value={0}
-            />
-          </div>
-        </Dialog>
+        <Questionnaire
+          open={qOpen}
+          onClose={() => setQOpen(false)}
+          onSubmit={(q) => submitQ(q)}
+        />
       </div>
     </Card>
   );

@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
+import { useScreen } from "../hooks/useScreen";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -31,7 +32,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     position: "absolute",
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     animationName: ({ closing }) => (closing ? "$fadeOut" : "$fadeIn"),
     animationDuration: theme.transitions.timing.normal,
     animationTimingFunction: "linear",
@@ -49,16 +50,27 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     animationTimingFunction: theme.transitions.easing.default,
     display: "flex",
     animationFillMode: "forwards",
-    pointerEvents: "none",
+  },
+  contentWrapper: {
+    padding: 20,
+    height: `calc(100% - 20px)`,
+    margin: 20,
+    display: "block",
   },
   content: {
     ...theme.colors.background.base,
-    margin: `20px auto`,
     width: 600,
     maxWidth: "100%",
     outline: "none",
-    border: "none",
+    border: ({ size }) =>
+      size === "small"
+        ? "none"
+        : theme.name === "dark"
+        ? `2px solid ${theme.colors.divider.base.backgroundColor}`
+        : "none",
     borderRadius: 8,
+    borderBottomLeftRadius: ({ size }) => size === "small" && 0,
+    borderBottomRightRadius: ({ size }) => size === "small" && 0,
     pointerEvents: "initial",
   },
 }));
@@ -70,12 +82,13 @@ export interface DialogComponentProps {
 
 export const Dialog: FC<DialogComponentProps> = (props) => {
   const { open, onClose = () => {} } = props;
+  const size = useScreen();
 
   const [closing, setClosing] = useState(false);
   const [closed, setClosed] = useState(!open);
 
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, closing });
+  const classes = useStyles({ theme, closing, size });
 
   useEffect(() => {
     if (open && closed) {
@@ -108,9 +121,11 @@ export const Dialog: FC<DialogComponentProps> = (props) => {
     <div className={classes.positioner}>
       <div onClick={onClose} className={classes.backdrop}></div>
       <div className={classes.scrollWrapper}>
-        <dialog open className={classes.content}>
-          {props.children}
-        </dialog>
+        <div className={classes.contentWrapper}>
+          <dialog open className={classes.content}>
+            {props.children}
+          </dialog>
+        </div>
       </div>
     </div>
   );

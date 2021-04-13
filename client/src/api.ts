@@ -53,6 +53,20 @@ export class API {
       }
     }
   }
+
+  public static put(path: string, body: object) {
+    const url = this.makeUrl(path);
+    const data = JSON.stringify(body);
+    
+    return fetch(url, {
+      method: 'PUT',
+      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`
+      }
+    }).then(res => res.json());
+  }
 }
 
 const ec = encodeURIComponent;
