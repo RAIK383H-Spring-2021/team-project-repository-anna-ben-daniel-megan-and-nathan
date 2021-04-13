@@ -1,7 +1,7 @@
 include Math
 
 module ComfortMetric
-  def generateTotalScore(userID, eventID)
+  def self.generateTotalScore(userID, eventID)
     @event = Event.find(eventID)
     @user = User.find(userID)
     @quest = @user.questionnaire
