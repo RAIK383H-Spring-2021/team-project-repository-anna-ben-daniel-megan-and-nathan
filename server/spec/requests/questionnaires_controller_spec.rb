@@ -67,7 +67,7 @@ RSpec.describe "questionnaires controller requests", type: :request do
             @resFirst = JSON.parse(response.body)
             @tokenFirst = @resFirst["token"]
 
-            put "/events/2/invitees/1/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
+            put "/events/2/invitees/3/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
                 params: {     "q1":1,
                               "q2":1,
                               "q3":1,
@@ -85,8 +85,9 @@ RSpec.describe "questionnaires controller requests", type: :request do
                               "q15":1}
 
             @res = JSON.parse(response.body)
-            expect(@res["q1"]).to eq(1)
-            expect(@res["id"]).to eq(1)
+
+            expect(@res["questionnaire"]["q1"]).to eq(1)
+            expect(@res["questionnaire"]["id"]).to eq(1)
         end
     end
 end
