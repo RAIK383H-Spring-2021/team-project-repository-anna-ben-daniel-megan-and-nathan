@@ -57,15 +57,21 @@ export class API {
   public static put(path: string, body: object) {
     const url = this.makeUrl(path);
     const data = JSON.stringify(body);
-    
+
     return fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       body: data,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        return await res.json();
+      } else {
+        throw new Error(await res.json().catch(() => res.status));
       }
-    }).then(res => res.json());
+    });
   }
 }
 

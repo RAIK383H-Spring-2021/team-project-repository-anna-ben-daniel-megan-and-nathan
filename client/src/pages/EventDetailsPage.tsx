@@ -391,8 +391,9 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
     const res = await API.put(
       `events/${eventId}/invitees/${User.getUser()?.id}/questionnaire`,
       q
-    );
-    if (res.status === "success") {
+    ).catch((err) => console.log("Error!", err));
+    console.log(res);
+    if (res?.status === "success") {
       setQOpen(false);
     }
   }

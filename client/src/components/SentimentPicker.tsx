@@ -33,9 +33,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     marginBottom: 22,
   },
   label: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   labelValue: {
     userSelect: "none",
@@ -88,7 +88,7 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
       <div className={classes.control}>
         {options.map((option, i) =>
           option?.icon ? (
-            <label className={classes.label}>
+            <label key={i} className={classes.label}>
               <Button
                 onClick={() => update(option.value)}
                 className={classes.button}
