@@ -388,6 +388,7 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
   const [qOpen, setQOpen] = useState(false);
 
   async function submitQ(q: IQuestionnaire) {
+    console.log(q);
     const res = await API.put(
       `events/${eventId}/invitees/${User.getUser()?.id}/questionnaire`,
       q

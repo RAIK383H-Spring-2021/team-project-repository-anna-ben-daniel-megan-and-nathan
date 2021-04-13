@@ -29,7 +29,7 @@ export function getBase(): IQuestionnaire {
     q10: 0,
     q11: 0,
     q12: 0,
-    q13: 5
+    q13: 5,
   };
 }
 
@@ -172,98 +172,138 @@ export interface QuestionnaireProps {
 
 const useStyles = createUseStyles((theme) => ({
   toolbar: {
-    position: 'sticky',
-    top: 0
+    position: "sticky",
+    top: 0,
   },
   body: {
-    // margin: 36,
+    // empty for now
   },
   question: {
-    margin: "32px 32px"
-  }
+    margin: "32px 32px",
+  },
 }));
+
+const q = getBase();
 
 export const Questionnaire: FC<QuestionnaireProps> = (props) => {
   const { open, onSubmit, onClose } = props;
 
-  const [q, sq] = useState(getBase());
-  
-  const canSubmit = Object.values(q).every(val => val !== 0);
+  const [canSubmit, setCanSubmit] = useState(
+    Object.values(q).every((val) => val !== 0)
+  );
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
   function updateQ(num: number, val: number) {
-    sq(Object.assign({}, q, { [`q${num}`]: val }));
-  }
-
-  function valueAt(num: number) {
-    return q[`q${num}`];
+    q[`q${num}`] = val;
+    if (Object.values(q).every((val) => val !== 0)) {
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
   }
 
   return (
     <Dialog open={open} onClose={onClose}>
       <Toolbar
         className={classes.toolbar}
-        background="filled"  
+        background="filled"
         title="Questionnaire"
         start={<IconButton onClick={onClose} icon="close" />}
         end={
-          <Button disabled={!canSubmit} onClick={() => onSubmit(q)} color="accent">
+          <Button
+            disabled={!canSubmit}
+            onClick={() => onSubmit(q)}
+            color="accent"
+          >
             Submit
           </Button>
         }
       />
       <div className={classes.body}>
-        {components.map((c, i) => {
-          switch (c.type) {
-            case "divider":
-              return <Divider key={i} color="divider" />;
-            case "header":
-              return <h3 className={classes.question} key={i}>{c.text}</h3>;
-            case "select":
-              return (
-                <div key={i} className={classes.question}>
-                  <Select
-                    label={c.question}
-                    onChange={(val) => updateQ(c.id, Number(val))}
-                  >
-                    {c.options.map((o, ii) => (
-                      <option key={ii} value={o.value}>
-                        {o.text}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-              );
-            case "sentiment":
-              return (
-                <div key={i} className={classes.question}>
-                  <SentimentPicker
-                    label={c.question}
-                    value={valueAt(c.id)}
-                    onChange={(val) => updateQ(c.id, val)}
-                  />
-                </div>
-              );
-            case "slider":
-              return (
-                <div key={i} className={classes.question}>
-                  <Slider
-                    value={valueAt(c.id).toString()}
-                    onChange={(val) => updateQ(c.id, Number(val))}
-                    label={c.question}
-                    min={1}
-                    max={12}
-                    units={valueAt(c.id) === 1 ? "foot" : "feet"}
-                  />
-                </div>
-              );
-            default:
-              return <span>Guh</span>;
-          }
-        })}
+        {components.map((c, i) => (
+          <QuestionnairePart
+            q={q}
+            comp={c}
+            key={i}
+            update={(id, val) => updateQ(id, val)}
+          />
+        ))}
       </div>
     </Dialog>
   );
+};
+
+interface QuestionnaireComponentProps {
+  q: IQuestionnaire;
+  comp: QuestionnaireComponent;
+  update: (id: number, value: number) => void;
+}
+
+const QuestionnairePart: FC<QuestionnaireComponentProps> = (props) => {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+
+  const [val, setVal] = useState(
+    "id" in props.comp ? valueAt(props.comp.id) : 0
+  );
+
+  const update = (id: number, val: number) => {
+    setVal(val);
+    props.update(id, val);
+  };
+
+  function valueAt(num: number) {
+    return q[`q${num}`];
+  }
+
+  const c = props.comp;
+
+  switch (c.type) {
+    case "divider":
+      return <Divider color="divider" />;
+    case "header":
+      return <h3 className={classes.question}>{c.text}</h3>;
+    case "select":
+      return (
+        <div className={classes.question}>
+          <Select
+            label={c.question}
+            onChange={(val) => update(c.id, Number(val))}
+          >
+            {c.options.map((o, ii) => (
+              <option key={ii} value={o.value}>
+                {o.text}
+              </option>
+            ))}
+          </Select>
+        </div>
+      );
+    case "sentiment":
+      return (
+        <div className={classes.question}>
+          <SentimentPicker
+            label={c.question}
+            value={valueAt(c.id)}
+            onChange={(val) => update(c.id, val)}
+          />
+        </div>
+      );
+    case "slider":
+      return (
+        <div className={classes.question}>
+          <Slider
+            value={val.toString()}
+            onChange={(val) => update(c.id, Number(val))}
+            label={c.question}
+            min={1}
+            max={12}
+            units={val === 1 ? "foot" : "feet"}
+          />
+        </div>
+      );
+    default:
+      return <span>Guh</span>;
+  }
 };
