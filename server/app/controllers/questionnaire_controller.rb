@@ -76,7 +76,7 @@ class QuestionnaireController < ApplicationController
       q15: params[:q15],
     )
 
-    metrics = ComfortMetric.generateTotalScore(@user.id, @event.id)
+    metrics = ComfortMetric::generateTotalScore(@user.id, @event.id)
 
     @invitee = @participant.update(
       user_id: @id,
