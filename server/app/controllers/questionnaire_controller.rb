@@ -43,9 +43,9 @@ class QuestionnaireController < ApplicationController
     end
 
     @id = authorized()
-    @participant_id = Participant.where(user_id: @id).where(event_id: params[:event_id]).ids
+    #@participant_id = Participant.where(user_id: @id).where(event_id: params[:event_id]).ids
 
-    if(!(@participant_id.first.to_s == params[:id]))
+    if(!(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
@@ -82,13 +82,33 @@ class QuestionnaireController < ApplicationController
       user_id: @id,
       event_id: params[:event_id],
       questionnaire_complete: 1,
-      score: metrics['totalScore'],
+      score: metrics[:total_score],
+      location_score: metrics[:subscores][:location_score],
+      masks_social_dist_score: metrics[:subscores][:masks_social_dist_score],
+      group_size_score: metrics[:subscores][:group_size_score],
+      food_score: metrics[:subscores][:food_score] || nil
     )
+
+    updateEventScore(params[:event_id])
 
     q_JSON = @questionnaire.as_json(only: %i[id q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12 q13 q14 q15])
 
     respond_to do |format|
       format.json { render json: { questionnaire: {**q_JSON}, metrics: metrics } }
+    end
+  end
+
+  private
+
+  def updateEventScore(event_id)
+    @responses = Participant.where(event_id: event_id).where(questionnaire_complete: true).length
+    @invitees = Participant.where(event_id: event_id).length
+
+    if (@responses / @invitees >= 0.8)
+      @participants = Participant.where(event_id: event_id).where(questionnaire_complete: true).collect(&:user_id)
+      @scores = @participants.map{ |id| Participant.where(event_id: event_id).find_by(user_id: id).score }
+      @avg = @scores.sum(0.0) / @scores.size
+      @event.update(score: @avg)
     end
   end
 end

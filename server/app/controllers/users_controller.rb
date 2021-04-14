@@ -184,7 +184,7 @@ class UsersController < ApplicationController
     @other_events = Event.find(@other_event_ids)
     @new_events = Event.find(@new_event_ids)
 
-    @other_events = @other_events.map{ |event| formatEvent(event.id) }
+    @other_events = @other_events.map{ |event| formatEventWithScores(event.id, params[:id]) }
     @new_events = @new_events.map{ |event| formatEvent(event.id) }
 
     respond_to do |format|
@@ -233,6 +233,26 @@ class UsersController < ApplicationController
     @event_json = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
 
     return {**@event_json, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name, invitees: @invitees, responses: @responses }
+  end
+
+  def formatEventWithScores(event_id, user_id)
+    @event = Event.find(event_id)
+    @host = User.find(@event.host_id)
+    @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
+    @invitees = Participant.where(event_id: @event.id).length
+
+    @user_participant = Participant.where(event_id: event_id).find_by(user_id: user_id)
+    @subscores = {
+      location_score: @user_participant.location_score, 
+      masks_social_dist_score: @user_participant.masks_social_dist_score, 
+      group_size_score: @user_participant.group_size_score, 
+      food_score: @user_participant.food_score
+    }
+    @total_score = @user_participant.score
+
+    @event_json = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score])
+
+    return {**@event_json, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name, invitees: @invitees, responses: @responses, metrics: {subscores: @subscores, total_score: @total_score} }
   end
   
 end

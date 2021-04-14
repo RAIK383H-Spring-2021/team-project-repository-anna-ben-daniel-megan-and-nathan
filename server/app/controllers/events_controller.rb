@@ -75,12 +75,25 @@ class EventsController < ApplicationController
     @responses = Participant.where(event_id: params[:id]).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: params[:id]).length
 
+    @user_participant = Participant.where(event_id: params[:id]).find_by(user_id: @id)
+
+    if @user_participant
+      @subscores = {
+        location_score: @user_participant.location_score, 
+        masks_social_dist_score: @user_participant.masks_social_dist_score, 
+        group_size_score: @user_participant.group_size_score, 
+        food_score: @user_participant.food_score
+      }
+      @total_score = @user_participant.score
+      @metrics = { subscores: @subscores, total_score: @total_score }
+    end
+
     @host = User.find_by(id: @event.host_id)
 
     e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
 
     respond_to do |format|
-      format.json { render json: { event: {**e_JSON, responses: @responses, invitees: @invitees, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name} } }
+      format.json { render json: { event: {**e_JSON, responses: @responses, invitees: @invitees, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name, metrics: @metrics || [] } } }
       end
   end
 
