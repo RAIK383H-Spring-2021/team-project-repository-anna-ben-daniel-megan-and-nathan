@@ -243,7 +243,17 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
   const classes = useStyles({ theme, size });
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
-  const [eventDetails, setEventDetails] = useState<EventDetailsObject>({});
+  const [eventDetails, setEventDetails] = useState<EventDetailsObject>({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+    location_type: "outdoor",
+    distancing: "6",
+    food: "none",
+    masks: "1me",
+  });
   const [invitees, setInvitees] = useState<UserObject[]>([]);
 
   const [stepperDisabled, setStepperDisabled] = useState<boolean[]>([
@@ -407,9 +417,9 @@ function SetEventDetails(props: SetEventDetailsProps) {
         label="Is food being served?"
         onChange={(value) => updateEventDetails("food", value)}
       >
+        <option value="none">No food allowed</option>
         <option value="ss">Yes, Self-serve</option>
         <option value="pp">Yes, Pre-packaged</option>
-        <option value="none">No food allowed</option>
       </Select>
     </div>
   );
@@ -613,9 +623,8 @@ const createEvent = (eventObject: EventDetailsObject) =>
       indoor: eventObject.location_type === "indoor",
       outdoor: eventObject.location_type === "outdoor",
       remote: eventObject.location_type === "remote",
-      social_distancing_masks: eventObject.masks
-        ? eventObject.distancing
-        : null,
+      social_distancing_masks:
+        eventObject.masks === "1me" ? eventObject.distancing : null,
       social_distancing_no_masks: eventObject.masks
         ? null
         : eventObject.distancing,
@@ -629,6 +638,8 @@ function SendInvitations(props: SendInvitationsProps) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
   const history = useHistory();
+
+  console.log(props.eventDetails);
 
   const [
     ceResponse,

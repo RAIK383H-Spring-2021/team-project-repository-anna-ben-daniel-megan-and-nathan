@@ -54,12 +54,12 @@ export class API {
     }
   }
 
-  public static put(path: string, body: object) {
+  private static makeRequest(path: string, body: object, method: string) {
     const url = this.makeUrl(path);
     const data = JSON.stringify(body);
 
     return fetch(url, {
-      method: "PUT",
+      method: method,
       body: data,
       headers: {
         "Content-Type": "application/json",
@@ -72,6 +72,10 @@ export class API {
         throw new Error(await res.json().catch(() => res.status));
       }
     });
+  }
+
+  public static put(path: string, body: object) {
+    return this.makeRequest(path, body, "PUT");
   }
 }
 

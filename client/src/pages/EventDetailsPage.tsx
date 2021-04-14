@@ -19,6 +19,7 @@ import { Score } from "../components/Score";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
+import { publish, useSubscription } from "../hooks/useSubscription";
 import { Event, host_name } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
@@ -154,10 +155,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 const EventDetailsPage: FC = () => {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
-  const [response, isLoading] = useRequest<{ event: Event }>(
+  const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
     events.get,
     event_id
   );
+
+  useSubscription<void>("event_update", () => makeRequest(event_id));
 
   return (
     <Fragment>
@@ -394,14 +397,13 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
   const [qOpen, setQOpen] = useState(false);
 
   async function submitQ(q: IQuestionnaire) {
-    console.log(q);
     const res = await API.put(
       `events/${eventId}/invitees/${User.getUser()?.id}/questionnaire`,
       q
-    ).catch((err) => console.log("Error!", err));
-    console.log(res);
-    if (res?.status === "success") {
+    ).catch((err) => ({ status: "error", error: err }));
+    if (!(res?.status === "error")) {
       setQOpen(false);
+      setTimeout(() => publish("event_update"), 500);
     }
   }
 
