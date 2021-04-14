@@ -15,6 +15,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 200,
     display: "flex",
     position: "relative",
+    paddingTop: 10,
+
+    "&, &>*, & *": {
+      overflow: "visible",
+      overflowX: "visible",
+      overflowY: "visible",
+    },
   },
   number: {
     fontFamily: "DM Sans",
@@ -43,7 +50,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     ...theme.typography.subheading,
     position: "absolute",
     margin: "auto",
-    bottom: 36,
+    bottom: 24,
     width: "100%",
     textAlign: "center",
   },

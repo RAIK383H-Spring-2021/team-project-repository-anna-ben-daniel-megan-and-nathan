@@ -12,6 +12,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   scroll: {
     height: "100%",
     overflowY: "auto",
+    overflowX: "hidden",
     // paddingBottom: ({ fabExists }) => fabExists && 96,
   },
   toolbar: {

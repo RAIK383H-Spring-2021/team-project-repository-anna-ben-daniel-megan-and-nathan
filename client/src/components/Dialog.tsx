@@ -56,11 +56,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: `calc(100% - 20px)`,
     margin: 20,
     display: "block",
+    width: "100%",
   },
   content: {
     ...theme.colors.background.base,
+    background: theme.colors.background.base.backgroundColor,
     width: 600,
     maxWidth: "100%",
+    position: "absolute",
+    display: "block",
     outline: "none",
     border: ({ size }) =>
       size === "small"
