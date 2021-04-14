@@ -116,7 +116,7 @@ module ComfortMetric
   end
 
   def groupSigmoid(x)
-    return (-8 / (1 + Math.exp(-x))) + 1
+    return (8 / (1 + Math.exp((-0.125)*x))) + 1
   end
 
 end
