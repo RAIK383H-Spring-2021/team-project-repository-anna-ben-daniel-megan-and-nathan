@@ -21,15 +21,17 @@ export function getBase(): IQuestionnaire {
     q2: 0,
     q3: 0,
     q4: 6,
-    q5: 0,
+    q5: 6,
     q6: 0,
     q7: 0,
-    q8: 5,
-    q9: 6,
-    q10: 0,
-    q11: 0,
+    q8: 0,
+    q9: 5,
+    q10: 6,
+    q11: 6,
     q12: 0,
-    q13: 5,
+    q13: 0,
+    q14: 0,
+    q15: 5,
   };
 }
 
@@ -104,7 +106,7 @@ const components: QuestionnaireComponent[] = [
     type: "header",
     text: `When Meeting Outdoors`,
   },
-  ...getSubQuestions(9),
+  ...getSubQuestions(10),
 ];
 
 function getSubQuestions(start: number): QuestionnaireComponent[] {
@@ -112,26 +114,31 @@ function getSubQuestions(start: number): QuestionnaireComponent[] {
     {
       id: start,
       type: "slider",
-      question: `What is the minimum distance you would like to keep between you and other people?`,
+      question: `What is the minimum distance you would like to keep between you and other people when wearing masks?`,
     },
     {
       id: start + 1,
+      type: "slider",
+      question: `What is the minimum distance you would like to keep between you and other people when not wearing masks?`,
+    },
+    {
+      id: start + 2,
       type: "sentiment",
       question: "How important is it to you that everyone wears a mask?",
     },
     {
-      id: start + 2,
+      id: start + 3,
       type: "sentiment",
       question:
         "How comfortable are you with prepackaged, individually wrapped food?",
     },
     {
-      id: start + 3,
+      id: start + 4,
       type: "sentiment",
       question: "How comfortable are you with buffet-style food?",
     },
     {
-      id: start + 4,
+      id: start + 5,
       type: "select",
       question: "What is the maximum group size that you are comfortable with?",
       options: [
@@ -173,7 +180,7 @@ export interface QuestionnaireProps {
 const useStyles = createUseStyles((theme) => ({
   toolbar: {
     position: "sticky",
-    top: 0,
+    top: "-2px",
   },
   body: {
     // empty for now

@@ -43,7 +43,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         ...base,
         height: "calc(100vh-75px-88px)",
         top: 81,
-      }
+      };
     }
   },
   toolbar: {
@@ -51,14 +51,14 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     position: "sticky",
     top: 0,
     "&.scrolled": {
-      boxShadow: "0 4 8 rgba(0, 0, 0, 0.1)"
-    }
+      boxShadow: "0 4 8 rgba(0, 0, 0, 0.1)",
+    },
   },
   eventDetailsWrapper: {
-    maxWidth: ({ size }) => size === "large" ? 510 : "100%",
+    maxWidth: ({ size }) => (size === "large" ? 510 : "100%"),
     display: "flex",
     flexDirection: "column",
-    marginBottom: ({ size }) => size === "large" ? "calc(20vh - 24px)" : 88,
+    marginBottom: ({ size }) => (size === "large" ? "calc(20vh - 24px)" : 88),
     padding: "0 24px",
     "& > *": {
       marginBottom: 24,
@@ -68,12 +68,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 1,
     alignSelf: "stretch",
     backgroundColor: theme.colors.divider.base.backgroundColor,
-    width: ({ size }) => size === "large" ? "100%" : "100vw",
-    marginLeft: ({ size }) => size === "large" ? 0 : -24,
+    width: ({ size }) => (size === "large" ? "100%" : "100vw"),
+    marginLeft: ({ size }) => (size === "large" ? 0 : -24),
   },
   horizontalInputs: {
     display: "grid",
-    gridTemplateColumns: ({ size }) => size === "large" ? "1fr 1fr" : "1fr",
+    gridTemplateColumns: ({ size }) => (size === "large" ? "1fr 1fr" : "1fr"),
     gridGap: 24,
   },
   stepper: ({ size }) => {
@@ -94,23 +94,23 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         backgroundColor: theme.colors.background.base.backgroundColor,
         padding: "16px 48px 24px 48px",
         margin: 0,
-        boxShadow: "0 -2px 8px rgba(0,0,0,0.10)"
+        boxShadow: "0 -2px 8px rgba(0,0,0,0.10)",
       };
     }
   },
   background: ({ size }) =>
     size === "large"
       ? {
-        height: "90vh",
-        width: "90vh",
-        position: "fixed",
-        bottom: "-20vh",
-        right: "-20vh",
-        zIndex: 1,
-      }
+          height: "90vh",
+          width: "90vh",
+          position: "fixed",
+          bottom: "-20vh",
+          right: "-20vh",
+          zIndex: 1,
+        }
       : {
-        display: "none",
-      },
+          display: "none",
+        },
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
       return {
@@ -124,22 +124,22 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     } else {
       return {
         marginBottom: 112,
-      }
+      };
     }
   },
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-        height: "60vh",
-        display: "flex",
-        flexDirection: "column",
-      }
-      : {
-        minHeight: 350,
-        "& input": {
-          margin: "0 24px",
+          height: "60vh",
+          display: "flex",
+          flexDirection: "column",
         }
-      },
+      : {
+          minHeight: 350,
+          "& input": {
+            margin: "0 24px",
+          },
+        },
   searchResultList: {
     flexShrink: 1,
     overflowY: "auto",
@@ -147,10 +147,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
-        height: "60vh",
-        display: "flex",
-        flexDirection: "column",
-      }
+          height: "60vh",
+          display: "flex",
+          flexDirection: "column",
+        }
       : {},
   sectionHeader: {
     ...theme.typography.preTitle,
@@ -161,10 +161,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesList: ({ size }) =>
     size === "large"
       ? {
-        flexGrow: 1,
-        backgroundColor: theme.colors.background.base.backgroundColor,
-        overflowY: "auto",
-      }
+          flexGrow: 1,
+          backgroundColor: theme.colors.background.base.backgroundColor,
+          overflowY: "auto",
+        }
       : {},
   sendInvitationsWrapper: {
     display: "flex",
@@ -199,7 +199,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     justifyContent: "center",
     padding: "0 24px",
     textAlign: "center",
-    marginTop: ({ size }) => size !== "large" ? 60 : 0,
+    marginTop: ({ size }) => (size !== "large" ? 60 : 0),
     "& > h2": {
       ...theme.typography.subheading,
     },
@@ -208,7 +208,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: 72,
     height: 72,
     boxSizing: "content-box",
-    padding: ({ size }) => size === "large" ? 36 : 24,
+    padding: ({ size }) => (size === "large" ? 36 : 24),
     backgroundColor: "rgba(103, 152, 248, 0.25)",
     display: "inline-block",
     borderRadius: "50%",
@@ -223,7 +223,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface CreateEventPageComponentProps { }
+export interface CreateEventPageComponentProps {}
 
 interface EventDetailsObject {
   title?: string;
@@ -398,7 +398,9 @@ function SetEventDetails(props: SetEventDetailsProps) {
         onChange={(value) => updateEventDetails("distancing", value)}
         min={0}
         max={12}
-        units={parseInt(props.eventDetails.distancing ?? "") === 1 ? "foot" : "feet"}
+        units={
+          parseInt(props.eventDetails.distancing ?? "") === 1 ? "foot" : "feet"
+        }
       />
       <div className={classes.eventDetailsDivider} />
       <Select
@@ -430,11 +432,11 @@ interface SearchUsersResponse {
 }
 
 const searchUsers = (query: string) =>
-({
-  method: "GET",
-  path: "users",
-  query: { q: query },
-} as FetchRequest);
+  ({
+    method: "GET",
+    path: "users",
+    query: { q: query },
+  } as FetchRequest);
 
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
@@ -479,7 +481,10 @@ function AddParticipants(props: AddParticipantsProps) {
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>
-            <List type={size === "large" ? "contain" : "fill"} className={classes.searchResultList}>
+            <List
+              type={size === "large" ? "contain" : "fill"}
+              className={classes.searchResultList}
+            >
               {results && !isLoading ? (
                 results.users
                   .filter(
@@ -536,12 +541,15 @@ function AddParticipants(props: AddParticipantsProps) {
           </div>
         )}
       </div>
-      {(size === "large" || props.invitees.length > 0) &&
+      {(size === "large" || props.invitees.length > 0) && (
         <div className={classes.inviteesPanel}>
           <h2 className={classes.sectionHeader}>
             Invitees ({props.invitees.length})
           </h2>
-          <List type={size === "large" ? "contain" : "fill"} className={classes.inviteesList}>
+          <List
+            type={size === "large" ? "contain" : "fill"}
+            className={classes.inviteesList}
+          >
             {props.invitees.map((invitee) => {
               if (invitee.first_name.length === 0) {
                 return (
@@ -574,7 +582,7 @@ function AddParticipants(props: AddParticipantsProps) {
             })}
           </List>
         </div>
-      }
+      )}
     </div>
   );
 }
@@ -589,25 +597,30 @@ interface CreateEventResponse {
 }
 
 const createEvent = (eventObject: EventDetailsObject) =>
-({
-  method: "POST",
-  path: "events",
-  body: {
-    title: eventObject.title,
-    host_id: User.getUser()?.id,
-    description: eventObject.description,
-    date_time: new Date(
-      `${eventObject.date}T${eventObject.time}`
-    ).toISOString(),
-    food_prepackaged: eventObject.food === "pp",
-    food_buffet: eventObject.food === "ss",
-    location: eventObject.location,
-    indoor: eventObject.location_type === "indoor",
-    outdoor: eventObject.location_type === "outdoor",
-    remote: eventObject.location_type === "remote",
-    score: -1,
-  },
-} as MutativeRequest);
+  ({
+    method: "POST",
+    path: "events",
+    body: {
+      title: eventObject.title,
+      host_id: User.getUser()?.id,
+      description: eventObject.description,
+      date_time: new Date(
+        `${eventObject.date}T${eventObject.time}`
+      ).toISOString(),
+      food_prepackaged: eventObject.food === "pp",
+      food_buffet: eventObject.food === "ss",
+      location: eventObject.location,
+      indoor: eventObject.location_type === "indoor",
+      outdoor: eventObject.location_type === "outdoor",
+      remote: eventObject.location_type === "remote",
+      social_distancing_masks: eventObject.masks
+        ? eventObject.distancing
+        : null,
+      social_distancing_no_masks: eventObject.masks
+        ? null
+        : eventObject.distancing,
+    },
+  } as MutativeRequest);
 
 let invitesPushed = false;
 
@@ -617,9 +630,11 @@ function SendInvitations(props: SendInvitationsProps) {
   const classes = useStyles({ theme, size });
   const history = useHistory();
 
-  const [ceResponse, ceLoading, ceMakeRequest] = useRequest<
-    CreateEventResponse
-  >(createEvent);
+  const [
+    ceResponse,
+    ceLoading,
+    ceMakeRequest,
+  ] = useRequest<CreateEventResponse>(createEvent);
 
   if (ceResponse && !ceLoading) {
     if (!invitesPushed) {

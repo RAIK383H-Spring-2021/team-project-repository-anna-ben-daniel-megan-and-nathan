@@ -289,7 +289,13 @@ function Meter({ event }: { event: Event }) {
 
   const type = complete ? "score" : "responses";
   const max = complete ? 5 : event.invitees;
-  const score = complete ? event.score : host ? event.responses : -1;
+  const score = (() => {
+    if (host) {
+      return complete ? event.score : -1;
+    } else {
+      return event.metrics?.total_score ?? -1;
+    }
+  })();
   const label = complete
     ? host
       ? "Group Comfort Score"

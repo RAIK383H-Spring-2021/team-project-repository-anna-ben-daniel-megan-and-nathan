@@ -1,12 +1,10 @@
 import { Resource } from "../hooks/useRequest";
-import { events as demoEvents } from "./examples";
 
 export const events: Resource = {
   get: (id: number) => {
     return {
       path: `events/${id}`,
       method: "GET",
-      debug: () => demoEvents[id],
     };
   },
 

@@ -3,6 +3,7 @@ import { createUseStyles, useTheme } from "react-jss";
 import { getColor } from "../getColor";
 import { AppTheme } from "../theme";
 import { Icon } from "./Icon";
+import { round } from "./Score";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   circle: {
@@ -61,7 +62,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
     return (
       <div className={classes.circle}>
         <span className={classes.value}>
-          {icon ? <Icon name={icon} /> : value < 0 ? "?" : value}
+          {icon ? <Icon name={icon} /> : value < 0 ? "?" : round(value)}
         </span>
       </div>
     );
@@ -93,7 +94,9 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
           />
         </svg>
         <div className={classes.response}>
-          <span>{icon ? <Icon name={icon} /> : value < 0 ? "?" : value}</span>
+          <span>
+            {icon ? <Icon name={icon} /> : value < 0 ? "?" : round(value)}
+          </span>
         </div>
       </div>
     );
