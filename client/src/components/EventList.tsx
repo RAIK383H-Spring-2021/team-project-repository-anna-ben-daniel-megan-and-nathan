@@ -112,12 +112,18 @@ export function EventList(props: EventListComponentProps) {
             }
 
             const score = event.metrics?.total_score;
+            console.log(score);
 
             return (
               <ListItem
                 key={i}
                 button={true}
-                start={<MiniScore value={score} type="score" />}
+                start={
+                  <MiniScore
+                    value={score ?? -1}
+                    type={score ? "score" : "responses"}
+                  />
+                }
                 end={<InfoIconStack info={getInfo(event, info)} />}
                 subtitle={truncateDescription(event.description)}
                 onClick={() =>

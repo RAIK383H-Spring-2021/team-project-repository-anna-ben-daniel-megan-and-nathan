@@ -378,7 +378,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
     );
   }
 
-  const qc = event.responses / event.invitees <= 0.8;
+  const qc = !event.metrics.total_score;
 
   return (
     <section className={classes.sectionWrapper}>
