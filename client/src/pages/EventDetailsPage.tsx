@@ -290,8 +290,8 @@ function Meter({ event }: { event: Event }) {
   const complete = event.responses / event.invitees > 0.8;
   const host = event.host_id === User.user?.id ?? 0;
 
-  const type = complete ? "score" : "responses";
-  const max = complete ? 5 : event.invitees;
+  const type = host ? (complete ? "score" : "responses") : "score";
+  const max = host ? (complete ? 5 : event.invitees) : 5;
   const score = (() => {
     if (host) {
       return complete ? event.score : -1;

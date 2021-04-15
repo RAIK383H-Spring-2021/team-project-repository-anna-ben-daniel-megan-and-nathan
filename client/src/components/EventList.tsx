@@ -72,7 +72,12 @@ export function EventList(props: EventListComponentProps) {
                 <ListItem
                   key={i}
                   button={true}
-                  start={<MiniScore value={event.score} type="score" />}
+                  start={
+                    <MiniScore
+                      value={host ? event.score : event.metrics?.total_score}
+                      type="score"
+                    />
+                  }
                   end={<InfoIconStack info={getInfo(event, info)} />}
                   subtitle={truncateDescription(event.description)}
                   onClick={() =>
@@ -97,9 +102,9 @@ export function EventList(props: EventListComponentProps) {
                 }
                 start={
                   <MiniScore
-                    value={host ? event.responses : -1}
+                    value={host ? event.responses : event.metrics?.total_score}
                     max={event.invitees}
-                    type="responses"
+                    type={host ? "responses" : "score"}
                   />
                 }
               >
