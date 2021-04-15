@@ -45,9 +45,6 @@ class QuestionnaireController < ApplicationController
     @id = authorized()
     @participant = Participant.where(event_id: params[:event_id]).find_by(user_id: @id)
 
-    puts @participant
-    puts @id
-
     if(!(@participant) || !(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
