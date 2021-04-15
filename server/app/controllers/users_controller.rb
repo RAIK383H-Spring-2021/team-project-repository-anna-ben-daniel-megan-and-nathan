@@ -9,7 +9,8 @@ class UsersController < ApplicationController
       return
     end
 
-    @users = User.where("email LIKE ?", "#{params[:q]}%")
+    @id = authorized()
+    @users = User.where(["email LIKE ? and id != ?", "#{params[:q]}%", "#{@id}"])
 
     @users = @users.map{ |user| user.as_json(only: %i[id email first_name last_name]) }
 

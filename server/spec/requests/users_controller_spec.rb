@@ -18,13 +18,21 @@ RSpec.describe "user controller requests", type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
+    it "does not return the authorized user's email, meaning they can't search for themselves to add as an invitee" do
+      get '/users', params: { q: "test@test.test" }, headers: { "Authorization": "Bearer #{@token}"}
+
+      @res = JSON.parse(response.body)
+
+      expect(@res["users"]).to be_empty
+    end
+
     it "gets all users matching query when user is authenticated" do
       get '/users', params: { q: "" }, headers: { "Authorization": "Bearer #{@token}"}
 
       @res = JSON.parse(response.body)
 
       expect(@res.keys).to match_array(["users"])
-      expect(@res["users"][0]["email"]).to eq("test@test.test")
+      expect(@res["users"][0]["email"]).to eq("hello@hello.hello")
     end
   end
 
