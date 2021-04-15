@@ -64,18 +64,38 @@ export function EventList(props: EventListComponentProps) {
       ) : (
         <List type={style} className={classes.wrapper}>
           {events.map((event, i) => {
-            const complete = event.responses / event.invitees > 0.8;
+            const complete = event.score !== null;
             const host = event.host_id === userId;
 
-            if (complete) {
+            if (host) {
+              if (complete) {
+                return (
+                  <ListItem
+                    key={i}
+                    button={true}
+                    start={<MiniScore value={event.score} type="score" />}
+                    end={<InfoIconStack info={getInfo(event, info)} />}
+                    subtitle={truncateDescription(event.description)}
+                    onClick={() =>
+                      history.push(`/events/${event.id}`, {
+                        referrer: "dashboard",
+                      })
+                    }
+                  >
+                    {event.title}
+                  </ListItem>
+                );
+              }
+
               return (
                 <ListItem
                   key={i}
                   button={true}
                   start={
                     <MiniScore
-                      value={host ? event.score : event.metrics?.total_score}
-                      type="score"
+                      value={event.responses}
+                      max={event.invitees}
+                      type="responses"
                     />
                   }
                   end={<InfoIconStack info={getInfo(event, info)} />}
@@ -91,21 +111,19 @@ export function EventList(props: EventListComponentProps) {
               );
             }
 
+            const score = event.metrics?.total_score;
+
             return (
               <ListItem
                 key={i}
                 button={true}
-                subtitle={truncateDescription(event.description)}
+                start={<MiniScore value={score} type="score" />}
                 end={<InfoIconStack info={getInfo(event, info)} />}
+                subtitle={truncateDescription(event.description)}
                 onClick={() =>
-                  history.push(`/events/${event.id}`, { referrer: "dashboard" })
-                }
-                start={
-                  <MiniScore
-                    value={host ? event.responses : event.metrics?.total_score}
-                    max={event.invitees}
-                    type={host ? "responses" : "score"}
-                  />
+                  history.push(`/events/${event.id}`, {
+                    referrer: "dashboard",
+                  })
                 }
               >
                 {event.title}

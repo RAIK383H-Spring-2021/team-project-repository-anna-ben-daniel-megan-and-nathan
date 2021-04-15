@@ -640,8 +640,6 @@ function SendInvitations(props: SendInvitationsProps) {
   const classes = useStyles({ theme, size });
   const history = useHistory();
 
-  console.log(props.eventDetails);
-
   const [
     ceResponse,
     ceLoading,
@@ -656,20 +654,9 @@ function SendInvitations(props: SendInvitationsProps) {
   }
 
   async function inviteUsers() {
-    const url = API.makeUrl(`events/${ceResponse?.id}/invitees`);
-    for (const user of props.invitees) {
-      await fetch(url, {
-        body: JSON.stringify({
-          user_id: user.id,
-          questionnaire_complete: false,
-        }),
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
-    }
+    await API.post(`events/${ceResponse?.id}/invitees`, {
+      user_ids: props.invitees.map((invitee) => invitee.id),
+    });
     history.push(`/events/${ceResponse?.id}`);
   }
 

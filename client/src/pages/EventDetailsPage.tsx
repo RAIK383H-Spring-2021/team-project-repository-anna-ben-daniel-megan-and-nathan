@@ -294,7 +294,7 @@ function Meter({ event }: { event: Event }) {
   const max = host ? (complete ? 5 : event.invitees) : 5;
   const score = (() => {
     if (host) {
-      return complete ? event.score : -1;
+      return complete ? event.score : event.responses;
     } else {
       return event.metrics?.total_score ?? -1;
     }
