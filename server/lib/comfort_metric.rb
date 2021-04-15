@@ -40,7 +40,7 @@ module ComfortMetric
     end
   end
 
-  def generateFoodScore(quest, event, indoor)
+  def self.generateFoodScore(quest, event, indoor)
     if (indoor)
       if event.food_prepackaged
         return quest.q7
@@ -56,7 +56,7 @@ module ComfortMetric
     end
   end
 
-  def generateMasksSocialDistancingScore(quest, event, indoor)
+  def self.generateMasksSocialDistancingScore(quest, event, indoor)
     if (indoor)
       if (event.social_distancing_masks)
         indRisk = 1 / (feetToMeters(quest.q4) + 1)
@@ -84,7 +84,7 @@ module ComfortMetric
     end
   end
 
-  def generateGroupSizeScore(quest, event, indoor)
+  def self.generateGroupSizeScore(quest, event, indoor)
 
     comfortSize = -1
     if (indoor)
@@ -93,13 +93,13 @@ module ComfortMetric
       comfortSize = quest.q15
     end
 
-    eventSize = Participant.where(event_id: event.id).length
-    return (comfortSize > eventSize) || (comfortSize == -1) ? 5 : groupSigmoid(comfortSize - eventSize)
+    eventSize = Participant.where(event_id: event.ids).length
+    return (comfortSize > eventSize) || (comfortSize == -1) ? 5 : groupSigmoid((comfortSize - eventSize).to_f/comfortSize)
   end
 
   private
 
-  def findPenalty(quest, event, indoor)
+  def self.findPenalty(quest, event, indoor)
     if (indoor)
       return event.social_distancing_masks ? 1 : 1.2 - (0.2 * quest.q6)
     else
@@ -107,16 +107,16 @@ module ComfortMetric
     end
   end
 
-  def feetToMeters(x)
+  def self.feetToMeters(x)
     return x / 3.281
   end
 
-  def maskSigmoid(x)
+  def self.maskSigmoid(x)
     return (-8 / (1 + Math.exp(-x))) + 9
   end
 
-  def groupSigmoid(x)
-    return (8 / (1 + Math.exp((-0.125)*x))) + 1
+  def self.groupSigmoid(x)
+    return (8 / (1 + Math.exp((-3.5)*x))) + 1
   end
 
 end

@@ -72,7 +72,9 @@
   indoor: true,
   outdoor: false,
   remote: false,
-  score: 1
+  score: 1, 
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
 )
 
 @event2 = Event.create(
@@ -102,7 +104,9 @@
   indoor: true,
   outdoor: false,
   remote: false,
-  score: 1
+  score: 1, 
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
 )
 
 @event4 = Event.create(
@@ -116,7 +120,57 @@
   indoor: true,
   outdoor: false,
   remote: false,
-  score: 1
+  score: 1,
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
+)
+
+@event5 = Event.create(
+  title: "event 5",
+  host_id: @user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: true,
+  food_buffet: false,
+  location: "test",
+  indoor: true,
+  outdoor: false,
+  remote: false,
+  score: 1,
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
+)
+
+@event6 = Event.create(
+  title: "event 6",
+  host_id: @user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: true,
+  food_buffet: false,
+  location: "test",
+  indoor: true,
+  outdoor: false,
+  remote: false,
+  score: 1,
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
+)
+
+@event7 = Event.create(
+  title: "event7",
+  host_id: @user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: true,
+  food_buffet: false,
+  location: "test",
+  indoor: true,
+  outdoor: false,
+  remote: false,
+  score: 1,
+  social_distancing_masks: 6,
+  social_distancing_no_masks: nil
 )
 
 # seed two invitations, each user invited to the other event
@@ -148,5 +202,23 @@ Participant.create(
 Participant.create(
   user_id: @invited_user.id,
   event_id: @event4.id,
+  questionnaire_complete: 0
+)
+
+Participant.create(
+  user_id: @invited_user.id,
+  event_id: @event6.id,
+  questionnaire_complete: 0
+)
+
+Participant.create(
+  user_id: @invited_user.id,
+  event_id: @event6.id,
+  questionnaire_complete: 0
+)
+
+Participant.create(
+  user_id: @invited_user.id,
+  event_id: @event6.id,
   questionnaire_complete: 0
 )

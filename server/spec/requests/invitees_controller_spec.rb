@@ -62,7 +62,7 @@ RSpec.describe "invitees controller requests", type: :request do
 
             @res = JSON.parse(response.body)
 
-            expect(@res["id"]).to eq(8)
+            expect(@res["id"]).to eq(11)
         end
     end
 end
