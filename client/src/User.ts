@@ -73,6 +73,8 @@ export class User {
       if (Object.values(result).every((q) => q)) {
         delete result.id;
         this._questionnaire = result;
+      } else {
+        this._questionnaire = getBaseQ();
       }
     }
   }
