@@ -77,6 +77,31 @@ export class API {
   public static put(path: string, body: object) {
     return this.makeRequest(path, body, "PUT");
   }
+
+  public static post(path: string, body: object) {
+    return this.makeRequest(path, body, "POST");
+  }
+
+  public static get<T>(
+    path: string,
+    query?: { [key: string]: string | number | boolean }
+  ): Promise<T> {
+    const url = this.makeUrl(path, query);
+
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    }).then(async (res) => {
+      if (res.ok) {
+        return await res.json();
+      } else {
+        throw new Error(await res.json().catch(() => res.status));
+      }
+    });
+  }
 }
 
 const ec = encodeURIComponent;

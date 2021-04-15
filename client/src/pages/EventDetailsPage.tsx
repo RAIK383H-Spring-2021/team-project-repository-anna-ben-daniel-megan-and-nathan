@@ -288,7 +288,7 @@ function Meter({ event }: { event: Event }) {
   const classes = useStyles({ theme });
 
   const complete = event.responses / event.invitees > 0.8;
-  const host = event.host_id === User.getUser()?.id ?? 0;
+  const host = event.host_id === User.user?.id ?? 0;
 
   const type = complete ? "score" : "responses";
   const max = complete ? 5 : event.invitees;
@@ -367,7 +367,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
 
-  if (event.host_id === User.getUser()?.id) {
+  if (event.host_id === User.user?.id) {
     return (
       <section className={classes.sectionWrapper}>
         <h2 hidden={screen !== "large"} className={classes.cardLabel}>
@@ -398,7 +398,7 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
 
   async function submitQ(q: IQuestionnaire) {
     const res = await API.put(
-      `events/${eventId}/invitees/${User.getUser()?.id}/questionnaire`,
+      `events/${eventId}/invitees/${User.user?.id}/questionnaire`,
       q
     ).catch((err) => ({ status: "error", error: err }));
     if (!(res?.status === "error")) {

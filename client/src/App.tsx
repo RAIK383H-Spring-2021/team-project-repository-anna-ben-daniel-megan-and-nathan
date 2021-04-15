@@ -35,7 +35,7 @@ const theme = determineTheme();
 document.body.classList.add(theme.name);
 
 const requireAuth = () => {
-  if (User.getUser()) {
+  if (User.user) {
     return new Promise<boolean | string>(async (resolve, reject) => {
       const authorized = await User.isAuthorized;
       if (authorized) resolve(true);

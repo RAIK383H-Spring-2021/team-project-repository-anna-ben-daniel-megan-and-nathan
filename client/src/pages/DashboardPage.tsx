@@ -178,7 +178,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
-          title={`Hi, ${User.getUser()?.first_name}!`}
+          title={`Hi, ${User.user?.first_name}!`}
           size="large"
           end={
             <IconButton icon="account_circle" onClick={() => toggleTheme()} />
@@ -227,7 +227,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
-            title={`Hi, ${User.getUser()?.first_name}!`}
+            title={`Hi, ${User.user?.first_name}!`}
             background="filled"
             end={
               <IconButton icon="account_circle" onClick={() => toggleTheme()} />
@@ -275,7 +275,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
 
   const [response, isLoading] = useRequest<UserCreatedEventsResponse>(
     getUserCreatedEvents,
-    User.getUser()?.id
+    User.user?.id
   );
 
   const showCTA = !isLoading && (response?.events.length ?? 0) === 0;
@@ -296,7 +296,7 @@ function CreatedEventsTab({ type: style }: { type: "fill" | "contain" }) {
           loading={isLoading}
           title="Your Events"
           info={["invitees", "date"]}
-          userId={User.getUser()?.id ?? 0}
+          userId={User.user?.id ?? 0}
         ></EventList>
       )}
     </div>
@@ -309,10 +309,10 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
 
   const [response, isLoading] = useRequest<UserInvitationsResponse>(
     getUserInvitations,
-    User.getUser()?.id
+    User.user?.id
   );
 
-  const userId = User.getUser()?.id ?? 0;
+  const userId = User.user?.id ?? 0;
 
   function OnlyNewVariant() {
     return (

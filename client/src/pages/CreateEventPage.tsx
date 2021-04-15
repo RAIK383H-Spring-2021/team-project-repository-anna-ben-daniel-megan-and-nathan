@@ -613,7 +613,7 @@ const createEvent = (eventObject: EventDetailsObject) =>
     path: "events",
     body: {
       title: eventObject.title,
-      host_id: User.getUser()?.id,
+      host_id: User.user?.id,
       description: eventObject.description,
       date_time: new Date(
         `${eventObject.date}T${eventObject.time}`

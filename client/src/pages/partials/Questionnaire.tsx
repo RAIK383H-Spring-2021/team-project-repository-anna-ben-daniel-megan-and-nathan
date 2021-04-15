@@ -10,12 +10,13 @@ import { SentimentPicker } from "../../components/SentimentPicker";
 import { Slider } from "../../components/Slider";
 import { Toolbar } from "../../components/Toolbar";
 import { AppTheme } from "../../theme";
+import { User } from "../../User";
 
 export interface IQuestionnaire {
   [key: string]: number;
 }
 
-export function getBase(): IQuestionnaire {
+export function getBaseQ(): IQuestionnaire {
   return {
     q1: 0,
     q2: 0,
@@ -190,10 +191,10 @@ const useStyles = createUseStyles((theme) => ({
   },
 }));
 
-const q = getBase();
-
 export const Questionnaire: FC<QuestionnaireProps> = (props) => {
   const { open, onSubmit, onClose } = props;
+
+  const q = User.questionnaire;
 
   const [canSubmit, setCanSubmit] = useState(
     Object.values(q).every((val) => val !== 0)
@@ -262,7 +263,7 @@ const QuestionnairePart: FC<QuestionnaireComponentProps> = (props) => {
   };
 
   function valueAt(num: number) {
-    return q[`q${num}`];
+    return props.q[`q${num}`];
   }
 
   const c = props.comp;
