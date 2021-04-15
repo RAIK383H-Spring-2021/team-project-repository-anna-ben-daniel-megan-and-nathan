@@ -28,10 +28,10 @@ RSpec.describe "questionnaires controller requests", type: :request do
             post '/users/login', params: { email: "no@event.user", password: "password" }
             @resIndividualTest = JSON.parse(response.body)
             @tokenIndividualTest = @resIndividualTest["token"]
-            get "/users/3/questionnaire", headers: { "Authorization": "Bearer #{@tokenIndividualTest}"}
+            get "/users/4/questionnaire", headers: { "Authorization": "Bearer #{@tokenIndividualTest}"}
 
             @res = JSON.parse(response.body)
-            expect(@res["id"]).to eq(3)
+            expect(@res["id"]).to eq(4)
         end
     end
 

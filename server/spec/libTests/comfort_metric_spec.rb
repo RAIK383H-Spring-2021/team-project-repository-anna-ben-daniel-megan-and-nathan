@@ -120,7 +120,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @resId = JSON.parse(response.body)["event"]["id"]
 
-            @event = Event.where(id: @resId)
+            @event = Event.find(@resId)
 
             @groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true)
             
@@ -134,7 +134,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @resId = JSON.parse(response.body)["event"]["id"]
 
-            @event = Event.where(id: @resId)
+            @event = Event.find(@resId)
 
             @groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true)
             
@@ -146,7 +146,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @resId = JSON.parse(response.body)["event"]["id"]
 
-            @event = Event.where(id: @resId)
+            @event = Event.find(@resId)
 
             @localQuest = Questionnaire.new(q1: 5,
             q2: 2, 
@@ -174,7 +174,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @resId = JSON.parse(response.body)["event"]["id"]
 
-            @event = Event.where(id: @resId)
+            @event = Event.find(@resId)
 
             @groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true).round(4)
             
