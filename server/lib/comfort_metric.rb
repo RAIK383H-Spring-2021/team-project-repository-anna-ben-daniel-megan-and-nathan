@@ -93,7 +93,7 @@ module ComfortMetric
       comfortSize = quest.q15
     end
 
-    eventSize = Participant.where(event_id: event.ids).length
+    eventSize = Participant.where(event_id: event.id).length
     return (comfortSize > eventSize) || (comfortSize == -1) ? 5 : groupSigmoid((comfortSize - eventSize).to_f/comfortSize)
   end
 

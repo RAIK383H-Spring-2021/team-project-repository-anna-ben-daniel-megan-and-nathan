@@ -15,7 +15,7 @@ class QuestionnaireController < ApplicationController
     @id = authorized()
     @user = User.find_by(id: params[:id])
 
-    if(!(@id == @user.id) && !(@user.privacy_level == 1))
+    if(!(@id == @user.id))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
@@ -43,9 +43,12 @@ class QuestionnaireController < ApplicationController
     end
 
     @id = authorized()
-    @participant_id = Participant.where(user_id: @id).where(event_id: params[:event_id]).ids
+    @participant = Participant.where(event_id: params[:event_id]).find_by(user_id: @id)
 
-    if(!(@participant_id.first.to_s == params[:id]))
+    puts @participant
+    puts @id
+
+    if(!(@participant) || !(@id == params[:id].to_i))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
@@ -56,7 +59,6 @@ class QuestionnaireController < ApplicationController
     @user = User.find_by(id: @id)
     @event = Event.find(params[:event_id])
     @questionnaire = Questionnaire.find(@user.questionnaire_id)
-    @participant = Participant.where(user_id: @id).where(event_id: params[:event_id])
 
     @questionnaire.update(
       q1: params[:q1],
