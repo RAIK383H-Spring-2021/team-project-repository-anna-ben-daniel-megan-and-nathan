@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles, useTheme } from "react-jss";
 import { Link, useHistory } from "react-router-dom";
@@ -129,6 +129,11 @@ const SignUpPage: FC = (props) => {
     history.push("/dash");
   }
 
+  function handleSubmit(ev: FormEvent) {
+    ev.preventDefault();
+    makeRequest(firstName, lastName, email, password);
+  }
+
   return (
     <div className={classes.content}>
       <Helmet title="Sign Up"></Helmet>
@@ -141,7 +146,7 @@ const SignUpPage: FC = (props) => {
             <Logo type="full" />
           </Link>
         </div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className={classes.nameWrapper}>
             <Input
               type="text"
@@ -179,15 +184,15 @@ const SignUpPage: FC = (props) => {
             type="password"
             label="Confirm Password"
           />
+          <div className={classes.buttonWrapper}>
+            <Button
+              onClick={() => makeRequest(firstName, lastName, email, password)}
+              color="accent"
+            >
+              {isLoading ? "Loading..." : "Sign Up"}
+            </Button>
+          </div>
         </form>
-        <div className={classes.buttonWrapper}>
-          <Button
-            onClick={() => makeRequest(firstName, lastName, email, password)}
-            color="accent"
-          >
-            {isLoading ? "Loading..." : "Sign Up"}
-          </Button>
-        </div>
         <div className={classes.logInLinkWrapper}>
           <Link to="/login" className={classes.logInLink}>
             Already have an account? Log In

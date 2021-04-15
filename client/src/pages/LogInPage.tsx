@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles, useTheme } from "react-jss";
 import { Link, useHistory } from "react-router-dom";
@@ -118,6 +118,11 @@ const LogInPage: FC = (props) => {
     history.push("/dash");
   }
 
+  function handleSubmit(ev: FormEvent) {
+    ev.preventDefault();
+    makeRequest(email, password);
+  }
+
   return (
     <div className={classes.content}>
       <Helmet title="Log In"></Helmet>
@@ -130,27 +135,29 @@ const LogInPage: FC = (props) => {
             <Logo type="full" />
           </Link>
         </div>
-        <form className={classes.inputWrapper}>
-          <Input
-            className={classes.input}
-            value={email}
-            onChange={setEmail}
-            type="email"
-            label="Email"
-          />
-          <Input
-            className={classes.input}
-            value={password}
-            onChange={setPassword}
-            type="password"
-            label="Password"
-          />
+        <form onSubmit={handleSubmit}>
+          <div className={classes.inputWrapper}>
+            <Input
+              className={classes.input}
+              value={email}
+              onChange={setEmail}
+              type="email"
+              label="Email"
+            />
+            <Input
+              className={classes.input}
+              value={password}
+              onChange={setPassword}
+              type="password"
+              label="Password"
+            />
+          </div>
+          <div className={classes.buttonWrapper}>
+            <Button color="accent" onClick={() => makeRequest(email, password)}>
+              {isLoading ? "Loading..." : "Log In"}
+            </Button>
+          </div>
         </form>
-        <div className={classes.buttonWrapper}>
-          <Button color="accent" onClick={() => makeRequest(email, password)}>
-            {isLoading ? "Loading..." : "Log In"}
-          </Button>
-        </div>
         <div className={classes.logInLinkWrapper}>
           <Link to="/register" className={classes.logInLink}>
             Don't have an account? Sign Up

@@ -24,7 +24,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       color: theme.colors.background.light?.color,
       position: "absolute",
       right: 1,
-      top: 5,
+      top: 11,
       padding: "12px 18px 12px 6px",
       borderRadius: 4,
       backgroundColor: theme.colors.background.base.backgroundColor,

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState, useEffect } from "react";
+import { ChangeEvent, FC, useState, useEffect, ReactNode, useRef } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
@@ -8,7 +8,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     flexDirection: "column",
   },
   label: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  labelText: {
     ...theme.typography.preTitle,
+    marginBottom: 6,
   },
   input: {
     margin: "4px 0",
@@ -19,6 +24,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderRadius: 4,
     position: "relative",
     height: 44,
+    display: "block",
 
     "&:hover": {
       border: `1px solid ${theme.colors.primary.light?.backgroundColor}`,
@@ -117,6 +123,7 @@ export interface InputComponentProps {
   max?: number;
   onChange?: (value: string) => void;
   className?: string;
+  end?: ReactNode;
 }
 
 export const Input: FC<InputComponentProps> = (props) => {
@@ -124,6 +131,8 @@ export const Input: FC<InputComponentProps> = (props) => {
   const classes = useStyles({ theme });
 
   const [value, setValue] = useState(props.value ?? "");
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     props.value !== undefined && props.value !== value && setValue(props.value);
@@ -144,18 +153,24 @@ export const Input: FC<InputComponentProps> = (props) => {
 
   return (
     <div className={`${classes.wrapper} ${props.className ?? ""}`}>
-      {props.label && <label className={classes.label}>{props.label}</label>}
-      <input
-        type={props.type}
-        placeholder={props.placeholder}
-        className={classes.input}
-        maxLength={props.maxLength}
-        onChange={(ev) => handleChange(ev)}
-        value={value}
-        disabled={props.disabled}
-        min={props.min}
-        max={props.max}
-      />
+      <label
+        className={classes.label}
+        onClick={() => inputRef.current?.focus?.()}
+      >
+        <div className={classes.labelText}>{props.label}</div>
+        <input
+          type={props.type}
+          placeholder={props.placeholder}
+          className={classes.input}
+          maxLength={props.maxLength}
+          onChange={(ev) => handleChange(ev)}
+          value={value}
+          disabled={props.disabled}
+          min={props.min}
+          max={props.max}
+          ref={inputRef}
+        />
+      </label>
       <div className={classes.captionWrapper}>
         <span className={classes.caption}>{props.caption}</span>
         {props.maxLength && (

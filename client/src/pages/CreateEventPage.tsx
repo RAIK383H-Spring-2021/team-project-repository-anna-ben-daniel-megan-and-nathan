@@ -483,6 +483,7 @@ function AddParticipants(props: AddParticipantsProps) {
     <div className={classes.addParticipantsWrapper}>
       <div className={classes.searchPanel}>
         <Input
+          label="search"
           type="search"
           placeholder="Invite with email address"
           value={query}
