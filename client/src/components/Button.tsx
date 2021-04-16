@@ -12,13 +12,24 @@ const fontSizes = new Map([
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     ...theme.typography.button,
-    color: ({ color, transparent }) =>
-      transparent
+    color: ({ color, transparent, disabled }) =>
+      disabled
+        ? theme.colors.divider.base.color
+        : color === "black"
+        ? "black"
+        : color === "white"
+        ? "white"
+        : transparent
         ? theme.colors[color].base.backgroundColor
         : theme.colors[color].base.color,
-    backgroundColor: ({ color, transparent }) =>
-      transparent ? "transparent" : theme.colors[color].base.backgroundColor,
-    border: "none",
+    backgroundColor: ({ color, transparent, disabled }) =>
+      disabled
+        ? "transparent"
+        : transparent
+        ? "transparent"
+        : theme.colors[color].base.backgroundColor,
+    border: ({ disabled }) =>
+      disabled ? `2px solid ${theme.colors.divider.base.color}` : "none",
     padding: "14px 24px",
     borderRadius: 4,
     cursor: "pointer",
@@ -48,11 +59,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 export interface ButtonComponentProps {
-  color?: "primary" | "secondary" | "accent" | "background";
+  color?: "primary" | "secondary" | "accent" | "background" | "black" | "white";
   transparent?: boolean;
   size?: "small" | "medium" | "large";
   end?: ReactNode;
   className?: string;
+  disabled?: boolean;
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -63,13 +75,16 @@ export const Button: FC<ButtonComponentProps> = (props) => {
     size = "medium",
     end,
     className = "",
+    disabled = false,
   } = props;
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, color, transparent, size });
+  const classes = useStyles({ theme, color, transparent, size, disabled });
 
   const rippleRef = useRef(null);
 
-  const colorBase = theme.colors[color].base;
+  const colorBase = ["black", "white"].includes(color)
+    ? { color }
+    : theme.colors[color].base;
 
   useRipple(rippleRef, colorBase.color);
 
@@ -78,6 +93,7 @@ export const Button: FC<ButtonComponentProps> = (props) => {
       className={[classes.button, className].join(" ")}
       ref={rippleRef}
       onClick={props.onClick}
+      disabled={disabled}
     >
       {props.children}
       {end && <div className={classes.end}>{end}</div>}

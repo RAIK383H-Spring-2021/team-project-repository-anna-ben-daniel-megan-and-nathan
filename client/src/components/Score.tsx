@@ -2,6 +2,10 @@ import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 
+export function round(score: number, precision: number = 1) {
+  return Math.round(score * 10 ** precision) / 10 ** precision;
+}
+
 const WIDTH = 250;
 const STROKE = 16;
 
@@ -11,6 +15,13 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 200,
     display: "flex",
     position: "relative",
+    paddingTop: 10,
+
+    "&, &>*, & *": {
+      overflow: "visible",
+      overflowX: "visible",
+      overflowY: "visible",
+    },
   },
   number: {
     fontFamily: "DM Sans",
@@ -39,7 +50,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     ...theme.typography.subheading,
     position: "absolute",
     margin: "auto",
-    bottom: 36,
+    bottom: 24,
     width: "100%",
     textAlign: "center",
   },
@@ -108,7 +119,7 @@ export const Score: FC<ScoreComponentProps> = (props) => {
           />
         </svg>
       </div>
-      <div className={classes.number}>{val < 0 ? "?" : val}</div>
+      <div className={classes.number}>{val < 0 ? "?" : round(val, 1)}</div>
       <div className={classes.label}>{label}</div>
     </div>
   );

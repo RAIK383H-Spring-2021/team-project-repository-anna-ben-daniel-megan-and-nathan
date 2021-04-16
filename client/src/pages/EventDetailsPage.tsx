@@ -1,9 +1,10 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
 import { useHistory, useParams } from "react-router";
 import { useTheme } from "theming";
+import { API } from "../api";
 import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -18,10 +19,12 @@ import { Score } from "../components/Score";
 import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
+import { publish, useSubscription } from "../hooks/useSubscription";
 import { Event, host_name } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
+import { IQuestionnaire, Questionnaire } from "./partials/Questionnaire";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -152,10 +155,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 const EventDetailsPage: FC = () => {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
-  const [response, isLoading] = useRequest<{ event: Event }>(
+  const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
     events.get,
     event_id
   );
+
+  useSubscription<void>("event_update", () => makeRequest(event_id));
 
   return (
     <Fragment>
@@ -283,11 +288,17 @@ function Meter({ event }: { event: Event }) {
   const classes = useStyles({ theme });
 
   const complete = event.responses / event.invitees > 0.8;
-  const host = event.host_id === User.getUser()?.id ?? 0;
+  const host = event.host_id === User.user?.id ?? 0;
 
-  const type = complete ? "score" : "responses";
-  const max = complete ? 5 : event.invitees;
-  const score = complete ? event.score : host ? event.responses : -1;
+  const type = host ? (complete ? "score" : "responses") : "score";
+  const max = host ? (complete ? 5 : event.invitees) : 5;
+  const score = (() => {
+    if (host) {
+      return complete ? event.score : event.responses;
+    } else {
+      return event.metrics?.total_score ?? -1;
+    }
+  })();
   const label = complete
     ? host
       ? "Group Comfort Score"
@@ -356,7 +367,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
 
-  if (event.host_id === User.getUser()?.id) {
+  if (event.host_id === User.user?.id) {
     return (
       <section className={classes.sectionWrapper}>
         <h2 hidden={screen !== "large"} className={classes.cardLabel}>
@@ -367,22 +378,34 @@ function ComfortMetricSection({ event }: { event: Event }) {
     );
   }
 
-  const qc = event.responses / event.invitees <= 0.8;
+  const qc = !event.metrics.total_score;
 
   return (
     <section className={classes.sectionWrapper}>
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Comfort Metrics
       </h2>
-      {qc ? <QuestionnaireCard /> : <ScoreDetailsCard />}
+      {qc ? <QuestionnaireCard eventId={event.id} /> : <ScoreDetailsCard />}
     </section>
   );
 }
 
-function QuestionnaireCard() {
+function QuestionnaireCard({ eventId }: { eventId: number }) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
+  const [qOpen, setQOpen] = useState(false);
+
+  async function submitQ(q: IQuestionnaire) {
+    const res = await API.put(
+      `events/${eventId}/invitees/${User.user?.id}/questionnaire`,
+      q
+    ).catch((err) => ({ status: "error", error: err }));
+    if (!(res?.status === "error")) {
+      setQOpen(false);
+      setTimeout(() => publish("event_update"), 500);
+    }
+  }
 
   return (
     <Card color="primary" className={classes.questionnaireCard}>
@@ -392,13 +415,19 @@ function QuestionnaireCard() {
       </h3>
       <div className={classes.placeContentsEnd}>
         <Button
-          color="primary"
+          color="white"
           transparent={true}
           end={<Icon size="medium" name="arrow_forward" />}
           size="large"
+          onClick={() => setQOpen(true)}
         >
           Respond Now
         </Button>
+        <Questionnaire
+          open={qOpen}
+          onClose={() => setQOpen(false)}
+          onSubmit={(q) => submitQ(q)}
+        />
       </div>
     </Card>
   );

@@ -1,0 +1,33 @@
+name: Rails Dev
+env:
+  RUBY_VERSION: 2.7.2
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: shindig_test
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: AkhileshNS/heroku-deploy@v3.8.8
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: danielanoon@outlook.com
+          heroku_app_name: shindig-dev
+          branch: dev
+          appdir: server
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7.2"
+          bundler-cache: true
+      - run: cd server && bundle install
+      - run: cd server && ruby bin/rails db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_DEV }}

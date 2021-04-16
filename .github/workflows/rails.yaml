@@ -19,9 +19,10 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
       - name: Install dependencies
@@ -60,9 +61,10 @@ jobs:
           heroku_app_name: shindig-app
           branch: main
           appdir: server
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "2.7.2"
+          bundler-cache: true
       - run: cd server && bundle install
       - run: cd server && ruby bin/rails db:migrate
         env:

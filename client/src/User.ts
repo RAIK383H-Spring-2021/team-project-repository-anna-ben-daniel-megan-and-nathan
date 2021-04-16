@@ -1,5 +1,6 @@
 import jwtDecode from "jwt-decode";
 import { API } from "./api";
+import { IQuestionnaire, getBaseQ } from "./pages/partials/Questionnaire";
 
 interface TokenUser {
   sub: number;
@@ -8,8 +9,9 @@ interface TokenUser {
 }
 
 export class User {
-  private static user: User;
+  private static _user: User;
   private static _isAuthorized = false;
+  private static _questionnaire: IQuestionnaire | null = null;
 
   constructor(
     public id: number,
@@ -18,21 +20,30 @@ export class User {
     public last_name: string
   ) {}
 
-  static getUser() {
+  static get user() {
     const token = localStorage.getItem("token");
+
     if (token) {
-      if (!this.user) {
+      if (!this._user) {
         const claims = jwtDecode<TokenUser>(token);
-        this.user = new User(claims.sub, claims.email, claims.name, "");
+        this._user = new User(claims.sub, claims.email, claims.name, "");
+
+        if (!this._questionnaire) {
+          this.updateQuestionnaire();
+        }
       }
 
-      return this.user;
+      return this._user;
     }
+
+    return null;
   }
 
   static get isAuthorized() {
-    const user = this.getUser();
+    const user = this.user;
+
     if (this._isAuthorized) return true;
+
     return new Promise<boolean>((resolve, reject) => {
       if (!user) resolve(false);
       else {
@@ -41,7 +52,6 @@ export class User {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
             if (data.user?.id === user.id) {
               this._isAuthorized = true;
               resolve(true);
@@ -52,5 +62,28 @@ export class User {
           .catch((res) => reject(res));
       }
     });
+  }
+
+  private static async updateQuestionnaire() {
+    const user = this.user;
+    if (user) {
+      const result = await API.get<IQuestionnaire>(
+        `users/${user.id}/questionnaire`
+      );
+      if (Object.values(result).every((q) => q)) {
+        delete result.id;
+        this._questionnaire = result;
+      } else {
+        this._questionnaire = getBaseQ();
+      }
+    }
+  }
+
+  static get questionnaire() {
+    if (this._questionnaire) {
+      return this._questionnaire;
+    } else {
+      return getBaseQ();
+    }
   }
 }

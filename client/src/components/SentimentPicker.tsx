@@ -30,14 +30,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     border: ({ color }) =>
       `1px solid ${theme.colors[color].base.backgroundColor}`,
     flex: "1 1 auto",
-  },
-  labels: {
-    display: "flex",
-    justifyContent: "space-between",
-    margin: "5px 20px",
+    marginBottom: 22,
   },
   label: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  labelValue: {
     userSelect: "none",
+    marginTop: 12,
     ...theme.typography.preTitle,
     cursor: "pointer",
   },
@@ -49,8 +51,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 export interface SentimentPickerComponentProps {
   label: string;
   value: number;
-  color: "primary" | "secondary" | "accent";
-  onChange: (value: number) => void;
+  color?: "primary" | "secondary" | "accent";
+  onChange?: (value: number) => void;
 }
 
 const options = [
@@ -66,7 +68,7 @@ const options = [
 ];
 
 export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
-  const { label, value = 0, onChange, color = "primary" } = props;
+  const { label, value = 0, onChange = () => {}, color = "primary" } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color });
@@ -86,26 +88,29 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
       <div className={classes.control}>
         {options.map((option, i) =>
           option?.icon ? (
-            <Button
-              onClick={() => update(option.value)}
-              className={classes.button}
-              color="primary"
-              transparent={val !== option.value}
-            >
-              <Icon name={option.icon} />
-            </Button>
+            <label key={i} className={classes.label}>
+              <Button
+                onClick={() => update(option.value)}
+                className={classes.button}
+                color="primary"
+                transparent={val !== option.value}
+              >
+                <Icon name={option.icon} />
+              </Button>
+              <span className={classes.labelValue}>{option.value}</span>
+            </label>
           ) : (
             <div key={i} className={classes.line}></div>
           )
         )}
       </div>
-      <div className={classes.labels}>
+      {/* <div >
         {[1, 2, 3, 4, 5].map((i) => (
           <label key={i} onClick={() => update(i)} className={classes.label}>
             {i}
           </label>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

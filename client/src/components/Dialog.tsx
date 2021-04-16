@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { createUseStyles, useTheme } from "react-jss";
+import { useScreen } from "../hooks/useScreen";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -25,14 +26,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: "100%",
     top: 0,
     left: 0,
+    zIndex: 999,
   },
   backdrop: {
     position: "absolute",
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     animationName: ({ closing }) => (closing ? "$fadeOut" : "$fadeIn"),
-    animationDuration: theme.transitions.timing.long,
+    animationDuration: theme.transitions.timing.normal,
     animationTimingFunction: "linear",
     animationFillMode: "forwards",
   },
@@ -44,34 +46,53 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     width: "100%",
     overflowY: "auto",
     animationName: ({ closing }) => (closing ? "$slideOut" : "$slideIn"),
-    animationDuration: theme.transitions.timing.long,
+    animationDuration: theme.transitions.timing.normal,
     animationTimingFunction: theme.transitions.easing.default,
     display: "flex",
     animationFillMode: "forwards",
   },
+  contentWrapper: {
+    padding: 20,
+    height: `calc(100% - 20px)`,
+    margin: 20,
+    display: "block",
+    width: "100%",
+  },
   content: {
     ...theme.colors.background.base,
-    margin: `20px auto`,
+    background: theme.colors.background.base.backgroundColor,
     width: 600,
     maxWidth: "100%",
+    position: "absolute",
+    display: "block",
     outline: "none",
-    border: "none",
+    border: ({ size }) =>
+      size === "small"
+        ? "none"
+        : theme.name === "dark"
+        ? `2px solid ${theme.colors.divider.base.backgroundColor}`
+        : "none",
     borderRadius: 8,
+    borderBottomLeftRadius: ({ size }) => size === "small" && 0,
+    borderBottomRightRadius: ({ size }) => size === "small" && 0,
+    pointerEvents: "initial",
   },
 }));
 
 export interface DialogComponentProps {
   open: boolean;
+  onClose?: () => void;
 }
 
 export const Dialog: FC<DialogComponentProps> = (props) => {
-  const { open } = props;
+  const { open, onClose = () => {} } = props;
+  const size = useScreen();
 
   const [closing, setClosing] = useState(false);
-  const [closed, setClosed] = useState(false);
+  const [closed, setClosed] = useState(!open);
 
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme, closing });
+  const classes = useStyles({ theme, closing, size });
 
   useEffect(() => {
     if (open && closed) {
@@ -84,17 +105,31 @@ export const Dialog: FC<DialogComponentProps> = (props) => {
         setClosed(true);
       }, 500);
     }
-  }, [open, closed]);
+
+    function escapeListener(ev: KeyboardEvent) {
+      if (ev.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", escapeListener);
+
+    return () => {
+      window.removeEventListener("keydown", escapeListener);
+    };
+  }, [open, closed, onClose]);
 
   if (closed) return null;
 
   return (
     <div className={classes.positioner}>
-      <div className={classes.backdrop}></div>
+      <div onClick={onClose} className={classes.backdrop}></div>
       <div className={classes.scrollWrapper}>
-        <dialog open className={classes.content}>
-          {props.children}
-        </dialog>
+        <div className={classes.contentWrapper}>
+          <dialog open className={classes.content}>
+            {props.children}
+          </dialog>
+        </div>
       </div>
     </div>
   );

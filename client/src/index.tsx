@@ -6,7 +6,11 @@ import { API } from "./api";
 import * as sw from "./serviceWorkerRegistration";
 // import reportWebVitals from "./reportWebVitals";
 
-API.init("https://shindig-app.herokuapp.com/");
+if (window.location && window.location.origin === "https://shindig.one") {
+  API.init("https://api.shindig.one");
+} else {
+  API.init("https://dev-api.shindig.one");
+}
 
 ReactDOM.render(
   <React.StrictMode>

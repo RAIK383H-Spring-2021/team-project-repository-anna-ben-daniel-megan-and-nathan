@@ -55,14 +55,18 @@ RSpec.describe "invitees controller requests", type: :request do
             expect(response).to have_http_status(:unauthorized)
         end
 
+        it "returns unprocessable entity http error if host tries to invite themselves to event" do
+          post '/events/4/invitees',  headers: { "Authorization": "Bearer #{@token}"}, params: {user_ids: [1] }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+      end
+
         it "creates a new invitee, returns id" do
-            post '/events/4/invitees', headers: { "Authorization": "Bearer #{@token}" }, params: {user_id: 3,
-            event_id: 4,
-            questionnaire_complete: 0}
+            post '/events/4/invitees', headers: { "Authorization": "Bearer #{@token}" }, params: {user_ids: [3] }
 
             @res = JSON.parse(response.body)
 
-            expect(@res["id"]).to eq(8)
+            expect(@res["ids"][0]).to eq(11)
         end
     end
 end

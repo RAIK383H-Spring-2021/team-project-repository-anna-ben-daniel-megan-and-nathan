@@ -51,15 +51,28 @@ class InviteesController < ApplicationController
       return
     end
 
-    @invitee = Participant.new(
-      user_id: params[:user_id],
-      event_id: params[:event_id],
-      questionnaire_complete: params[:questionnaire_complete],
-    )
-    @invitee.save!
+    @user_ids = params[:user_ids]
+
+    if @user_ids.include?(@host_id.to_s)
+      respond_to do |format|
+        format.json { render json: { error: "cannot invite host to their own event" }, status: :unprocessable_entity }
+      end
+
+      return
+    end
+
+    @invitee_ids = []
+    @user_ids.each do |user_id|
+      @invitee = Participant.new(
+        user_id: user_id,
+        event_id: params[:event_id],
+      )
+      @invitee.save!
+      @invitee_ids.append(@invitee.id)
+    end
 
     respond_to do |format|
-      format.json { render json: { id: @invitee[:id] } }
-      end
+      format.json { render json: { ids: @invitee_ids } }
+    end
   end
 end
