@@ -101,16 +101,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   background: ({ size }) =>
     size === "large"
       ? {
-          height: "90vh",
-          width: "90vh",
-          position: "fixed",
-          bottom: "-20vh",
-          right: "-20vh",
-          zIndex: 1,
-        }
+        height: "90vh",
+        width: "90vh",
+        position: "fixed",
+        bottom: "-20vh",
+        right: "-20vh",
+        zIndex: 1,
+      }
       : {
-          display: "none",
-        },
+        display: "none",
+      },
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
       return {
@@ -130,16 +130,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {
-          minHeight: 350,
-          "& input": {
-            margin: "0 24px",
-          },
+        minHeight: 350,
+        "& input": {
+          margin: "0 24px",
         },
+      },
   searchResultList: {
     flexShrink: 1,
     overflowY: "auto",
@@ -147,10 +147,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {},
   sectionHeader: {
     ...theme.typography.preTitle,
@@ -161,10 +161,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesList: ({ size }) =>
     size === "large"
       ? {
-          flexGrow: 1,
-          backgroundColor: theme.colors.background.base.backgroundColor,
-          overflowY: "auto",
-        }
+        flexGrow: 1,
+        backgroundColor: theme.colors.background.base.backgroundColor,
+        overflowY: "auto",
+      }
       : {},
   sendInvitationsWrapper: {
     display: "flex",
@@ -223,7 +223,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface CreateEventPageComponentProps {}
+export interface CreateEventPageComponentProps { }
 
 interface EventDetailsObject {
   title?: string;
@@ -445,11 +445,11 @@ interface SearchUsersResponse {
 }
 
 const searchUsers = (query: string) =>
-  ({
-    method: "GET",
-    path: "users",
-    query: { q: query },
-  } as FetchRequest);
+({
+  method: "GET",
+  path: "users",
+  query: { q: query },
+} as FetchRequest);
 
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
@@ -611,29 +611,29 @@ interface CreateEventResponse {
 }
 
 const createEvent = (eventObject: EventDetailsObject) =>
-  ({
-    method: "POST",
-    path: "events",
-    body: {
-      title: eventObject.title,
-      host_id: User.user?.id,
-      description: eventObject.description,
-      date_time: new Date(
-        `${eventObject.date}T${eventObject.time}`
-      ).toISOString(),
-      food_prepackaged: eventObject.food === "pp",
-      food_buffet: eventObject.food === "ss",
-      location: eventObject.location,
-      indoor: eventObject.location_type === "indoor",
-      outdoor: eventObject.location_type === "outdoor",
-      remote: eventObject.location_type === "remote",
-      social_distancing_masks:
-        eventObject.masks === "1me" ? eventObject.distancing : null,
-      social_distancing_no_masks: eventObject.masks
-        ? null
-        : eventObject.distancing,
-    },
-  } as MutativeRequest);
+({
+  method: "POST",
+  path: "events",
+  body: {
+    title: eventObject.title,
+    host_id: User.user?.id,
+    description: eventObject.description,
+    date_time: new Date(
+      `${eventObject.date}T${eventObject.time}`
+    ).toISOString(),
+    food_prepackaged: eventObject.food === "pp",
+    food_buffet: eventObject.food === "ss",
+    location: eventObject.location,
+    indoor: eventObject.location_type === "indoor",
+    outdoor: eventObject.location_type === "outdoor",
+    remote: eventObject.location_type === "remote",
+    social_distancing_masks:
+      eventObject.masks === "1me" ? eventObject.distancing : null,
+    social_distancing_no_masks: eventObject.masks === "none"
+      ? null
+      : eventObject.distancing,
+  },
+} as MutativeRequest);
 
 let invitesPushed = false;
 
