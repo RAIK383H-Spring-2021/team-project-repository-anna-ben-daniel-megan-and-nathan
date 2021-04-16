@@ -169,8 +169,8 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-            ? response?.event?.title ?? "Loading..."
-            : "Loading..."
+              ? response?.event?.title ?? "Loading..."
+              : "Loading..."
         }
       />
       {screen === "large" ? (
@@ -304,8 +304,8 @@ function Meter({ event }: { event: Event }) {
       ? "Group Comfort Score"
       : "Individual Comfort Score"
     : host
-    ? "Invitee Responses"
-    : "Individual Comfort Score";
+      ? "Invitee Responses"
+      : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>

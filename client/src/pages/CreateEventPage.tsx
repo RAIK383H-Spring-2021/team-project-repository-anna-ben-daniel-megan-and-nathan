@@ -656,6 +656,34 @@ function SendInvitations(props: SendInvitationsProps) {
     }
   }
 
+  async function submitEvent(eventObject: EventDetailsObject) {
+    const res = await API.post<CreateEventResponse>('events', {
+      title: eventObject.title,
+      host_id: User.user?.id,
+      description: eventObject.description,
+      date_time: new Date(
+        `${eventObject.date}T${eventObject.time}`
+      ).toISOString(),
+      food_prepackaged: eventObject.food === "pp",
+      food_buffet: eventObject.food === "ss",
+      location: eventObject.location,
+      indoor: eventObject.location_type === "indoor",
+      outdoor: eventObject.location_type === "outdoor",
+      remote: eventObject.location_type === "remote",
+      social_distancing_masks:
+        eventObject.masks === "1me" ? eventObject.distancing : null,
+      social_distancing_no_masks: eventObject.masks === "none"
+        ? null
+        : eventObject.distancing,
+    });
+
+    if (res?.id) {
+      inviteUsers();
+    } else {
+      alert("that didnt work");
+    }
+  }
+
   async function inviteUsers() {
     await API.post(`events/${ceResponse?.id}/invitees`, {
       user_ids: props.invitees.map((invitee) => invitee.id),
@@ -676,7 +704,7 @@ function SendInvitations(props: SendInvitationsProps) {
       <FAB
         icon="send"
         loading={ceLoading}
-        onClick={() => ceMakeRequest(props.eventDetails)}
+        onClick={() => submitEvent(props.eventDetails)}
         className={classes.giantFAB}
         size="giant"
       />

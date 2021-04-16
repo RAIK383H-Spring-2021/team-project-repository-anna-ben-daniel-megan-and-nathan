@@ -74,11 +74,11 @@ export class API {
     });
   }
 
-  public static put(path: string, body: object) {
+  public static put<T>(path: string, body: object): Promise<T> {
     return this.makeRequest(path, body, "PUT");
   }
 
-  public static post(path: string, body: object) {
+  public static post<T>(path: string, body: object): Promise<T> {
     return this.makeRequest(path, body, "POST");
   }
 
