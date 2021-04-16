@@ -376,6 +376,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
         onChange={(value) => updateEventDetails("location", value)}
       />
       <Select
+        value={props.eventDetails.location_type}
         label="Location Type"
         onChange={(value) => updateEventDetails("location_type", value)}
       >
@@ -385,6 +386,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
       </Select>
       <div className={classes.eventDetailsDivider} />
       <Select
+        value={props.eventDetails.masks}
         label="Mask Wearing"
         caption="CDC guidance recommends that double masking occur to prevent the spread of COVID-19."
         onChange={(value) => updateEventDetails("masks", value)}
@@ -402,6 +404,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
       />
       <div className={classes.eventDetailsDivider} />
       <Select
+        value={props.eventDetails.food}
         label="Is food being served?"
         onChange={(value) => updateEventDetails("food", value)}
       >
