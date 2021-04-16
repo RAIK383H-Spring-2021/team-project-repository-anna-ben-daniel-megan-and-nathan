@@ -183,6 +183,7 @@ function DashboardLarge() {
           end={
             <IconButton icon="account_circle" onClick={() => toggleTheme()} />
           }
+          background="filled"
         />
       }
       fab={<FAB icon="add" onClick={() => history.push(`/create`)} />}
