@@ -4,7 +4,8 @@ class Event < ApplicationRecord
 
     alias_attribute :user_id, :host_id
 
-    validates :title, :date_time, :location, presence:true
+    validates :title, :date_time, :location, presence: true
+    validate :xor_distancing
 
     before_save :default_values
 
@@ -16,5 +17,11 @@ class Event < ApplicationRecord
       self.indoor = false if self.indoor.nil?
       self.outdoor = false if self.outdoor.nil?
       self.remote = false if self.remote.nil?
+    end
+    
+    def xor_distancing
+      unless self.social_distancing_masks.nil? ^ self.social_distancing_no_masks.nil?
+        errors.add(:base, "one of the social distancing scores needs to be null, but not both")
+      end
     end
 end
