@@ -9,7 +9,22 @@
 # NOTE: We are utilizing this for TESTING PURPOSES ONLY. This seed is loaded in when the RSpec is run.
 
 # seed two users with questionnaires
-@quest = Questionnaire.create()
+@quest = Questionnaire.create(q1: 2,
+  q2: 3, 
+  q3: 4, 
+  q4: 6,
+  q5: 8,
+  q6: 5,
+  q7: 3, 
+  q8: 1, 
+  q9: 1,
+  q10: 3,
+  q11: 6,
+  q12: 3, 
+  q13: 4, 
+  q14: 2,
+  q15: 25
+)
 @user = User.create(email: "test@test.test", 
   first_name: "first", 
   last_name: "last",
@@ -73,8 +88,8 @@
   outdoor: false,
   remote: false,
   score: 1, 
-  social_distancing_masks: 6,
-  social_distancing_no_masks: nil
+  social_distancing_masks: nil,
+  social_distancing_no_masks: 6
 )
 
 @event2 = Event.create(
@@ -89,8 +104,8 @@
   outdoor: false,
   remote: false,
   score: 1,
-  social_distancing_masks: 6,
-  social_distancing_no_masks: nil
+  social_distancing_masks: nil,
+  social_distancing_no_masks: 2
 )
 
 @event3 = Event.create(
@@ -98,15 +113,15 @@
   host_id: @invited_user.id,
   description: "test event",
   date_time: Time.now,
-  food_prepackaged: true,
+  food_prepackaged: false,
   food_buffet: false,
   location: "test",
-  indoor: true,
-  outdoor: false,
+  indoor: false,
+  outdoor: true,
   remote: false,
   score: 1, 
-  social_distancing_masks: 6,
-  social_distancing_no_masks: nil
+  social_distancing_masks: nil,
+  social_distancing_no_masks: 2
 )
 
 @event4 = Event.create(
@@ -159,18 +174,18 @@
 
 @event7 = Event.create(
   title: "event7",
-  host_id: @user.id,
+  host_id: @invited_user.id,
   description: "test event",
   date_time: Time.now,
-  food_prepackaged: true,
+  food_prepackaged: false,
   food_buffet: false,
   location: "test",
-  indoor: true,
+  indoor: false,
   outdoor: false,
-  remote: false,
-  score: 1,
-  social_distancing_masks: 6,
-  social_distancing_no_masks: nil
+  remote: true,
+  score: 1, 
+  social_distancing_masks: nil,
+  social_distancing_no_masks: 6
 )
 
 # seed two invitations, each user invited to the other event
