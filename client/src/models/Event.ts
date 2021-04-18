@@ -16,14 +16,16 @@ export interface Event {
   score: number;
   invitees: number;
   responses: number;
-  metrics: {
-    total_score: number;
-    subscores: {
-      food_score: number;
-      group_size_score: number;
-      location_score: number;
-      masks_social_dist_score: number;
-    };
+  metrics: Metrics;
+}
+
+export interface Metrics {
+  total_score: number;
+  subscores: {
+    food_score: number;
+    group_size_score: number;
+    location_score: number;
+    masks_social_dist_score: number;
   };
 }
 

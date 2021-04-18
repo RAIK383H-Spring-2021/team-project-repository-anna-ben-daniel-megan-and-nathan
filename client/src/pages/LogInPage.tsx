@@ -7,7 +7,6 @@ import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
-import { MutativeRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -96,31 +95,37 @@ interface LoginResponse {
   status?: string;
 }
 
-const login = (email: string, password: string) =>
-  ({
-    method: "POST",
-    path: "users/login",
-    body: { email, password },
-    onComplete: (response: LoginResponse) =>
-      response?.token && API.setToken(response.token),
-  } as MutativeRequest);
-
-const LogInPage: FC = (props) => {
+const LogInPage: FC = () => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [response, isLoading, makeRequest] = useRequest<LoginResponse>(login);
+  const [errors, setErrors] = useState({ user: false, password: false });
 
-  if (response?.token) {
-    history.push("/dash");
-  }
-
-  function handleSubmit(ev: FormEvent) {
+  async function handleSubmit(ev: FormEvent) {
     ev.preventDefault();
-    makeRequest(email, password);
+
+    setIsLoading(true);
+
+    const res = await API.post<LoginResponse>("users/login", {
+      email,
+      password,
+    });
+
+    setIsLoading(false);
+
+    if (res.error) {
+      if (res.data?.status === "user not found") {
+        setErrors({ user: true, password: false });
+      } else {
+        setErrors({ user: false, password: true });
+      }
+    } else {
+      history.push("/dash");
+    }
   }
 
   return (
@@ -143,6 +148,7 @@ const LogInPage: FC = (props) => {
               onChange={setEmail}
               type="email"
               label="Email"
+              error={errors.user ? "User not found." : undefined}
             />
             <Input
               className={classes.input}
@@ -150,10 +156,11 @@ const LogInPage: FC = (props) => {
               onChange={setPassword}
               type="password"
               label="Password"
+              error={errors.password ? "Incorrect password." : undefined}
             />
           </div>
           <div className={classes.buttonWrapper}>
-            <Button color="accent" onClick={() => makeRequest(email, password)}>
+            <Button color="accent" onClick={(ev) => handleSubmit(ev)}>
               {isLoading ? "Loading..." : "Log In"}
             </Button>
           </div>

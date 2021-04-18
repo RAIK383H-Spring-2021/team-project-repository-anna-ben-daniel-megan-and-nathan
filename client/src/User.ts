@@ -71,8 +71,8 @@ export class User {
         `users/${user.id}/questionnaire`
       );
       if (Object.values(result).every((q) => q)) {
-        delete result.id;
-        this._questionnaire = result;
+        delete (result as any).id;
+        this._questionnaire = result as any;
       } else {
         this._questionnaire = getBaseQ();
       }
