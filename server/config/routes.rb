@@ -17,7 +17,8 @@ Rails.application.routes.draw do
           put 'questionnaire', to: 'questionnaire#update'
         end
       end
-      resources :suggestions, only: [:index, :show]
+      
+      get 'suggestions', to: 'suggestions#index'
     end
   end
 end
