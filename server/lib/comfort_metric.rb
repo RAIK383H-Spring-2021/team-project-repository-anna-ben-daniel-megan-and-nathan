@@ -61,25 +61,23 @@ module ComfortMetric
       if (event.social_distancing_masks)
         indRisk = 1 / (feetToMeters(quest.q4) + 1)
         eventRisk = 1 / (feetToMeters(event.social_distancing_masks) + 1)
-        indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort > eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        return indRisk >= eventRisk ? 5 : maskSigmoid(eventRisk - indRisk)
       else
         indRisk = 6 / (feetToMeters(quest.q5) + 1)
         eventRisk = 6 / (feetToMeters(event.social_distancing_no_masks) + 1)
         indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort > eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        return indComfort >= eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
       end
     else
       if (event.social_distancing_masks)
         indRisk = 1 / (feetToMeters(quest.q10) + 1)
         eventRisk = 1 / (feetToMeters(event.social_distancing_masks) + 1)
-        indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort > eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        return indRisk >= eventRisk ? 5 : maskSigmoid(eventRisk - indRisk)
       else
         indRisk = 6 / (feetToMeters(quest.q11) + 1)
         eventRisk = 6 / (feetToMeters(event.social_distancing_no_masks) + 1)
         indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort > eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        return indComfort >= eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
       end
     end
   end
@@ -101,9 +99,9 @@ module ComfortMetric
 
   def self.findPenalty(quest, event, indoor)
     if (indoor)
-      return event.social_distancing_masks ? 1 : 1.2 - (0.2 * quest.q6)
+      return event.social_distancing_no_masks ? 1 : 1.2 - (0.2 * quest.q6)
     else
-      return event.social_distancing_masks ? 1 : 1.2 - (0.2 * quest.q12)
+      return event.social_distancing_no_masks ? 1 : 1.2 - (0.2 * quest.q12)
     end
   end
 

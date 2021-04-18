@@ -35,7 +35,9 @@ RSpec.describe "events controller requests", type: :request do
             indoor: true,
             outdoor: false,
             remote: false,
-            score: 1 }
+            score: 1,
+            social_distancing_masks: 6,
+            social_distancing_no_masks: nil }
 
             @res = JSON.parse(response.body)
 

@@ -47,7 +47,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     }
   },
   toolbar: {
-    backgroundColor: theme.colors.background.base.backgroundColor,
     position: "sticky",
     top: 0,
     "&.scrolled": {
@@ -290,6 +289,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
           start={
             <IconButton icon="arrow_back" onClick={() => history.goBack()} />
           }
+          background="filled"
         />
       }
     >
