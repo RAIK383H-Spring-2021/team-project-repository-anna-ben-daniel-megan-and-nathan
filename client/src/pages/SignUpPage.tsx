@@ -90,29 +90,34 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 interface SignUpResponse {
   token: string;
+  status?: string;
 }
 
-const signUp = (
-  first_name: string,
-  last_name: string,
-  email: string,
-  password: string
-) =>
-  ({
-    method: "POST",
-    path: "users",
-    body: {
-      first_name,
-      last_name,
-      email,
-      password,
-      privacy_level: 1,
-    },
-    onComplete: (response: SignUpResponse) =>
-      (response as any)?.token && API.setToken((response as any).token),
-  } as MutativeRequest);
+const noErrState = () => ({
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  passwordVerify: "",
+});
 
-const SignUpPage: FC = (props) => {
+function isEmail(s: string) {
+  const matches = s.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g);
+  return matches !== null;
+}
+
+function validate(fn: string, ln: string, e: string, pw: string, pwv: string) {
+  const base = noErrState();
+
+  if (fn.length < 1) base['firstName'] = "Required.";
+  if (ln.length < 1) base['lastName'] = "Required.";
+  if (!isEmail(e)) base["email"] = "Must be an email.";
+  if (e.length < 1) base["email"] = "Required.";
+
+  return base;
+}
+
+const SignUpPage: FC = () => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const history = useHistory();
@@ -123,15 +128,35 @@ const SignUpPage: FC = (props) => {
   const [password, setPassword] = useState("");
   const [passwordVerify, setPasswordVerify] = useState("");
 
-  const [response, isLoading, makeRequest] = useRequest<SignUpResponse>(signUp);
+  const [errors, setErrors] = useState(noErrState());
 
-  if (response?.token) {
-    history.push("/dash");
-  }
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(ev: FormEvent) {
+  async function handleSubmit(ev: FormEvent) {
     ev.preventDefault();
-    makeRequest(firstName, lastName, email, password);
+
+    const err = validate(firstName, lastName, email, password, passwordVerify);
+
+    if (Object.values(err).some(e => e !== "")) {
+      setErrors(err);
+      return;
+    }
+
+    const res = await API.post<SignUpResponse>("users", {
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
+    if (res.error) {
+      console.log(res.data.status);
+      // if (res.data?.status) {
+
+      // }
+    } else {
+      history.push("/dash");
+    }
   }
 
   return (
@@ -154,6 +179,7 @@ const SignUpPage: FC = (props) => {
               onChange={setFirstName}
               className={classes.name}
               label="First Name"
+              error={errors.firstName}
             />
             <Input
               type="text"
@@ -161,6 +187,7 @@ const SignUpPage: FC = (props) => {
               onChange={setLastName}
               className={classes.name}
               label="Last Name"
+              error={errors.lastName}
             />
           </div>
           <Input
@@ -169,6 +196,7 @@ const SignUpPage: FC = (props) => {
             className={classes.input}
             type="email"
             label="Email"
+            error={errors.email}
           />
           <Input
             value={password}
@@ -176,6 +204,7 @@ const SignUpPage: FC = (props) => {
             className={classes.input}
             type="password"
             label="Password"
+            error={errors.password}
           />
           <Input
             value={passwordVerify}
@@ -183,12 +212,10 @@ const SignUpPage: FC = (props) => {
             className={classes.input}
             type="password"
             label="Confirm Password"
+            error={errors.passwordVerify}
           />
           <div className={classes.buttonWrapper}>
-            <Button
-              onClick={() => makeRequest(firstName, lastName, email, password)}
-              color="accent"
-            >
+            <Button onClick={(ev) => handleSubmit(ev)} color="accent">
               {isLoading ? "Loading..." : "Sign Up"}
             </Button>
           </div>

@@ -20,7 +20,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: "12px 18px",
     ...theme.colors.background.light,
     ...theme.typography.body,
-    border: `1px solid ${theme.colors.divider.base.color}`,
+    border: ({ error }) =>
+      `1px solid ${
+        error
+          ? theme.colors.error.base.backgroundColor
+          : theme.colors.divider.base.color
+      }`,
     borderRadius: 4,
     position: "relative",
     height: 44,
@@ -106,6 +111,23 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   caption: {
     ...theme.typography.caption,
   },
+  captionError: {
+    ...theme.typography.caption,
+    color: theme.colors.error.base.backgroundColor,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    "&:before": {
+      fontFamily: "Material Icons",
+      content: "'error'",
+      color: theme.colors.error.base.backgroundColor,
+      marginRight: 4,
+      fontSize: 14,
+      marginTop: 4,
+      marginBottom: 4,
+    },
+  },
   wordLimit: {
     ...theme.typography.caption,
   },
@@ -124,11 +146,14 @@ export interface InputComponentProps {
   onChange?: (value: string) => void;
   className?: string;
   end?: ReactNode;
+  error?: string;
 }
 
 export const Input: FC<InputComponentProps> = (props) => {
+  const { type = "text", disabled = false, className = "", error = "" } = props;
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, error: !!error });
 
   const [value, setValue] = useState(props.value ?? "");
 
@@ -140,7 +165,7 @@ export const Input: FC<InputComponentProps> = (props) => {
 
   const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
     let newValue = ev.target.value;
-    if (props.type === "number") {
+    if (type === "number") {
       if (props.min !== undefined && parseInt(newValue) < props.min) {
         newValue = props.min.toString();
       } else if (props.max !== undefined && parseInt(newValue) > props.max) {
@@ -152,7 +177,7 @@ export const Input: FC<InputComponentProps> = (props) => {
   };
 
   return (
-    <div className={`${classes.wrapper} ${props.className ?? ""}`}>
+    <div className={`${classes.wrapper} ${className}`.trim()}>
       <label
         className={classes.label}
         onClick={() => inputRef.current?.focus?.()}
@@ -165,14 +190,16 @@ export const Input: FC<InputComponentProps> = (props) => {
           maxLength={props.maxLength}
           onChange={(ev) => handleChange(ev)}
           value={value}
-          disabled={props.disabled}
+          disabled={disabled}
           min={props.min}
           max={props.max}
           ref={inputRef}
         />
       </label>
       <div className={classes.captionWrapper}>
-        <span className={classes.caption}>{props.caption}</span>
+        <span className={!!error ? classes.captionError : classes.caption}>
+          {error || props.caption}
+        </span>
         {props.maxLength && (
           <span className={classes.wordLimit}>
             {value.length} / {props.maxLength} characters

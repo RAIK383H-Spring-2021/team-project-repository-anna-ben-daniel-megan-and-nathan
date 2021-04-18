@@ -20,7 +20,7 @@ import { Toolbar } from "../components/Toolbar";
 import { useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
 import { publish, useSubscription } from "../hooks/useSubscription";
-import { Event, host_name } from "../models/Event";
+import { Event, host_name, Metrics } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
@@ -169,8 +169,8 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-              ? response?.event?.title ?? "Loading..."
-              : "Loading..."
+            ? response?.event?.title ?? "Loading..."
+            : "Loading..."
         }
       />
       {screen === "large" ? (
@@ -304,8 +304,8 @@ function Meter({ event }: { event: Event }) {
       ? "Group Comfort Score"
       : "Individual Comfort Score"
     : host
-      ? "Invitee Responses"
-      : "Individual Comfort Score";
+    ? "Invitee Responses"
+    : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>
@@ -390,6 +390,11 @@ function ComfortMetricSection({ event }: { event: Event }) {
   );
 }
 
+interface QuestionnaireResponse {
+  questionnaire: IQuestionnaire;
+  metrics: Metrics;
+}
+
 function QuestionnaireCard({ eventId }: { eventId: number }) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
@@ -397,13 +402,15 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
   const [qOpen, setQOpen] = useState(false);
 
   async function submitQ(q: IQuestionnaire) {
-    const res = await API.put(
+    const res = await API.put<QuestionnaireResponse>(
       `events/${eventId}/invitees/${User.user?.id}/questionnaire`,
       q
-    ).catch((err) => ({ status: "error", error: err }));
-    if (!(res?.status === "error")) {
+    );
+    if (!res.error) {
       setQOpen(false);
       setTimeout(() => publish("event_update"), 500);
+    } else {
+      alert("There was an error");
     }
   }
 

@@ -14,7 +14,7 @@ import { List } from "../components/List";
 import { ListItem } from "../components/ListItem";
 import { FAB } from "../components/FAB";
 import { Icon } from "../components/Icon";
-import { FetchRequest, MutativeRequest, useRequest } from "../hooks/useRequest";
+import { FetchRequest, useRequest } from "../hooks/useRequest";
 import { User } from "../User";
 import MDSpinner from "react-md-spinner";
 import { API } from "../api";
@@ -101,16 +101,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   background: ({ size }) =>
     size === "large"
       ? {
-        height: "90vh",
-        width: "90vh",
-        position: "fixed",
-        bottom: "-20vh",
-        right: "-20vh",
-        zIndex: 1,
-      }
+          height: "90vh",
+          width: "90vh",
+          position: "fixed",
+          bottom: "-20vh",
+          right: "-20vh",
+          zIndex: 1,
+        }
       : {
-        display: "none",
-      },
+          display: "none",
+        },
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
       return {
@@ -130,16 +130,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-        height: "60vh",
-        display: "flex",
-        flexDirection: "column",
-      }
+          height: "60vh",
+          display: "flex",
+          flexDirection: "column",
+        }
       : {
-        minHeight: 350,
-        "& input": {
-          margin: "0 24px",
+          minHeight: 350,
+          "& input": {
+            margin: "0 24px",
+          },
         },
-      },
   searchResultList: {
     flexShrink: 1,
     overflowY: "auto",
@@ -147,10 +147,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
-        height: "60vh",
-        display: "flex",
-        flexDirection: "column",
-      }
+          height: "60vh",
+          display: "flex",
+          flexDirection: "column",
+        }
       : {},
   sectionHeader: {
     ...theme.typography.preTitle,
@@ -161,10 +161,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesList: ({ size }) =>
     size === "large"
       ? {
-        flexGrow: 1,
-        backgroundColor: theme.colors.background.base.backgroundColor,
-        overflowY: "auto",
-      }
+          flexGrow: 1,
+          backgroundColor: theme.colors.background.base.backgroundColor,
+          overflowY: "auto",
+        }
       : {},
   sendInvitationsWrapper: {
     display: "flex",
@@ -223,7 +223,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface CreateEventPageComponentProps { }
+export interface CreateEventPageComponentProps {}
 
 interface EventDetailsObject {
   title?: string;
@@ -445,11 +445,11 @@ interface SearchUsersResponse {
 }
 
 const searchUsers = (query: string) =>
-({
-  method: "GET",
-  path: "users",
-  query: { q: query },
-} as FetchRequest);
+  ({
+    method: "GET",
+    path: "users",
+    query: { q: query },
+  } as FetchRequest);
 
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
@@ -610,54 +610,22 @@ interface CreateEventResponse {
   id: number;
 }
 
-const createEvent = (eventObject: EventDetailsObject) =>
-({
-  method: "POST",
-  path: "events",
-  body: {
-    title: eventObject.title,
-    host_id: User.user?.id,
-    description: eventObject.description,
-    date_time: new Date(
-      `${eventObject.date}T${eventObject.time}`
-    ).toISOString(),
-    food_prepackaged: eventObject.food === "pp",
-    food_buffet: eventObject.food === "ss",
-    location: eventObject.location,
-    indoor: eventObject.location_type === "indoor",
-    outdoor: eventObject.location_type === "outdoor",
-    remote: eventObject.location_type === "remote",
-    social_distancing_masks:
-      eventObject.masks === "1me" ? eventObject.distancing : null,
-    social_distancing_no_masks: eventObject.masks === "none"
-      ? null
-      : eventObject.distancing,
-  },
-} as MutativeRequest);
-
-let invitesPushed = false;
-
 function SendInvitations(props: SendInvitationsProps) {
   const size = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
   const history = useHistory();
-
-  const [
-    ceResponse,
-    ceLoading,
-    ceMakeRequest,
-  ] = useRequest<CreateEventResponse>(createEvent);
-
-  if (ceResponse && !ceLoading) {
-    if (!invitesPushed) {
-      invitesPushed = true;
-      inviteUsers();
-    }
-  }
+  const [loading, setLoading] = useState(false);
 
   async function submitEvent(eventObject: EventDetailsObject) {
-    const res = await API.post<CreateEventResponse>('events', {
+    setLoading(true);
+
+    const social_distancing_masks =
+      eventObject.masks === "none" ? null : eventObject.distancing;
+    const social_distancing_no_masks =
+      eventObject.masks === "none" ? eventObject.distancing : null;
+
+    const res = await API.post<CreateEventResponse>("events", {
       title: eventObject.title,
       host_id: User.user?.id,
       description: eventObject.description,
@@ -670,25 +638,24 @@ function SendInvitations(props: SendInvitationsProps) {
       indoor: eventObject.location_type === "indoor",
       outdoor: eventObject.location_type === "outdoor",
       remote: eventObject.location_type === "remote",
-      social_distancing_masks:
-        eventObject.masks === "1me" ? eventObject.distancing : null,
-      social_distancing_no_masks: eventObject.masks === "none"
-        ? null
-        : eventObject.distancing,
+      social_distancing_masks,
+      social_distancing_no_masks,
     });
 
-    if (res?.id) {
-      inviteUsers();
+    if ((res as any).id) {
+      inviteUsers((res as any).id);
     } else {
-      alert("that didnt work");
+      setLoading(false);
+      alert("that didn't work");
     }
   }
 
-  async function inviteUsers() {
-    await API.post(`events/${ceResponse?.id}/invitees`, {
+  async function inviteUsers(id: number) {
+    await API.post(`events/${id}/invitees`, {
       user_ids: props.invitees.map((invitee) => invitee.id),
     });
-    history.push(`/events/${ceResponse?.id}`);
+    setLoading(false);
+    history.push(`/events/${id}`);
   }
 
   return (
@@ -703,7 +670,7 @@ function SendInvitations(props: SendInvitationsProps) {
       </h2>
       <FAB
         icon="send"
-        loading={ceLoading}
+        loading={loading}
         onClick={() => submitEvent(props.eventDetails)}
         className={classes.giantFAB}
         size="giant"

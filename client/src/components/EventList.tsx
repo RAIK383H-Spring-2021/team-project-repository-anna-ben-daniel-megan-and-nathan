@@ -112,7 +112,6 @@ export function EventList(props: EventListComponentProps) {
             }
 
             const score = event.metrics?.total_score;
-            console.log(score);
 
             return (
               <ListItem

@@ -3,6 +3,26 @@ interface CacheItem {
   expires: number;
 }
 
+class APIError {
+  public error = true;
+
+  constructor(private _data: { status: string; [key: string]: string }) {}
+
+  get status() {
+    return this.data.error;
+  }
+
+  get data() {
+    return this._data;
+  }
+}
+
+class APISuccess<T> {
+  public error = false;
+
+  constructor(public data: T) {}
+}
+
 export class API {
   private static base = "";
   private static cache = new Map<string, CacheItem>();
@@ -54,7 +74,11 @@ export class API {
     }
   }
 
-  private static makeRequest(path: string, body: object, method: string) {
+  private static makeRequest<T>(
+    path: string,
+    body: object,
+    method: string
+  ): Promise<APISuccess<T> | APIError> {
     const url = this.makeUrl(path);
     const data = JSON.stringify(body);
 
@@ -67,25 +91,25 @@ export class API {
       },
     }).then(async (res) => {
       if (res.ok) {
-        return await res.json();
+        return new APISuccess<T>(await res.json());
       } else {
-        throw new Error(await res.json().catch(() => res.status));
+        return new APIError(await res.json());
       }
     });
   }
 
-  public static put<T>(path: string, body: object): Promise<T> {
-    return this.makeRequest(path, body, "PUT");
+  public static put<T>(path: string, body: object) {
+    return this.makeRequest<T>(path, body, "PUT");
   }
 
-  public static post<T>(path: string, body: object): Promise<T> {
-    return this.makeRequest(path, body, "POST");
+  public static post<T>(path: string, body: object) {
+    return this.makeRequest<T>(path, body, "POST");
   }
 
   public static get<T>(
     path: string,
     query?: { [key: string]: string | number | boolean }
-  ): Promise<T> {
+  ): Promise<APISuccess<T> | APIError> {
     const url = this.makeUrl(path, query);
 
     return fetch(url, {
@@ -96,9 +120,9 @@ export class API {
       },
     }).then(async (res) => {
       if (res.ok) {
-        return await res.json();
+        return new APISuccess<T>(await res.json());
       } else {
-        throw new Error(await res.json().catch(() => res.status));
+        return new APIError(await res.json());
       }
     });
   }
