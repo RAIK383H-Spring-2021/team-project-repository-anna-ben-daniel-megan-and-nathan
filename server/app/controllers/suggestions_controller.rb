@@ -29,11 +29,4 @@ class SuggestionsController < ApplicationController
       format.json { render json: { suggestions: suggestions } }
     end
   end
-
-  def show
-    #TODO: Get overview of a particular suggestion
-    respond_to do |format|
-      format.json { render json: { status: 'Suggestions controller show received request' } }
-    end
-  end
 end
