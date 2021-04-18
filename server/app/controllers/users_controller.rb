@@ -135,7 +135,7 @@ class UsersController < ApplicationController
 
     if !@user 
       respond_to do |format|
-        format.json { render json: { status: 'user not found' }, status: :not_found }
+        format.json { render json: { error: 'user not found' }, status: :not_found }
       end
 
       return
@@ -143,7 +143,7 @@ class UsersController < ApplicationController
 
     if !@user.authenticate(params[:password])
       respond_to do |format|
-        format.json { render json: { status: 'password incorrect' }, status: :unauthorized }
+        format.json { render json: { error: 'password incorrect' }, status: :unauthorized }
       end
 
       return
