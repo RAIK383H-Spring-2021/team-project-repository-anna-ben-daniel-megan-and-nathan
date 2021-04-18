@@ -91,8 +91,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 }));
 
 interface LoginResponse {
-  token?: string;
-  status?: string;
+  token: string;
+  error?: string;
 }
 
 const LogInPage: FC = () => {
@@ -118,12 +118,13 @@ const LogInPage: FC = () => {
     setIsLoading(false);
 
     if (res.error) {
-      if (res.data?.status === "user not found") {
+      if (res.data?.error === "user not found") {
         setErrors({ user: true, password: false });
       } else {
         setErrors({ user: false, password: true });
       }
     } else {
+      API.setToken(res.data.token);
       history.push("/dash");
     }
   }
