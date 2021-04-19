@@ -7,7 +7,6 @@ import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
-import { MutativeRequest, useRequest } from "../hooks/useRequest";
 import { AppTheme } from "../theme";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -90,7 +89,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 interface SignUpResponse {
   token: string;
-  status?: string;
+  error?: string;
 }
 
 const noErrState = () => ({
@@ -102,17 +101,23 @@ const noErrState = () => ({
 });
 
 function isEmail(s: string) {
-  const matches = s.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g);
+  const matches = s.match(
+    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])/g
+  );
   return matches !== null;
 }
 
 function validate(fn: string, ln: string, e: string, pw: string, pwv: string) {
   const base = noErrState();
 
-  if (fn.length < 1) base['firstName'] = "Required.";
-  if (ln.length < 1) base['lastName'] = "Required.";
+  if (fn.length < 1) base["firstName"] = "Required.";
+  if (ln.length < 1) base["lastName"] = "Required.";
   if (!isEmail(e)) base["email"] = "Must be an email.";
   if (e.length < 1) base["email"] = "Required.";
+  if (pw.length < 6) base["password"] = "Must be at least 6 characters.";
+  if (pw.length < 1) base["password"] = "Required.";
+  if (pw !== pwv) base["passwordVerify"] = "Does not match password.";
+  if (pwv.length < 1) base["passwordVerify"] = "Required.";
 
   return base;
 }
@@ -137,24 +142,29 @@ const SignUpPage: FC = () => {
 
     const err = validate(firstName, lastName, email, password, passwordVerify);
 
-    if (Object.values(err).some(e => e !== "")) {
+    if (Object.values(err).some((e) => e !== "")) {
       setErrors(err);
       return;
     }
 
+    setIsLoading(true);
+
     const res = await API.post<SignUpResponse>("users", {
-      firstName,
-      lastName,
+      first_name: firstName,
+      last_name: lastName,
       email,
       password,
     });
 
+    setIsLoading(false);
+
     if (res.error) {
-      console.log(res.data.status);
+      console.log(res.data.error);
       // if (res.data?.status) {
 
       // }
     } else {
+      API.setToken(res.data.token);
       history.push("/dash");
     }
   }
