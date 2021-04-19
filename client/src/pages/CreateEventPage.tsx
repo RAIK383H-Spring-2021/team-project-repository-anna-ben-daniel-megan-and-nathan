@@ -642,11 +642,11 @@ function SendInvitations(props: SendInvitationsProps) {
       social_distancing_no_masks,
     });
 
-    if ((res as any).id) {
-      inviteUsers((res as any).id);
-    } else {
+    if (res.error) {
       setLoading(false);
       alert("that didn't work");
+    } else {
+      inviteUsers(res.data.id as number);
     }
   }
 
