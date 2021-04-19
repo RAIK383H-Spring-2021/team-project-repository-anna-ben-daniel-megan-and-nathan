@@ -210,6 +210,7 @@ function DashboardSmall() {
   const initial = params.tab || "created";
   const history = useHistory();
   const [current, setCurrent] = useState(initial);
+  const offline = useOffline();
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, initial });
@@ -232,6 +233,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
+            start={offline ? <Icon name="cloud_off" /> : undefined}
             title={`Hi, ${User.user?.first_name}!`}
             background="filled"
             end={
