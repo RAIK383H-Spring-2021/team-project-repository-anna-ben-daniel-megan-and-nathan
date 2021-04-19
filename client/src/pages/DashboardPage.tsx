@@ -23,6 +23,8 @@ import { User } from "../User";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Helmet } from "react-helmet";
+import { useOffline } from "../hooks/useOffline";
+import { Icon } from "../components/Icon";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -169,6 +171,7 @@ function DashboardLarge() {
   const classes = useStyles({ theme });
   const { tab } = useParams<{ tab: string }>();
   const history = useHistory();
+  const offline = useOffline();
 
   if (tab) {
     return <Redirect to="/dash" />;
@@ -178,6 +181,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
+          start={offline ? <Icon name="cloud_off" /> : undefined}
           title={`Hi, ${User.user?.first_name}!`}
           size="large"
           end={

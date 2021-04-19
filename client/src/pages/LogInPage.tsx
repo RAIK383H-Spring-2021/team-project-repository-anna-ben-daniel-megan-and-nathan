@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
 import { AppTheme } from "../theme";
+import { isEmail } from "../util/isEmail";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   content: {
@@ -95,6 +96,22 @@ interface LoginResponse {
   error?: string;
 }
 
+const noErrState = () => ({
+  email: "",
+  password: "",
+});
+
+function validate(e: string, p: string) {
+  const base = noErrState();
+
+  if (!isEmail(e)) base["email"] = "Must be an email.";
+  if (e.length < 1) base["email"] = "Required.";
+  if (p.length < 6) base["password"] = "Must be at least 6 characters.";
+  if (p.length < 1) base["password"] = "Required.";
+
+  return base;
+}
+
 const LogInPage: FC = () => {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
@@ -103,10 +120,17 @@ const LogInPage: FC = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [errors, setErrors] = useState({ user: false, password: false });
+  const [errors, setErrors] = useState(noErrState());
 
   async function handleSubmit(ev: FormEvent) {
     ev.preventDefault();
+
+    const err = validate(email, password);
+
+    if (Object.values(err).some((e) => e !== "")) {
+      setErrors(err);
+      return;
+    }
 
     setIsLoading(true);
 
@@ -119,9 +143,9 @@ const LogInPage: FC = () => {
 
     if (res.error) {
       if (res.data?.error === "user not found") {
-        setErrors({ user: true, password: false });
+        setErrors({ email: "User not found.", password: "" });
       } else {
-        setErrors({ user: false, password: true });
+        setErrors({ email: "", password: "Incorrect password." });
       }
     } else {
       API.setToken(res.data.token);
@@ -149,7 +173,7 @@ const LogInPage: FC = () => {
               onChange={setEmail}
               type="email"
               label="Email"
-              error={errors.user ? "User not found." : undefined}
+              error={errors.email}
             />
             <Input
               className={classes.input}
@@ -157,7 +181,7 @@ const LogInPage: FC = () => {
               onChange={setPassword}
               type="password"
               label="Password"
-              error={errors.password ? "Incorrect password." : undefined}
+              error={errors.password}
             />
           </div>
           <div className={classes.buttonWrapper}>

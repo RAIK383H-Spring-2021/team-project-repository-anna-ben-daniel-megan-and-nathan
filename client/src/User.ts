@@ -67,11 +67,21 @@ export class User {
   private static async updateQuestionnaire() {
     const user = this.user;
     if (user) {
+      if (!navigator.onLine) {
+        const q = API.getCacheItem(
+          API.makeUrl(`users/${user.id}/questionnaire`)
+        );
+        this._questionnaire = q as any;
+        return;
+      }
+
       const result = await API.get<IQuestionnaire>(
         `users/${user.id}/questionnaire`
       );
+
       if (Object.values(result).every((q) => q)) {
         delete (result as any).id;
+        API.setCacheItem(API.makeUrl(`users/${user.id}/questionnaire`), result);
         this._questionnaire = result as any;
       } else {
         this._questionnaire = getBaseQ();
