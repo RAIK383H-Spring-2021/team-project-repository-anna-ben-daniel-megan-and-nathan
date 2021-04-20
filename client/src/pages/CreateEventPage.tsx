@@ -265,7 +265,11 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     setEventDetails(eventDetails);
     setStepperDisabled([
       false,
-      eventDetails.title?.length === 0 || eventDetails.date?.length === 0 || eventDetails.time?.length === 0 || eventDetails.location_type?.length === 0,
+      eventDetails.title?.length === 0
+      || eventDetails.date?.length === 0
+      || eventDetails.time?.length === 0
+      || eventDetails.location_type?.length === 0
+      || eventDetails.location?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -274,7 +278,11 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     setInvitees(invitees);
     setStepperDisabled([
       false,
-      eventDetails.title?.length === 0 || eventDetails.date?.length === 0 || eventDetails.time?.length === 0 || eventDetails.location_type?.length === 0,
+      eventDetails.title?.length === 0
+      || eventDetails.date?.length === 0
+      || eventDetails.time?.length === 0
+      || eventDetails.location_type?.length === 0
+      || eventDetails.location?.length === 0,
       invitees.length === 0,
     ]);
   };
