@@ -100,16 +100,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   background: ({ size }) =>
     size === "large"
       ? {
-          height: "90vh",
-          width: "90vh",
-          position: "fixed",
-          bottom: "-20vh",
-          right: "-20vh",
-          zIndex: 1,
-        }
+        height: "90vh",
+        width: "90vh",
+        position: "fixed",
+        bottom: "-20vh",
+        right: "-20vh",
+        zIndex: 1,
+      }
       : {
-          display: "none",
-        },
+        display: "none",
+      },
   addParticipantsWrapper: ({ size }) => {
     if (size === "large") {
       return {
@@ -129,16 +129,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   searchPanel: ({ size }) =>
     size === "large"
       ? {
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {
-          minHeight: 350,
-          "& input": {
-            margin: "0 24px",
-          },
+        minHeight: 350,
+        "& input": {
+          margin: "0 24px",
         },
+      },
   searchResultList: {
     flexShrink: 1,
     overflowY: "auto",
@@ -146,10 +146,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesPanel: ({ size }) =>
     size === "large"
       ? {
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }
+        height: "60vh",
+        display: "flex",
+        flexDirection: "column",
+      }
       : {},
   sectionHeader: {
     ...theme.typography.preTitle,
@@ -160,10 +160,10 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   inviteesList: ({ size }) =>
     size === "large"
       ? {
-          flexGrow: 1,
-          backgroundColor: theme.colors.background.base.backgroundColor,
-          overflowY: "auto",
-        }
+        flexGrow: 1,
+        backgroundColor: theme.colors.background.base.backgroundColor,
+        overflowY: "auto",
+      }
       : {},
   sendInvitationsWrapper: {
     display: "flex",
@@ -222,7 +222,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-export interface CreateEventPageComponentProps {}
+export interface CreateEventPageComponentProps { }
 
 interface EventDetailsObject {
   title?: string;
@@ -265,7 +265,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     setEventDetails(eventDetails);
     setStepperDisabled([
       false,
-      eventDetails.title === undefined || eventDetails.title.length === 0,
+      eventDetails.title?.length === 0 || eventDetails.date?.length === 0 || eventDetails.time?.length === 0 || eventDetails.location_type?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -274,7 +274,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
     setInvitees(invitees);
     setStepperDisabled([
       false,
-      eventDetails.title === undefined || eventDetails.title.length === 0,
+      eventDetails.title?.length === 0 || eventDetails.date?.length === 0 || eventDetails.time?.length === 0 || eventDetails.location_type?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -445,11 +445,11 @@ interface SearchUsersResponse {
 }
 
 const searchUsers = (query: string) =>
-  ({
-    method: "GET",
-    path: "users",
-    query: { q: query },
-  } as FetchRequest);
+({
+  method: "GET",
+  path: "users",
+  query: { q: query },
+} as FetchRequest);
 
 function AddParticipants(props: AddParticipantsProps) {
   const size = useScreen();
