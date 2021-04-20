@@ -62,32 +62,31 @@ RSpec.describe "questionnaires controller requests", type: :request do
             expect(response).to have_http_status(:unauthorized)
         end
 
-        # it "update no event user" do
-        #     post '/users/login', params: { email: "test@test.test", password: "password" }
-        #     @resFirst = JSON.parse(response.body)
-        #     @tokenFirst = @resFirst["token"]
+        it "update no event user" do
+            post '/users/login', params: { email: "test@test.test", password: "password" }
+            @resFirst = JSON.parse(response.body)
+            @tokenFirst = @resFirst["token"]
 
-        #     put "/events/2/invitees/3/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
-        #         params: {     "q1":1,
-        #                       "q2":1,
-        #                       "q3":1,
-        #                       "q4":1,
-        #                       "q5":1,
-        #                       "q6":1,
-        #                       "q7":1,
-        #                       "q8":1,
-        #                       "q9":1,
-        #                       "q10":1,
-        #                       "q11":1,
-        #                       "q12":1,
-        #                       "q13":1,
-        #                       "q14":1,
-        #                       "q15":1}
+            put "/events/2/invitees/1/questionnaire", headers: { "Authorization": "Bearer #{@tokenFirst}"},
+                params: {     "q1":1,
+                              "q2":1,
+                              "q3":1,
+                              "q4":1,
+                              "q5":1,
+                              "q6":1,
+                              "q7":1,
+                              "q8":1,
+                              "q9":1,
+                              "q10":1,
+                              "q11":1,
+                              "q12":1,
+                              "q13":1,
+                              "q14":1,
+                              "q15":1}
 
-        #     @res = JSON.parse(response.body)
-
-        #     expect(@res["questionnaire"]["q1"]).to eq(1)
-        #     expect(@res["questionnaire"]["id"]).to eq(1)
-        # end
+            @res = JSON.parse(response.body)
+            expect(@res["questionnaire"]["q1"]).to eq(1)
+            expect(@res["questionnaire"]["id"]).to eq(1)
+        end
     end
 end

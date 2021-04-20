@@ -188,6 +188,22 @@
   social_distancing_no_masks: 6
 )
 
+@event8 = Event.create(
+  title: "event8",
+  host_id: @invited_user.id,
+  description: "test event",
+  date_time: Time.now,
+  food_prepackaged: false,
+  food_buffet: false,
+  location: "test",
+  indoor: false,
+  outdoor: false,
+  remote: true,
+  score: 1,
+  social_distancing_masks: nil,
+  social_distancing_no_masks: 6
+)
+
 # seed two invitations, each user invited to the other event
 
 Participant.create(
@@ -236,4 +252,16 @@ Participant.create(
   user_id: @invited_user.id,
   event_id: @event6.id,
   questionnaire_complete: 0
+)
+
+Participant.create(
+  user_id: @user.id,
+  event_id: @event8.id,
+  questionnaire_complete: 1
+)
+
+Participant.create(
+  user_id: @invited_user2.id,
+  event_id: @event8.id,
+  questionnaire_complete: 1
 )
