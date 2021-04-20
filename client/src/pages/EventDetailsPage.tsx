@@ -25,6 +25,7 @@ import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
 import { IQuestionnaire, Questionnaire } from "./partials/Questionnaire";
+import { SuggestionDialog } from "./partials/SuggestionDialog";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -504,6 +505,8 @@ function SuggestionsCard() {
   const size = useScreen();
   const listType = size === "large" ? "contain" : "fill";
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <div>
       <List type={listType}>
@@ -514,6 +517,7 @@ function SuggestionsCard() {
               color="primary"
               transparent={true}
               end={<Icon size="small" name="chevron_right" />}
+              onClick={() => setDialogOpen(true)}
             >
               View Details
             </Button>
@@ -528,6 +532,7 @@ function SuggestionsCard() {
               color="primary"
               transparent={true}
               end={<Icon size="small" name="chevron_right" />}
+              onClick={() => setDialogOpen(true)}
             >
               View Details
             </Button>
@@ -542,6 +547,7 @@ function SuggestionsCard() {
               color="primary"
               transparent={true}
               end={<Icon size="small" name="chevron_right" />}
+              onClick={() => setDialogOpen(true)}
             >
               View Details
             </Button>
@@ -549,6 +555,7 @@ function SuggestionsCard() {
         >
           Remote
         </ListItem>
+        <SuggestionDialog open={dialogOpen} onSubmit={() => setDialogOpen(true)} onClose={() => setDialogOpen(false)} />
       </List>
     </div>
   );

@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
 import { AppTheme } from "../theme";
+import { isEmail } from "../util/isEmail";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   content: {
@@ -99,13 +100,6 @@ const noErrState = () => ({
   password: "",
   passwordVerify: "",
 });
-
-function isEmail(s: string) {
-  const matches = s.match(
-    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])/g
-  );
-  return matches !== null;
-}
 
 function validate(fn: string, ln: string, e: string, pw: string, pwv: string) {
   const base = noErrState();

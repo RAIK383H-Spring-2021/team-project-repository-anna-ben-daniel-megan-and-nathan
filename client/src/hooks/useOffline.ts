@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 export function useOffline() {
-  const [status, setStatus] = useState(navigator.onLine);
+  const [status, setStatus] = useState(!navigator.onLine);
 
   useEffect(() => {
     function change() {
-      setStatus(navigator.onLine);
+      setStatus(!navigator.onLine);
     }
 
     window.addEventListener("online", change);

@@ -23,6 +23,8 @@ import { User } from "../User";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Helmet } from "react-helmet";
+import { useOffline } from "../hooks/useOffline";
+import { Icon } from "../components/Icon";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   "@keyframes slideIn": {
@@ -139,6 +141,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     placeItems: "center",
     margin: "60px 0",
     gridTemplateRows: "100px 1fr",
+    textAlign: "center",
 
     "& h2": {
       ...theme.typography.heading,
@@ -153,7 +156,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-const DashboardPage: FC = (props) => {
+const DashboardPage: FC = () => {
   const size = useScreen();
 
   return (
@@ -169,6 +172,7 @@ function DashboardLarge() {
   const classes = useStyles({ theme });
   const { tab } = useParams<{ tab: string }>();
   const history = useHistory();
+  const offline = useOffline();
 
   if (tab) {
     return <Redirect to="/dash" />;
@@ -178,6 +182,7 @@ function DashboardLarge() {
     <Content
       toolbar={
         <Toolbar
+          start={offline ? <Icon name="cloud_off" /> : undefined}
           title={`Hi, ${User.user?.first_name}!`}
           size="large"
           end={
@@ -206,6 +211,7 @@ function DashboardSmall() {
   const initial = params.tab || "created";
   const history = useHistory();
   const [current, setCurrent] = useState(initial);
+  const offline = useOffline();
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, initial });
@@ -228,6 +234,7 @@ function DashboardSmall() {
       toolbar={
         <div>
           <Toolbar
+            start={offline ? <Icon name="cloud_off" /> : undefined}
             title={`Hi, ${User.user?.first_name}!`}
             background="filled"
             end={
