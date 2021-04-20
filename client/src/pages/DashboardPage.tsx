@@ -141,6 +141,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     placeItems: "center",
     margin: "60px 0",
     gridTemplateRows: "100px 1fr",
+    textAlign: "center",
 
     "& h2": {
       ...theme.typography.heading,
@@ -155,7 +156,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
-const DashboardPage: FC = (props) => {
+const DashboardPage: FC = () => {
   const size = useScreen();
 
   return (
