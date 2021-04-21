@@ -21,7 +21,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     },
     divider: {
         margin: "12px -34px",
-        width: "calc(100% + (34px * 2))",
+        width: "100%",
         height: 1,
         backgroundColor: theme.colors.divider.base.backgroundColor,
     },
