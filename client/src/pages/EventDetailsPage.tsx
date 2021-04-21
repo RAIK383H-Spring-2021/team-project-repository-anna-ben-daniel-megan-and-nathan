@@ -174,11 +174,42 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
 }));
 
+function suggestions(id: number): FetchRequest {
+  return {
+    method: "GET",
+    path: `events/${id}/suggestions`,
+  };
+}
+
+export interface ISuggestion {
+  location_type: string;
+  masks?: string;
+  distancing?: string;
+  room_size?: string;
+  food?: string;
+  score: string;
+}
+
+export interface ISuggestionData {
+  indoor: ISuggestion;
+  outdoor: ISuggestion;
+  remote: ISuggestion;
+}
+
+interface ISuggestionResponse {
+  suggestions: ISuggestionData;
+}
+
 const EventDetailsPage: FC = () => {
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
   const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
     events.get,
+    event_id
+  );
+
+  const [suggestions_response] = useRequest<ISuggestionResponse>(
+    suggestions,
     event_id
   );
 
@@ -196,9 +227,17 @@ const EventDetailsPage: FC = () => {
         }
       />
       {screen === "large" ? (
-        <EventDetailsLarge event={response?.event} loading={isLoading} />
+        <EventDetailsLarge
+          event={response?.event}
+          loading={isLoading}
+          suggestions={suggestions_response?.suggestions}
+        />
       ) : (
-        <EventDetailsSmall event={response?.event} loading={isLoading} />
+        <EventDetailsSmall
+          event={response?.event}
+          loading={isLoading}
+          suggestions={suggestions_response?.suggestions}
+        />
       )}
     </Fragment>
   );
@@ -207,9 +246,11 @@ const EventDetailsPage: FC = () => {
 function EventDetailsLarge({
   event,
   loading,
+  suggestions,
 }: {
   loading: boolean;
   event?: Event;
+  suggestions?: ISuggestionData;
 }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
@@ -244,7 +285,7 @@ function EventDetailsLarge({
           <Meter event={event} />
           <div className={classes.desktopGrid}>
             <SummarySection event={event} />
-            <ComfortMetricSection event={event} />
+            <ComfortMetricSection event={event} suggestions={suggestions} />
           </div>
           {host && <InviteeList event_id={event.id} />}
         </div>
@@ -262,9 +303,11 @@ function EventDetailsLarge({
 function EventDetailsSmall({
   event,
   loading,
+  suggestions,
 }: {
   loading: boolean;
   event?: Event;
+  suggestions?: ISuggestionData;
 }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
@@ -298,7 +341,7 @@ function EventDetailsSmall({
       {event && (
         <div className={classes.mobileWrapper}>
           <Meter event={event} />
-          <ComfortMetricSection event={event} />
+          <ComfortMetricSection event={event} suggestions={suggestions} />
           <SummarySection event={event} />
           {host && <InviteeList event_id={event.id} />}
         </div>
@@ -390,7 +433,13 @@ function SummarySection({ event }: { event: Event }) {
   );
 }
 
-function ComfortMetricSection({ event }: { event: Event }) {
+function ComfortMetricSection({
+  event,
+  suggestions,
+}: {
+  event: Event;
+  suggestions?: ISuggestionData;
+}) {
   const screen = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, screen });
@@ -399,7 +448,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
     return (
       <section className={classes.sectionWrapper}>
         <h2 className={classes.cardLabel}>Suggestions</h2>
-        <SuggestionsCard />
+        <SuggestionsCard suggestions={suggestions} />
       </section>
     );
   }
@@ -526,64 +575,65 @@ function ScoreDetailsCard() {
   }
 }
 
-function SuggestionsCard() {
+function SuggestionsCard({ suggestions }: { suggestions?: ISuggestionData }) {
   const size = useScreen();
   const listType = size === "large" ? "contain" : "fill";
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogData, setDialogData] = useState<ISuggestion | undefined>();
+
+  const updateEventData = (revisedData: ISuggestion) => {
+    setDialogData(undefined);
+  };
 
   return (
     <div>
       <List type={listType}>
-        <ListItem
-          start={<MiniScore type="score" value={4.2} max={5} />}
-          end={
-            <Button
-              color="primary"
-              transparent={true}
-              end={<Icon size="small" name="chevron_right" />}
-              onClick={() => setDialogOpen(true)}
-            >
-              View Details
-            </Button>
-          }
-        >
-          Outdoors
-        </ListItem>
-        <ListItem
-          start={<MiniScore type="score" value={3.3} max={5} />}
-          end={
-            <Button
-              color="primary"
-              transparent={true}
-              end={<Icon size="small" name="chevron_right" />}
-              onClick={() => setDialogOpen(true)}
-            >
-              View Details
-            </Button>
-          }
-        >
-          Indoors
-        </ListItem>
-        <ListItem
-          start={<MiniScore type="score" value={4.7} max={5} />}
-          end={
-            <Button
-              color="primary"
-              transparent={true}
-              end={<Icon size="small" name="chevron_right" />}
-              onClick={() => setDialogOpen(true)}
-            >
-              View Details
-            </Button>
-          }
-        >
-          Remote
-        </ListItem>
+        {suggestions &&
+          Object.entries(suggestions).map(([location_type, suggestionData]) => {
+            const cleanedData: ISuggestion = {
+              location_type,
+              masks: suggestionData.masks
+                ? "1me"
+                : location_type === "indoor"
+                ? "none"
+                : undefined,
+              food:
+                suggestionData.food_type ||
+                (location_type === "remote" ? undefined : "none"),
+              distancing: suggestionData.distance?.toString() || undefined,
+              room_size: suggestionData.room_size?.toString() || undefined,
+              score: suggestionData.score,
+            };
+            return (
+              <ListItem
+                start={
+                  <MiniScore
+                    type="score"
+                    value={parseFloat(suggestionData.score)}
+                    max={5}
+                  />
+                }
+                end={
+                  <Button
+                    color="primary"
+                    transparent={true}
+                    end={<Icon size="small" name="chevron_right" />}
+                    onClick={() => setDialogData(cleanedData)}
+                  >
+                    View Details
+                  </Button>
+                }
+              >
+                {location_type.charAt(0).toUpperCase() +
+                  location_type.substring(1)}
+              </ListItem>
+            );
+          })}
         <SuggestionDialog
-          open={dialogOpen}
-          onSubmit={() => setDialogOpen(true)}
-          onClose={() => setDialogOpen(false)}
+          open={dialogData ? true : false}
+          suggestion={dialogData}
+          onSubmit={(revisedData) => updateEventData(revisedData)}
+          onClose={() => setDialogData(undefined)}
         />
       </List>
     </div>
