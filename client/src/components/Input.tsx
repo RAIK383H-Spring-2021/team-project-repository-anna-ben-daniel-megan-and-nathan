@@ -30,6 +30,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     position: "relative",
     height: 44,
     display: "block",
+    width: "100%",
 
     "&:hover": {
       border: `1px solid ${theme.colors.primary.light?.backgroundColor}`,
@@ -147,10 +148,17 @@ export interface InputComponentProps {
   className?: string;
   end?: ReactNode;
   error?: string;
+  forceFocus?: boolean;
 }
 
 export const Input: FC<InputComponentProps> = (props) => {
-  const { type = "text", disabled = false, className = "", error = "" } = props;
+  const {
+    type = "text",
+    disabled = false,
+    className = "",
+    error = "",
+    forceFocus = false,
+  } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, error: !!error });
@@ -162,6 +170,12 @@ export const Input: FC<InputComponentProps> = (props) => {
   useEffect(() => {
     props.value !== undefined && props.value !== value && setValue(props.value);
   }, [props.value, value]);
+
+  useEffect(() => {
+    if (forceFocus) {
+      inputRef.current?.focus();
+    }
+  });
 
   const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
     let newValue = ev.target.value;

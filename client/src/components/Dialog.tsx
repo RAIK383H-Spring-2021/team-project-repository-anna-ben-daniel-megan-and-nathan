@@ -53,7 +53,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   contentWrapper: {
     padding: 20,
-    height: `calc(100% - 20px)`,
+    height: `calc(100% - 40px)`,
     margin: 20,
     display: "block",
     width: "100%",
@@ -61,6 +61,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   content: {
     ...theme.colors.background.base,
     background: theme.colors.background.base.backgroundColor,
+    minHeight: `calc(100% - 40px)`,
     width: 600,
     maxWidth: "100%",
     position: "absolute",
@@ -76,6 +77,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderBottomLeftRadius: ({ size }) => size === "small" && 0,
     borderBottomRightRadius: ({ size }) => size === "small" && 0,
     pointerEvents: "initial",
+    padding: 0,
   },
 }));
 

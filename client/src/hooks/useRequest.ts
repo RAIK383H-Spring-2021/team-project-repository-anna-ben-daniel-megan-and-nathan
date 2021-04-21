@@ -56,6 +56,7 @@ export function useRequest<T>(
   type requestParams = Parameters<typeof request>;
   async function makeRequest(...params: requestParams) {
     setIsLoading(true);
+    setValue(undefined);
 
     const r = request!(...params);
     const url = API.makeUrl(r.path, r.query);

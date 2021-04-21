@@ -7,11 +7,14 @@ import { Icon } from "./Icon";
 const useStyles = createUseStyles((theme: AppTheme) => ({
   button: {
     background: "transparent",
-    color: theme.colors.background.base.color,
+    color: ({ color }) =>
+      color === "default"
+        ? theme.colors.background.base.color
+        : theme.colors[color].base.backgroundColor,
     border: "none",
     position: "relative",
     cursor: "pointer",
-    display: "flex",
+    display: "inline-flex",
     flexDirection: "row",
     alignItems: "flex-start",
     borderRadius: "50%",
@@ -25,13 +28,17 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 export interface IconButtonComponentProps {
   icon: string;
+  color?: "primary" | "secondary" | "accent" | "default";
   onClick?: (ev: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const IconButton: FC<IconButtonComponentProps> = (props) => {
+  const color = props.color ?? "default";
+
   const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const classes = useStyles({ theme, color });
   const rippleRef = useRef(null);
+
   useRipple(rippleRef, theme.colors.background.base.color, true);
 
   return (

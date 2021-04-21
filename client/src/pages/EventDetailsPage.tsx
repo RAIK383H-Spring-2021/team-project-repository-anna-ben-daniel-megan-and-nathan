@@ -9,6 +9,7 @@ import { Background } from "../components/Background";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Content } from "../components/Content";
+import { Dialog } from "../components/Dialog";
 import { Icon } from "../components/Icon";
 import { IconButton } from "../components/IconButton";
 import { InfoBlock } from "../components/InfoBlock";
@@ -24,6 +25,7 @@ import { Event, host_name, Metrics } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
+import { AddParticipantsDialog } from "./partials/AddParticipantsDialog";
 import { IQuestionnaire, Questionnaire } from "./partials/Questionnaire";
 import { SuggestionDialog } from "./partials/SuggestionDialog";
 
@@ -85,10 +87,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   sectionWrapper: {
     display: "flex",
     flexDirection: "column",
+    margin: ({ screen }) => screen !== "large" && `24px 0`,
   },
   detailsCard: {
     display: "grid",
     rowGap: 32,
+    padding: ({ screen }) => screen !== "large" && `12px 28px 28px 28px`,
   },
   detailsCardDoubleColumn: {
     display: "grid",
@@ -96,7 +100,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   cardLabel: {
     ...theme.typography.preTitle,
-    paddingLeft: 4,
+    paddingLeft: ({ screen }) => (screen !== "large" ? 28 : 4),
+    paddingRight: ({ screen }) => (screen !== "large" ? 28 : 4),
     paddingBottom: 12,
   },
   questionnaireCard: {
@@ -150,6 +155,22 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     flexGrow: 1,
     flexShrink: 0,
     height: 24,
+  },
+  inviteesWrapper: {
+    margin: ({ screen }) =>
+      screen === "large" ? `48px 180px 0 180px` : `12px 0 24px 0`,
+  },
+  inviteesSpinnerWrapper: {
+    display: "grid",
+    placeItems: "center",
+    margin: ({ screen }) => screen !== "large" && 24,
+  },
+  inviteeSectionTitleWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    paddingRight: ({ screen }) => (screen !== "large" ? 18 : 4),
   },
 }));
 
@@ -211,6 +232,7 @@ function EventDetailsLarge({
     <Content
       toolbar={
         <Toolbar
+          background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
           size="large"
           title={event?.title ?? "Loading..."}
@@ -248,6 +270,8 @@ function EventDetailsSmall({
   const classes = useStyles({ theme });
   const history = useHistory();
 
+  const host = (event && event.host_id === User.user?.id) ?? 0;
+
   function goBack() {
     if (window.history.state?.state?.referrer) {
       if (window.history.state.state.referrer === "dashboard") {
@@ -276,6 +300,7 @@ function EventDetailsSmall({
           <Meter event={event} />
           <ComfortMetricSection event={event} />
           <SummarySection event={event} />
+          {host && <InviteeList event_id={event.id} />}
         </div>
       )}
       {loading && (
@@ -319,16 +344,15 @@ function Meter({ event }: { event: Event }) {
 }
 
 function SummarySection({ event }: { event: Event }) {
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
-  const date = new Date(event.date_time);
   const screen = useScreen();
+  const date = new Date(event.date_time);
+
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, screen });
 
   return (
     <section className={classes.sectionWrapper}>
-      <h2 hidden={screen !== "large"} className={classes.cardLabel}>
-        Details
-      </h2>
+      <h2 className={classes.cardLabel}>Details</h2>
       <Card
         color="background"
         borderless={screen !== "large"}
@@ -374,9 +398,7 @@ function ComfortMetricSection({ event }: { event: Event }) {
   if (event.host_id === User.user?.id) {
     return (
       <section className={classes.sectionWrapper}>
-        <h2 hidden={screen !== "large"} className={classes.cardLabel}>
-          Suggestions
-        </h2>
+        <h2 className={classes.cardLabel}>Suggestions</h2>
         <SuggestionsCard />
       </section>
     );
@@ -576,34 +598,60 @@ function getInvitees(id: number): FetchRequest {
 }
 
 const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
-  const theme = useTheme<AppTheme>();
-  const classes = useStyles({ theme });
+  const [response, isLoading, update] = useRequest<User[]>(
+    getInvitees,
+    event_id
+  );
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
-  const [response, isLoading] = useRequest<User[]>(getInvitees, event_id);
-  const size = useScreen();
+  const screen = useScreen();
+
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme, screen });
+
+  async function submitInvitees(invitees: User[]) {
+    const response = await API.post<{ id: number }>(
+      `events/${event_id}/invitees`,
+      { user_ids: invitees.map((i) => i.id) }
+    );
+    if (response.error) {
+      alert("Error!");
+    } else {
+      setShowAddDialog(false);
+      setTimeout(() => update(event_id), 750);
+    }
+  }
 
   if (isLoading) {
     return (
-      <section>
-        <h2 hidden={size !== "large"} className={classes.cardLabel}>
-          Invitees
-        </h2>
-        <div>Hewwo</div>
+      <section className={classes.inviteesWrapper}>
+        <h2 className={classes.cardLabel}>Participants</h2>
+        <div className={classes.inviteesSpinnerWrapper}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+        </div>
       </section>
     );
   } else {
     return (
-      <section>
-        <h2 hidden={size !== "large"} className={classes.cardLabel}>
-          Invitees
-        </h2>
-        <List type={size === "large" ? "contain" : "fill"}>
+      <section className={classes.inviteesWrapper}>
+        <div className={classes.inviteeSectionTitleWrapper}>
+          <h2 className={classes.cardLabel}>Participants</h2>
+          <IconButton icon="add" onClick={() => setShowAddDialog(true)} />
+        </div>
+        <List type={screen === "large" ? "contain" : "fill"}>
           {response?.map((invitee) => (
-            <ListItem subtitle={invitee.email}>
+            <ListItem key={invitee.id} subtitle={invitee.email}>
               {invitee.first_name} {invitee.last_name}
             </ListItem>
           ))}
         </List>
+        <Dialog open={showAddDialog} onClose={() => setShowAddDialog(false)}>
+          <AddParticipantsDialog
+            onClose={() => setShowAddDialog(false)}
+            onSubmit={(val) => submitInvitees(val)}
+            current={response ?? []}
+          />
+        </Dialog>
       </section>
     );
   }
