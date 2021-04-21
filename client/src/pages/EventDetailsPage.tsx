@@ -225,6 +225,8 @@ function EventDetailsLarge({
   const classes = useStyles({ theme });
   const history = useHistory();
 
+  const host = (event && event.host_id === User.user?.id) ?? 0;
+
   function goBack() {
     if (window.history.state?.state?.referrer) {
       if (window.history.state.state.referrer === "dashboard") {
@@ -253,6 +255,7 @@ function EventDetailsLarge({
             <SummarySection event={event} />
             <ComfortMetricSection event={event} suggestions={suggestions} />
           </div>
+          {host && <InviteeList event_id={event.id} />}
         </div>
       )}
       {loading && (
@@ -584,5 +587,46 @@ function SuggestionsCard({ suggestions }: { suggestions?: ISuggestionData }) {
     </div>
   );
 }
+
+function getInvitees(id: number): FetchRequest {
+  return {
+    method: "GET",
+    path: `events/${id}/invitees`,
+  };
+}
+
+const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+
+  const [response, isLoading] = useRequest<User[]>(getInvitees, event_id);
+  const size = useScreen();
+
+  if (isLoading) {
+    return (
+      <section>
+        <h2 hidden={size !== "large"} className={classes.cardLabel}>
+          Invitees
+        </h2>
+        <div>Hewwo</div>
+      </section>
+    );
+  } else {
+    return (
+      <section>
+        <h2 hidden={size !== "large"} className={classes.cardLabel}>
+          Invitees
+        </h2>
+        <List type={size === "large" ? "contain" : "fill"}>
+          {response?.map((invitee) => (
+            <ListItem subtitle={invitee.email}>
+              {invitee.first_name} {invitee.last_name}
+            </ListItem>
+          ))}
+        </List>
+      </section>
+    );
+  }
+};
 
 export default EventDetailsPage;
