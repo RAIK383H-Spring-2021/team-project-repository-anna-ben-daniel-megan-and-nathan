@@ -416,7 +416,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
         label="Social Distancing"
         value={props.eventDetails.distancing}
         onChange={(value) => updateEventDetails("distancing", value)}
-        min={0}
+        min={1}
         max={12}
         units={
           parseInt(props.eventDetails.distancing ?? "") === 1 ? "foot" : "feet"
