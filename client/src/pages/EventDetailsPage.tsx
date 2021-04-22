@@ -92,11 +92,12 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   detailsCard: {
     display: "grid",
     rowGap: 24,
-    padding: ({ screen }) => (screen !== "large" && `12px 28px 28px 28px`),
+    padding: ({ screen }) => screen !== "large" && `12px 28px 28px 28px`,
   },
   detailsCardDoubleColumn: {
     display: "grid",
-    gridTemplateColumns: ({ screen }) => (screen === "large" ? "1fr 1fr" : "1fr"),
+    gridTemplateColumns: ({ screen }) =>
+      screen === "large" ? "1fr 1fr" : "1fr",
     rowGap: 24,
   },
   cardLabel: {
@@ -234,8 +235,8 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-              ? response?.event?.title ?? "Loading..."
-              : "Loading..."
+            ? response?.event?.title ?? "Loading..."
+            : "Loading..."
         }
       />
       {screen === "large" ? (
@@ -388,8 +389,8 @@ function Meter({ event }: { event: Event }) {
       ? "Group Comfort Score"
       : "Individual Comfort Score"
     : host
-      ? "Invitee Responses"
-      : "Individual Comfort Score";
+    ? "Invitee Responses"
+    : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>
@@ -413,11 +414,7 @@ function SummarySection({ event }: { event: Event }) {
         borderless={screen !== "large"}
         className={classes.detailsCard}
       >
-        <InfoBlock
-          icon="text_fields"
-          label="event title"
-          body={event.title}
-        />
+        <InfoBlock icon="text_fields" label="event title" body={event.title} />
         <div className={classes.detailsCardDoubleColumn}>
           <InfoBlock icon="person" label="host" body={host_name(event)} />
           <InfoBlock
@@ -440,13 +437,41 @@ function SummarySection({ event }: { event: Event }) {
         </div>
         <div className={classes.detailsCardDoubleColumn}>
           <InfoBlock icon="place" label="location" body={event.location} />
-          <InfoBlock icon="nature_people" label="location type" body={event.indoor ? "Indoor" : event.outdoor ? "Outdoor" : "Remote"} />
+          <InfoBlock
+            icon="nature_people"
+            label="location type"
+            body={
+              event.indoor ? "Indoor" : event.outdoor ? "Outdoor" : "Remote"
+            }
+          />
         </div>
         <div className={classes.detailsCardDoubleColumn}>
-          <InfoBlock icon="masks" label="masks" body={event.social_distancing_masks ? "Masks required" : "No masks"} />
-          <InfoBlock icon="social_distance" label="social distancing" body={`${event.social_distancing_masks ? event.social_distancing_masks : event.social_distancing_no_masks} feet`} />
+          <InfoBlock
+            icon="masks"
+            label="masks"
+            body={event.social_distancing_masks ? "Masks required" : "No masks"}
+          />
+          <InfoBlock
+            icon="social_distance"
+            label="social distancing"
+            body={`${
+              event.social_distancing_masks
+                ? event.social_distancing_masks
+                : event.social_distancing_no_masks
+            } feet`}
+          />
         </div>
-        <InfoBlock icon="restaurant_menu" label="food" body={event.food_buffet ? "Yes, Self-serve" : event.food_prepackaged ? "Yes, Pre-packaged" : "No food"} />
+        <InfoBlock
+          icon="restaurant_menu"
+          label="food"
+          body={
+            event.food_buffet
+              ? "Yes, Self-serve"
+              : event.food_prepackaged
+              ? "Yes, Pre-packaged"
+              : "No food"
+          }
+        />
         <InfoBlock
           icon="subject"
           label="description"
@@ -600,7 +625,13 @@ function ScoreDetailsCard() {
   }
 }
 
-function SuggestionsCard({ event, suggestions }: { event: Event, suggestions?: ISuggestionData }) {
+function SuggestionsCard({
+  event,
+  suggestions,
+}: {
+  event: Event;
+  suggestions?: ISuggestionData;
+}) {
   const size = useScreen();
   const listType = size === "large" ? "contain" : "fill";
   const theme = useTheme<AppTheme>();
@@ -613,17 +644,17 @@ function SuggestionsCard({ event, suggestions }: { event: Event, suggestions?: I
       title: event.title,
       host_id: User.user?.id,
       description: event.description,
-      date_time: new Date(
-        `${event.date_time}`
-      ).toISOString(),
+      date_time: new Date(`${event.date_time}`).toISOString(),
       food_prepackaged: revisedData.food === "pp",
       food_buffet: revisedData.food === "ss",
       location: event.location,
       indoor: revisedData.location_type === "indoor",
       outdoor: revisedData.location_type === "outdoor",
       remote: revisedData.location_type === "remote",
-      social_distancing_masks: revisedData.masks === "none" ? null : revisedData.distancing,
-      social_distancing_no_masks: revisedData.masks === "none" ? revisedData.distancing : null,
+      social_distancing_masks:
+        revisedData.masks === "none" ? null : revisedData.distancing,
+      social_distancing_no_masks:
+        revisedData.masks === "none" ? revisedData.distancing : null,
     });
 
     if (res.error) {
@@ -636,15 +667,18 @@ function SuggestionsCard({ event, suggestions }: { event: Event, suggestions?: I
   return (
     <div>
       <List type={listType}>
-        {(suggestions && Object.entries(suggestions).filter(([s_key, s_data]) => s_data.score !== null).length > 0)
-          ? Object.entries(suggestions).map(([location_type, suggestionData]) => {
+        {suggestions &&
+        Object.entries(suggestions).filter(
+          ([s_key, s_data]) => s_data.score !== null
+        ).length > 0 ? (
+          Object.entries(suggestions).map(([location_type, suggestionData]) => {
             const cleanedData: ISuggestion = {
               location_type,
               masks: suggestionData.masks
                 ? "1me"
                 : location_type === "indoor"
-                  ? "none"
-                  : undefined,
+                ? "none"
+                : undefined,
               food:
                 suggestionData.food_type ||
                 (location_type === "remote" ? undefined : "none"),
@@ -678,8 +712,12 @@ function SuggestionsCard({ event, suggestions }: { event: Event, suggestions?: I
               </ListItem>
             );
           })
-          : <p className={classes.emptySuggestions}>Check back for event planning suggestions after more people have respond to your event</p>
-        }
+        ) : (
+          <p className={classes.emptySuggestions}>
+            Check back for event planning suggestions after more people have
+            responded to your event!
+          </p>
+        )}
         <SuggestionDialog
           open={dialogData ? true : false}
           suggestion={dialogData}
@@ -699,10 +737,7 @@ function getInvitees(id: number): FetchRequest {
 }
 
 const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
-  const [response, isLoading, update] = useRequest<User[]>(
-    getInvitees,
-    event_id
-  );
+  const [response, isLoading] = useRequest<User[]>(getInvitees, event_id);
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   const screen = useScreen();
@@ -719,7 +754,7 @@ const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
       alert("Error!");
     } else {
       setShowAddDialog(false);
-      setTimeout(() => update(event_id), 750);
+      setTimeout(() => publish("event_update"), 750);
     }
   }
 
