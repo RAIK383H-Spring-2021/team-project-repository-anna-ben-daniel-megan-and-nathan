@@ -41,7 +41,8 @@ class InviteesController < ApplicationController
     end
 
     @id = authorized()
-    @host_id = Event.find_by(id: params[:event_id]).host_id
+    @event = Event.find_by(id: params[:event_id])
+    @host_id = @event.host_id
 
     if (!(@id == @host_id))
       respond_to do |format|
@@ -71,8 +72,21 @@ class InviteesController < ApplicationController
       @invitee_ids.append(@invitee.id)
     end
 
+    checkScore(@event)
+
     respond_to do |format|
       format.json { render json: { ids: @invitee_ids } }
+    end
+  end
+
+  private
+
+  def checkScore(event)
+    @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
+    @invitees = Participant.where(event_id: @event.id).length
+
+    if (@responses / @invitees < 0.8)
+      event.update(score: nil)
     end
   end
 end
