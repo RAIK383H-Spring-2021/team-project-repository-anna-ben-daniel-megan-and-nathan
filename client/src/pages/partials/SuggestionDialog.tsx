@@ -134,10 +134,6 @@ export const SuggestionDialog: FC<SuggestionDialogComponentProps> = (props) => {
                   To host your event with {data.distancing} feet of distancing,
                   you will need a venue with {data.room_size} square feet.
                 </p>
-                <p>
-                  A room size of {suggestion?.room_size} square feet is
-                  recommended for maximum guest comfort.
-                </p>
               </>
             )}
             <hr className={classes.divider} />

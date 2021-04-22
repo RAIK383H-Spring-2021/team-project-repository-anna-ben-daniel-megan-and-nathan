@@ -17,6 +17,8 @@ export interface Event {
   invitees: number;
   responses: number;
   metrics: Metrics;
+  social_distancing_masks: number | null,
+  social_distancing_no_masks: number | null,
 }
 
 export interface Metrics {
