@@ -39,14 +39,14 @@ module Suggestions
       with_mask_avg = questionnaires.map{ |quest| quest.q4 }
       with_mask_avg = with_mask_avg.sum(0.0) / with_mask_avg.length
       suggestions[:masks] = true
-      suggestions[:distance] = with_mask_avg
-      suggestions[:room_size] = (with_mask_avg ** 2) * (num_participants + 1)
+      suggestions[:distance] = with_mask_avg.to_i
+      suggestions[:room_size] = (with_mask_avg.to_i ** 2) * (num_participants + 1)
     else
       no_mask_avg = questionnaires.map{ |quest| quest.q5 }
       no_mask_avg = no_mask_avg.sum(0.0) / no_mask_avg.length
       suggestions[:masks] = false
-      suggestions[:distance] = no_mask_avg
-      suggestions[:room_size] = (no_mask_avg ** 2) * (num_participants + 1)
+      suggestions[:distance] = no_mask_avg.to_i
+      suggestions[:room_size] = (no_mask_avg.to_i ** 2) * (num_participants + 1)
     end
 
     if food
@@ -76,12 +76,12 @@ module Suggestions
       with_mask_avg = questionnaires.map{ |quest| quest.q10 }
       with_mask_avg = with_mask_avg.sum(0.0) / with_mask_avg.length
       suggestions[:masks] = true
-      suggestions[:distance] = with_mask_avg
+      suggestions[:distance] = with_mask_avg.to_i
     else
       no_mask_avg = questionnaires.map{ |quest| quest.q11 }
       no_mask_avg = no_mask_avg.sum(0.0) / no_mask_avg.length
       suggestions[:masks] = false
-      suggestions[:distance] = no_mask_avg
+      suggestions[:distance] = no_mask_avg.to_i
     end
 
     if food
