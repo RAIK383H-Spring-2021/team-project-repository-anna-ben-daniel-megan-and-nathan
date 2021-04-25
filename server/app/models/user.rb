@@ -7,7 +7,8 @@ class User < ApplicationRecord
 
     alias_attribute :password_digest, :password_hash
 
-    validates :first_name, :last_name, :password, :questionnaire_id, presence: true
+    validates :first_name, :last_name, :questionnaire_id, presence: true
+    validates :password, presence: true, on: :create
     before_save :default_values
 
     private
