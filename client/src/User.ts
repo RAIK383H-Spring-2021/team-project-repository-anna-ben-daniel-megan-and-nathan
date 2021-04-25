@@ -78,11 +78,12 @@ export class User {
       const result = await API.get<IQuestionnaire>(
         `users/${user.id}/questionnaire`
       );
+      console.log("AAA", result);
 
-      if (Object.values(result).every((q) => q)) {
+      if (Object.values(result.data).every((q) => q)) {
         delete (result as any).id;
         API.setCacheItem(API.makeUrl(`users/${user.id}/questionnaire`), result);
-        this._questionnaire = result as any;
+        this._questionnaire = result.data as any;
       } else {
         this._questionnaire = getBaseQ();
       }
