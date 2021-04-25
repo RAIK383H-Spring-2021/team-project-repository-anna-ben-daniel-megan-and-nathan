@@ -11,7 +11,10 @@ import { ISuggestion } from "../EventDetailsPage";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {},
-  toolbar: {},
+  toolbar: {
+    position: "sticky",
+    top: "-2px",
+  },
   suggestionsWrapper: {
     padding: "0 20px",
     display: "flex",

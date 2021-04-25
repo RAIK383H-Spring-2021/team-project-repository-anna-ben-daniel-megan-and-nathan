@@ -1,4 +1,4 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { createUseStyles } from "react-jss";
 import MDSpinner from "react-md-spinner";
@@ -25,6 +25,7 @@ import { Event, host_name, Metrics } from "../models/Event";
 import { events } from "../resources/events";
 import { AppTheme } from "../theme";
 import { User } from "../User";
+import { SetEventDetails, EventDetailsObject } from "./CreateEventPage";
 import { AddParticipantsDialog } from "./partials/AddParticipantsDialog";
 import { IQuestionnaire, Questionnaire } from "./partials/Questionnaire";
 import { SuggestionDialog } from "./partials/SuggestionDialog";
@@ -106,7 +107,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     paddingBottom: 12,
   },
   questionnaireCard: {
-    flex: "1",
     display: "flex",
     flexDirection: "column",
     margin: ({ screen }) => screen !== "large" && "12px 28px",
@@ -119,9 +119,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   questionnaireCallToAction: {
     ...theme.typography.body,
     color: theme.colors.primary.base.color,
-    fontSize: ({ screen }) => (screen === "large" ? 28 : 18),
-    lineHeight: ({ screen }) => (screen === "large" ? "34px" : "20px"),
+    fontSize: ({ screen }) => (screen === "large" ? 28 : 20),
+    lineHeight: ({ screen }) => (screen === "large" ? "34px" : "24px"),
     fontWeight: "normal",
+    marginTop: ({ screen }) => (screen === "large" ? 18 : 6),
+    marginBottom: ({ screen }) => (screen === "large" ? 72 : 42),
     flex: "1",
   },
   placeContentsEnd: {
@@ -184,6 +186,16 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   suggestionListItem: {
     paddingRight: 4,
   },
+  loadingWrapper: {
+    height: 100,
+    display: "grid",
+    placeItems: "center",
+  },
+  editToolbar: {
+    position: "sticky",
+    top: "-2px",
+    borderRadius: "8px 8px 0 0 ",
+  },
 }));
 
 function suggestions(id: number): FetchRequest {
@@ -213,6 +225,8 @@ interface ISuggestionResponse {
 }
 
 const EventDetailsPage: FC = () => {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
   const screen = useScreen();
   const { event_id } = useParams<{ event_id: string }>();
   const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
@@ -234,23 +248,32 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-              ? response?.event?.title ?? "Loading..."
+              ? response.event?.title ?? "Loading..."
               : "Loading..."
         }
       />
-      {screen === "large" ? (
-        <EventDetailsLarge
-          event={response?.event}
-          loading={isLoading}
-          suggestions={suggestions_response?.suggestions}
-        />
-      ) : (
-        <EventDetailsSmall
-          event={response?.event}
-          loading={isLoading}
-          suggestions={suggestions_response?.suggestions}
-        />
-      )}
+      {isLoading ?
+        <div className={classes.loadingWrapper}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+        </div>
+        : response
+          ? (screen === "large" ? (
+            <EventDetailsLarge
+              event={response.event}
+              loading={isLoading}
+              suggestions={suggestions_response?.suggestions}
+            />
+          ) : (
+            <EventDetailsSmall
+              event={response.event}
+              loading={isLoading}
+              suggestions={suggestions_response?.suggestions}
+            />
+          ))
+          : <div className={classes.loadingWrapper}>
+            <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+          </div>
+      }
     </Fragment>
   );
 };
@@ -261,7 +284,7 @@ function EventDetailsLarge({
   suggestions,
 }: {
   loading: boolean;
-  event?: Event;
+  event: Event;
   suggestions?: ISuggestionData;
 }) {
   const theme = useTheme<AppTheme>();
@@ -281,12 +304,19 @@ function EventDetailsLarge({
     history.push("/dash");
   }
 
+  const [isEditing, setEditing] = useState(false);
+
+  const submitEventEdits = (newDetails: EventDetailsObject) => {
+
+  }
+
   return (
     <Content
       toolbar={
         <Toolbar
           background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
+          end={host && <IconButton icon="edit" onClick={() => setEditing(true)} />}
           size="large"
           title={event?.title ?? "Loading..."}
         />
@@ -307,6 +337,7 @@ function EventDetailsLarge({
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
+      <EditDetailsDialog isEditing={isEditing} event={event} onClose={() => setEditing(false)} onSubmit={submitEventEdits} />
       <Background className={classes.desktopBackground} />
     </Content>
   );
@@ -318,7 +349,7 @@ function EventDetailsSmall({
   suggestions,
 }: {
   loading: boolean;
-  event?: Event;
+  event: Event;
   suggestions?: ISuggestionData;
 }) {
   const theme = useTheme<AppTheme>();
@@ -338,13 +369,43 @@ function EventDetailsSmall({
     history.push("/dash");
   }
 
+  const [isEditing, setEditing] = useState(false);
+
+  const submitEventEdits = async (newDetails: EventDetailsObject) => {
+    const social_distancing_masks =
+      newDetails.masks === "none" ? null : newDetails.distancing;
+    const social_distancing_no_masks =
+      newDetails.masks === "none" ? newDetails.distancing : null;
+
+    const res = await API.put(`events/${event.id}`, {
+      title: newDetails.title,
+      host_id: User.user?.id,
+      description: newDetails.description,
+      date_time: new Date(
+        `${newDetails.date}T${newDetails.time}`
+      ).toISOString(),
+      food_prepackaged: newDetails.food === "pp",
+      food_buffet: newDetails.food === "ss",
+      location: newDetails.location,
+      indoor: newDetails.location_type === "indoor",
+      outdoor: newDetails.location_type === "outdoor",
+      remote: newDetails.location_type === "remote",
+      social_distancing_masks,
+      social_distancing_no_masks,
+    });
+
+    if (res.error) {
+      alert("that didn't work");
+    }
+  }
+
   return (
     <Content
       toolbar={
         <Toolbar
           background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
-          end={<IconButton icon="more_vert" />}
+          end={host && <IconButton icon="edit" onClick={() => setEditing(true)} />}
           size="normal"
           title={event?.title ?? "Loading..."}
         />
@@ -363,7 +424,70 @@ function EventDetailsSmall({
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
+      <EditDetailsDialog isEditing={isEditing} event={event} onClose={() => setEditing(false)} onSubmit={submitEventEdits} />
     </Content>
+  );
+}
+
+function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing: boolean, event: Event, onClose: () => void, onSubmit: (eventDetails: EventDetailsObject) => void }) {
+  const theme = useTheme<AppTheme>();
+  const classes = useStyles({ theme });
+  const { event_id } = useParams<{ event_id: string }>();
+  const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
+    events.get,
+    event_id
+  );
+
+  const convertEventToEventDetailsObject = (event: Event) => {
+    const result: EventDetailsObject = {
+      title: event.title,
+      description: event.description,
+      date: new Date(event.date_time).toISOString().split("T")[0],
+      time: new Date(event.date_time).toLocaleTimeString("en-US", { hour12: false }),
+      location: event.location,
+      location_type: event.indoor ? "indoor" : event?.outdoor ? "outdoor" : "remote",
+      masks: event.social_distancing_masks ? "1me" : "none",
+      distancing: event.social_distancing_masks?.toString() ?? (event.social_distancing_no_masks?.toString() ?? "0"),
+      food: event.food_buffet ? "ss" : event?.food_prepackaged ? "pp" : "none",
+    };
+    return result;
+  }
+
+  const [validForm, setValidForm] = useState(false);
+  const [eventDetails, setEventDetails] = useState<EventDetailsObject>(convertEventToEventDetailsObject(response?.event ?? event));
+
+  useEffect(() => {
+    setValidForm(!(eventDetails.title?.length === 0
+      || eventDetails.date?.length === 0
+      || eventDetails.time?.length === 0
+      || eventDetails.location_type?.length === 0
+      || eventDetails.location?.length === 0));
+  }, [eventDetails]);
+
+  return (
+    <Dialog open={isEditing} onClose={onClose}>
+      <Toolbar
+        className={classes.editToolbar}
+        background="filled"
+        title="Edit Event"
+        start={<IconButton icon="close" onClick={onClose} />}
+        end={
+          <Button
+            onClick={() => onSubmit(eventDetails)}
+            color="accent"
+            disabled={!validForm}
+          >
+            Submit
+          </Button>
+        }
+      />
+      {isLoading
+        ? <div className={classes.inviteesSpinnerWrapper}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+        </div>
+        : <SetEventDetails eventDetails={eventDetails} setEventDetails={setEventDetails} />
+      }
+    </Dialog>
   );
 }
 
@@ -438,15 +562,15 @@ function SummarySection({ event }: { event: Event }) {
             body={date.toLocaleTimeString()}
           />
         </div>
+        <InfoBlock icon="place" label="location" body={event.location} />
         <div className={classes.detailsCardDoubleColumn}>
-          <InfoBlock icon="place" label="location" body={event.location} />
           <InfoBlock icon="nature_people" label="location type" body={event.indoor ? "Indoor" : event.outdoor ? "Outdoor" : "Remote"} />
+          <InfoBlock icon="restaurant_menu" label="food" body={event.food_buffet ? "Yes, Self-serve" : event.food_prepackaged ? "Yes, Pre-packaged" : "No food"} />
         </div>
         <div className={classes.detailsCardDoubleColumn}>
           <InfoBlock icon="masks" label="masks" body={event.social_distancing_masks ? "Masks required" : "No masks"} />
           <InfoBlock icon="social_distance" label="social distancing" body={`${event.social_distancing_masks ? event.social_distancing_masks : event.social_distancing_no_masks} feet`} />
         </div>
-        <InfoBlock icon="restaurant_menu" label="food" body={event.food_buffet ? "Yes, Self-serve" : event.food_prepackaged ? "Yes, Pre-packaged" : "No food"} />
         <InfoBlock
           icon="subject"
           label="description"

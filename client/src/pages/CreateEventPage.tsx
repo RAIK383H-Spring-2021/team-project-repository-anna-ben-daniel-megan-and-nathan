@@ -224,7 +224,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
 
 export interface CreateEventPageComponentProps { }
 
-interface EventDetailsObject {
+export interface EventDetailsObject {
   title?: string;
   description?: string;
   date?: string;
@@ -334,7 +334,7 @@ interface SetEventDetailsProps {
   setEventDetails: (eventDetails: EventDetailsObject) => void;
 }
 
-function SetEventDetails(props: SetEventDetailsProps) {
+export function SetEventDetails(props: SetEventDetailsProps) {
   const size = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, size });
@@ -354,7 +354,7 @@ function SetEventDetails(props: SetEventDetailsProps) {
   ) => {
     const newEventDetails = props.eventDetails;
     newEventDetails[key] = value;
-    props.setEventDetails(newEventDetails);
+    props.setEventDetails({ ...props.eventDetails, [key]: value });
   };
 
   return (
