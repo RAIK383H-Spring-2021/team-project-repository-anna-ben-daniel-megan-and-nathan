@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import "@material/react-switch/dist/switch.css";
 import App from "./App";
 import { API } from "./api";
 import * as sw from "./serviceWorkerRegistration";

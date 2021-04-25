@@ -177,8 +177,6 @@ function App() {
     !localStorage.getItem("shownOfflineDialog")
   );
 
-  console.log(localStorage.getItem("shownOfflineDialog"));
-
   if (offline) {
     localStorage.setItem("shownOfflineDialog", "true");
   }

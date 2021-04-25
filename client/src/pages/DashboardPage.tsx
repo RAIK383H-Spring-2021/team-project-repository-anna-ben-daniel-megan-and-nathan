@@ -351,7 +351,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
     );
   }
 
-  function OnlyOtherVairant() {
+  function OnlyOtherVariant() {
     return (
       <div>
         <EventList
@@ -410,7 +410,7 @@ function InvitationsTab({ type: style }: { type: "fill" | "contain" }) {
     } else if (response.new_events.length > 0) {
       return OnlyNewVariant();
     } else if (response.other_events.length > 0) {
-      return OnlyOtherVairant();
+      return OnlyOtherVariant();
     } else {
       return NoneVariant();
     }
