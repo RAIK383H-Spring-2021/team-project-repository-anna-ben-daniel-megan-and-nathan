@@ -51,7 +51,7 @@
   password: "password",
   password_confirmation: "password",
   questionnaire_id: @invited_quest2.id,
-  privacy_level: 1
+  privacy_level: 0
 )
 
 @no_event_user_quest = Questionnaire.create()

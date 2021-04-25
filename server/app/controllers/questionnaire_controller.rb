@@ -14,8 +14,12 @@ class QuestionnaireController < ApplicationController
 
     @id = authorized()
     @user = User.find_by(id: params[:id])
+    @privacy_level = @user.privacy_level
 
-    if(!(@id == @user.id))
+    @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
+    @host_ids = @event_ids.map{ |id| Event.find(id).host_id }
+
+    if(!(@id == @user.id) && !(@host_ids.include?(@id) && @privacy_level == 1))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
