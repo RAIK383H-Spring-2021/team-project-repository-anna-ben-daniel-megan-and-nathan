@@ -20,11 +20,11 @@ class InviteesController < ApplicationController
       return
     end
 
-    @part = Participant.where(event_id: params[:event_id]).collect(&:user_id)
-    @invitees = User.find(@part)
+    @part = Participant.where(event_id: params[:event_id])
+    @formatted = format_invitees(@part)
 
     respond_to do |format|
-      format.json { render json: @invitees.as_json }
+      format.json { render json: @formatted }
       end
   end
 
@@ -72,7 +72,7 @@ class InviteesController < ApplicationController
       @invitee_ids.append(@invitee.id)
     end
 
-    checkScore(@event)
+    check_score(@event)
 
     respond_to do |format|
       format.json { render json: { ids: @invitee_ids } }
@@ -81,12 +81,35 @@ class InviteesController < ApplicationController
 
   private
 
-  def checkScore(event)
+  def check_score(event)
     @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: @event.id).length
 
     if (@responses / @invitees < 0.8)
       event.update(score: nil)
     end
+  end
+
+  def format_invitees(invitees)
+    formatted = []
+    invitees.each do |invitee|
+      @user = User.find(invitee.user_id)
+      @privacy_level = @user.privacy_level
+
+      if @privacy_level == 0
+        formatted.append({ id: @user.id, first_name: @user.first_name, last_name: @user.last_name, email: @user.email })
+      else
+        if invitee.food_score
+          subscores = { location_score: invitee.location_score, masks_social_dist_score: invitee.masks_social_dist_score, group_size_score: invitee.group_size_score, food_score: invitee.food_score }
+        else
+          subscores = { location_score: invitee.location_score, masks_social_dist_score: invitee.masks_social_dist_score, group_size_score: invitee.group_size_score }
+        end
+
+        metrics = { subscores: subscores, total_score: invitee.score }
+        formatted.append({ id: @user.id, first_name: @user.first_name, last_name: @user.last_name, email: @user.email, metrics: metrics })
+      end
+    end
+
+    return formatted
   end
 end
