@@ -24,6 +24,16 @@ RSpec.describe "questionnaires controller requests", type: :request do
             expect(response).to have_http_status(:unauthorized)
         end
 
+        it "returns unauthorized error if host of event with them as participant but questionnaire is private" do
+          post '/users/login', params: { email: "test@test.test", password: "password" }
+          @res = JSON.parse(response.body)
+          @test_token = @res["token"]
+
+          get "/users/3/questionnaire", headers: { "Authorization": "Bearer #{@test_token}"}
+
+          expect(response).to have_http_status(:unauthorized)
+      end
+
         it "gets questionnaire from no event user correctly" do
             post '/users/login', params: { email: "no@event.user", password: "password" }
             @resIndividualTest = JSON.parse(response.body)
@@ -33,6 +43,18 @@ RSpec.describe "questionnaires controller requests", type: :request do
             @res = JSON.parse(response.body)
             expect(@res["id"]).to eq(4)
         end
+
+        it "gets questionnaire when person sending request is host of event that they're participating in with correct privacy level" do
+          post '/users/login', params: { email: "test@test.test", password: "password" }
+          @res = JSON.parse(response.body)
+          @test_token = @res["token"]
+
+          get "/users/2/questionnaire", headers: { "Authorization": "Bearer #{@test_token}"}
+
+          @res = JSON.parse(response.body)
+          expect(response).to have_http_status(:ok)
+          expect(@res["id"]).to eq(2)
+      end
     end
 
     describe "PUT #update" do
