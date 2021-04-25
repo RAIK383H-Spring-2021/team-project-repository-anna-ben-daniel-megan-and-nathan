@@ -18,7 +18,7 @@ import {
   UserCreatedEventsResponse,
   getUserCreatedEvents,
 } from "../resources/dashboard";
-import { AppTheme, toggleTheme } from "../theme";
+import { AppTheme } from "../theme";
 import { User } from "../User";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -186,7 +186,14 @@ function DashboardLarge() {
           title={`Hi, ${User.user?.first_name}!`}
           size="large"
           end={
-            <IconButton icon="account_circle" onClick={() => toggleTheme()} />
+            <IconButton
+              icon="account_circle"
+              onClick={() =>
+                history.push(`/profile`, {
+                  referrer: "dashboard",
+                })
+              }
+            />
           }
           background="filled"
         />
@@ -238,7 +245,14 @@ function DashboardSmall() {
             title={`Hi, ${User.user?.first_name}!`}
             background="filled"
             end={
-              <IconButton icon="account_circle" onClick={() => toggleTheme()} />
+              <IconButton
+                icon="account_circle"
+                onClick={() =>
+                  history.push(`/profile`, {
+                    referrer: "dashboard",
+                  })
+                }
+              />
             }
           />
           <TabBar
