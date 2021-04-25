@@ -22,7 +22,9 @@ export function useSubscription<T>(name: string, callback: subscription<T>) {
 }
 
 export function publish<T>(event: string, data?: T) {
-  if (registry.has(event)) {
-    registry.get(event)?.forEach((cb) => cb(data));
+  const eventList = registry.get(event);
+
+  if (eventList) {
+    eventList.forEach((cb) => cb(data));
   }
 }
