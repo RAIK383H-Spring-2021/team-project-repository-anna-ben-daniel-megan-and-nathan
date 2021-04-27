@@ -54,7 +54,7 @@ class EventsController < ApplicationController
     end
 
     @id = authorized()
-    @authorizedInvitees = Participant.where(event_id: params[:id]).collect(&:user_id)
+    @authorized_invitees = Participant.where(event_id: params[:id]).collect(&:user_id)
     @event = Event.find_by(id: params[:id])
     
     if(@event == nil)
@@ -66,7 +66,7 @@ class EventsController < ApplicationController
     end
 
     # authorization: match id of host or invitee
-    if (!(@id == @event.host_id) && !(@authorizedInvitees.include?(@id)))
+    if (!(@id == @event.host_id) && !(@authorized_invitees.include?(@id)))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
       end
@@ -168,11 +168,11 @@ class EventsController < ApplicationController
       return
     end
 
-    @eventId = params[:id]
+    @event_id = params[:id]
     @invitees = Participant.where(event_id: params[:id]).collect(&:id)
 
     Participant.destroy(@invitees)
-    Event.destroy(@eventId)
+    Event.destroy(@event_id)
 
     respond_to do |format|
       format.json { render json: { status: :ok } }
