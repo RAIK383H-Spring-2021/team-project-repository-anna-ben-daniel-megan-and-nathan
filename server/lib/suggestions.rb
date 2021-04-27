@@ -10,12 +10,12 @@ module Suggestions
     @num_participants = @participant_user_ids.length
     @food = event.food_buffet || event.food_prepackaged
 
-    indoor_suggestion = generateIndoor(@questionnaires, @food, @num_participants)
-    outdoor_suggestion = generateOutdoor(@questionnaires, @food, @num_participants)
-    remote_suggestion = generateRemote(@questionnaires)
+    indoor_suggestion = generate_indoor(@questionnaires, @food, @num_participants)
+    outdoor_suggestion = generate_outdoor(@questionnaires, @food, @num_participants)
+    remote_suggestion = generate_remote(@questionnaires)
 
-    indoor_score = generateDummyScore(event, indoor_suggestion, "indoor", @questionnaires, @food)
-    outdoor_score = generateDummyScore(event, outdoor_suggestion, "outdoor", @questionnaires, @food)
+    indoor_score = generate_dummy_score(event, indoor_suggestion, "indoor", @questionnaires, @food)
+    outdoor_score = generate_dummy_score(event, outdoor_suggestion, "outdoor", @questionnaires, @food)
 
     indoor_suggestion[:score] = indoor_score
     outdoor_suggestion[:score] = outdoor_score
@@ -25,7 +25,7 @@ module Suggestions
     return suggestions
   end
 
-  def self.generateIndoor(questionnaires, food, num_participants)
+  def self.generate_indoor(questionnaires, food, num_participants)
     suggestions = {}
 
     location_comfort = questionnaires.map{ |quest| quest.q1 }
@@ -62,7 +62,7 @@ module Suggestions
     return suggestions
   end
 
-  def self.generateOutdoor(questionnaires, food, num_participants)
+  def self.generate_outdoor(questionnaires, food, num_participants)
     suggestions = {}
 
     location_comfort = questionnaires.map{ |quest| quest.q2 }
@@ -97,7 +97,7 @@ module Suggestions
     return suggestions
   end
 
-  def self.generateRemote(questionnaires)
+  def self.generate_remote(questionnaires)
     suggestions = {}
 
     location_comfort = questionnaires.map{ |quest| quest.q3 }
@@ -107,7 +107,7 @@ module Suggestions
     return suggestions
   end
 
-  def self.generateDummyScore(event, hash, location, questionnaires, food)
+  def self.generate_dummy_score(event, hash, location, questionnaires, food)
     @dummy_event = Event.new(
       title: event.title,
       host_id: event.host_id,
