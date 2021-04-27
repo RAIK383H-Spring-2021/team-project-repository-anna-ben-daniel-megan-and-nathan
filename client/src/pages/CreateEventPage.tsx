@@ -231,8 +231,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   },
   nextFAB: {
     position: "fixed",
-    right: ({ size }) => size === "large" ? "10vw" : 32,
-    bottom: 64,
+    right: ({ size }) => size === "large" ? "10vw" : 24,
+    bottom: ({ size }) => size === "large" ? 64 : 112,
     zIndex: 10,
     animationName: '$fabIn',
     animationTimingFunction: theme.transitions.easing.default,
