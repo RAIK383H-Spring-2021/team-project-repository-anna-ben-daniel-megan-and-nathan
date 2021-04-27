@@ -17,7 +17,7 @@ module ComfortMetric
       locationScore = @quest.q2
     else
       locationScore = @quest.q3
-      return locationScore
+      return {total_score: locationScore, subscores: {}}
     end
 
     if (@event.food_prepackaged || @event.food_buffet)
