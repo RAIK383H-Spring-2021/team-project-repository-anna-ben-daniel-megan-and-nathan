@@ -1,23 +1,10 @@
-class InviteesController < ApplicationController
+class InviteesController < AuthController
   def index
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @host_id = Event.find_by(id: params[:event_id]).host_id
 
-    if (!(@id == @host_id))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    host_auth(@id, @host_id) || return
 
     @part = Participant.where(event_id: params[:event_id])
     @formatted = format_invitees(@part)
@@ -28,29 +15,15 @@ class InviteesController < ApplicationController
   end
 
   def create
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @event = Event.find_by(id: params[:event_id])
-    @host_id = @event.host_id
 
-    if (!(@id == @host_id))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    host_auth(@id, @event.host_id) || return
 
     @user_ids = params[:user_ids]
 
-    if @user_ids.include?(@host_id.to_s)
+    if @user_ids.include?(@event.host_id.to_s)
       respond_to do |format|
         format.json { render json: { error: "cannot invite host to their own event" }, status: :unprocessable_entity }
       end

@@ -1,16 +1,9 @@
-include ComfortMetric
+class QuestionnaireController < AuthController
+  include ComfortMetric
 
-class QuestionnaireController < ApplicationController
   def show
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @user = User.find_by(id: params[:id])
     @privacy_level = @user.privacy_level
 
@@ -34,15 +27,8 @@ class QuestionnaireController < ApplicationController
   end
 
   def update
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @participant = Participant.where(event_id: params[:event_id]).find_by(user_id: @id)
 
     if(!(@participant) || !(@id == params[:id].to_i))

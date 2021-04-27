@@ -1,16 +1,9 @@
-class EventsController < ApplicationController
+class EventsController < AuthController
   include ComfortMetric
 
   def create
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
 
     @event = Event.new(
       title: params[:title],
@@ -41,15 +34,8 @@ class EventsController < ApplicationController
   end
 
   def show
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @authorized_invitees = Participant.where(event_id: params[:id]).collect(&:user_id)
     @event = Event.find_by(id: params[:id])
     
@@ -95,25 +81,12 @@ class EventsController < ApplicationController
   end
 
   def update
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
 
     @event = Event.find_by(id: params[:id])
 
-    if (!(@id == @event.host_id))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    host_auth(@id, @event.host_id) || return
 
     @event.update(
       title: params[:title],
@@ -141,25 +114,11 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
-
+    @id = general_auth || return
+    
     @event = Event.find_by(id: params[:id])
-
-    if (!(@id == @event.host_id))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    host_auth(@id, @event.host_id) || return
 
     @event_id = params[:id]
     @invitees = Participant.where(event_id: params[:id]).collect(&:id)
