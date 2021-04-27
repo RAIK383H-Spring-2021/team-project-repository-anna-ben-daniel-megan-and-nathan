@@ -41,6 +41,7 @@ export interface MiniScoreComponentProps {
   type: "score" | "responses";
   max?: number;
   icon?: string;
+  onClick?: () => void;
 }
 
 const STROKE = 3;
@@ -49,7 +50,7 @@ const NORM_RADIUS = RADIUS - STROKE;
 const CIRCUMFERENCE = NORM_RADIUS * 2 * Math.PI;
 
 export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
-  const { value, type, max = 100, icon } = props;
+  const { value, type, max = 100, icon, onClick } = props;
 
   const clampedValue = value > max ? max : value < 0 ? 0 : value;
 
@@ -60,7 +61,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
 
   if (type === "score") {
     return (
-      <div className={classes.circle}>
+      <div className={classes.circle} onClick={onClick}>
         <span className={classes.value}>
           {icon ? <Icon name={icon} /> : value < 0 ? "?" : round(value)}
         </span>
@@ -68,7 +69,7 @@ export const MiniScore: FC<MiniScoreComponentProps> = (props) => {
     );
   } else {
     return (
-      <div style={{ display: "flex", position: "relative" }}>
+      <div style={{ display: "flex", position: "relative" }} onClick={onClick}>
         <svg height={RADIUS * 2} width={RADIUS * 2}>
           <circle
             stroke={value < 0 ? "transparent" : "rgba(31, 87, 196, 0.25)"}

@@ -96,7 +96,7 @@ export const AddParticipantsDialog: FC<APDProps> = ({
 
     if (val.length > 0) {
       debounce = setTimeout(() => update(val), 300);
-    } 
+    }
   }
 
   function removeInvitee(invitee: User) {
@@ -170,7 +170,7 @@ export const AddParticipantsDialog: FC<APDProps> = ({
   return (
     <div className={classes.mainWrapper}>
       <Toolbar
-        title="Add Participants"
+        title="Add People"
         start={<IconButton icon="close" onClick={onClose} />}
         end={
           <IconButton

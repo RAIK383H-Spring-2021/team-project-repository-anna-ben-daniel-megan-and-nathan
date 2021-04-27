@@ -52,9 +52,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     animationFillMode: "forwards",
   },
   contentWrapper: {
-    padding: 20,
-    height: `calc(100% - 40px)`,
-    margin: 20,
     display: "block",
     width: "100%",
   },
@@ -63,7 +60,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     background: theme.colors.background.base.backgroundColor,
     width: 600,
     maxWidth: "100%",
-    position: "absolute",
     display: "block",
     outline: "none",
     border: ({ size }) =>
@@ -77,17 +73,20 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderBottomRightRadius: ({ size }) => size === "small" && 0,
     pointerEvents: "initial",
     padding: 0,
-    minHeight: ({ size }) => size === "small" && `calc(100% - 40px)`,
+    margin: [20, 0],
+    minHeight: ({ size }) => size === "small" && `calc(100% - 20px)`,
   },
 }));
 
 export interface DialogComponentProps {
   open: boolean;
+  className?: string;
+  scrollClass?: string;
   onClose?: () => void;
 }
 
 export const Dialog: FC<DialogComponentProps> = (props) => {
-  const { open, onClose = () => {} } = props;
+  const { open, onClose = () => {}, className = "", scrollClass = "" } = props;
   const size = useScreen();
 
   const [closing, setClosing] = useState(false);
@@ -127,8 +126,8 @@ export const Dialog: FC<DialogComponentProps> = (props) => {
     <div className={classes.positioner}>
       <div onClick={onClose} className={classes.backdrop}></div>
       <div className={classes.scrollWrapper}>
-        <div className={classes.contentWrapper}>
-          <dialog open className={classes.content}>
+        <div className={`${classes.contentWrapper} ${scrollClass}`.trim()}>
+          <dialog open className={`${classes.content} ${className}`.trim()}>
             {props.children}
           </dialog>
         </div>

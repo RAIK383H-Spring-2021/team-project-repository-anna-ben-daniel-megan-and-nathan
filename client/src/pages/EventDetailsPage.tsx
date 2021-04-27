@@ -144,6 +144,39 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     marginRight: 24,
     flex: "0 0",
   },
+  mobileScoreIconWrapper: {
+    display: "flex",
+    justifyContent: "space-evenly",
+  },
+  subscoreDialog: {
+    minHeight: "auto",
+    width: 600,
+    maxWidth: "calc(100% - 20px)",
+    margin: "auto",
+    padding: [36, 24, 24, 24],
+    borderRadius: 8,
+  },
+  subscoreScroll: {
+    display: "flex",
+    placeItems: "center",
+  },
+  subscoreDialogIcon: {
+    position: "absolute",
+    top: -30,
+    left: `calc(50% - 30px)`,
+  },
+  subscoreDialogClose: {
+    ...theme.colors.background.base,
+    position: "fixed",
+    zIndex: 999,
+    top: 26,
+    right: 26,
+    height: 36,
+    width: 36,
+    display: "flex",
+    placeItems: "center",
+    borderRadius: 36,
+  },
   desktopScoreAside: {
     flex: "1 1 auto",
     display: "flex",
@@ -701,9 +734,7 @@ function ComfortMetricSection({
 
   return (
     <section className={classes.sectionWrapper}>
-      <h2 hidden={screen !== "large"} className={classes.cardLabel}>
-        Comfort Metrics
-      </h2>
+      <h2 className={classes.cardLabel}>Comfort Metrics</h2>
       {qc ? (
         <QuestionnaireCard eventId={event.id} />
       ) : (
@@ -967,8 +998,89 @@ function ScoreDetailsCard({ event }: { event: Event }) {
       </Card>
     );
   } else {
-    return <Icon name="person" />;
+    return (
+      <div className={classes.mobileScoreIconWrapper}>
+        <SubscoreDetails
+          icon="people"
+          value={event.metrics.subscores.group_size_score}
+          primary={locationText()}
+        />
+        {!event.remote && (
+          <SubscoreDetails
+            icon="masks"
+            value={event.metrics.subscores.masks_social_dist_score}
+            primary={msdPrimaryText()}
+            secondary={msdSecondaryText()}
+          />
+        )}
+        {event.metrics.subscores.food_score && (
+          <SubscoreDetails
+            icon="restaurant_menu"
+            value={event.metrics.subscores.food_score}
+            primary={foodPrimary()}
+            secondary={foodSecondary()}
+          />
+        )}
+        <SubscoreDetails
+          icon="people"
+          value={event.metrics.subscores.group_size_score}
+          primary={`There ${pluralizedArticle(event.invitees)} ${
+            event.invitees
+          } 
+              ${pluralizedInvitee(event.invitees)}.`}
+          secondary={sizePreferenceText()}
+        />
+      </div>
+    );
   }
+}
+
+function SubscoreDetails(props: {
+  value: number;
+  icon: string;
+  primary: string;
+  secondary?: string;
+}) {
+  const { value, icon, primary, secondary } = props;
+  const screen = useScreen();
+
+  const theme = useTheme();
+  const classes = useStyles({ theme, screen });
+
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <MiniScore
+        onClick={() => setOpen(true)}
+        type="score"
+        value={value}
+        max={5}
+        icon={icon}
+      />
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        className={classes.subscoreDialog}
+        scrollClass={classes.subscoreScroll}
+      >
+        <div className={classes.subscoreDialogClose}>
+          <IconButton icon="close" onClick={() => setOpen(false)} />
+        </div>
+        <div className={classes.subscoreDialogIcon}>
+          <MiniScore
+            onClick={() => setOpen(true)}
+            type="score"
+            value={value}
+            max={5}
+            icon={icon}
+          />
+        </div>
+        <div>{primary}</div>
+        <div className={classes.desktopScoreExplanation}>{secondary}</div>
+      </Dialog>
+    </div>
+  );
 }
 
 function SuggestionsCard({
@@ -1108,7 +1220,7 @@ const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
   if (isLoading) {
     return (
       <section className={classes.inviteesWrapper}>
-        <h2 className={classes.cardLabel}>Participants</h2>
+        <h2 className={classes.cardLabel}>Invitees</h2>
         <div className={classes.inviteesSpinnerWrapper}>
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
@@ -1118,7 +1230,7 @@ const InviteeList: FC<{ event_id: number }> = ({ event_id }) => {
     return (
       <section className={classes.inviteesWrapper}>
         <div className={classes.inviteeSectionTitleWrapper}>
-          <h2 className={classes.cardLabel}>Participants</h2>
+          <h2 className={classes.cardLabel}>Invitees</h2>
           <IconButton icon="add" onClick={() => setShowAddDialog(true)} />
         </div>
         <List type={screen === "large" ? "contain" : "fill"}>
