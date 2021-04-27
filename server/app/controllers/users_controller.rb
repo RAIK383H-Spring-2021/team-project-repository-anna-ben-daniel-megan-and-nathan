@@ -1,15 +1,7 @@
-class UsersController < ApplicationController
+class UsersController < AuthController
 
   def index
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
     @users = User.where(["email LIKE ? and id != ?", "#{params[:q]}%", "#{@id}"])
 
     @users = @users.map{ |user| user.as_json(only: %i[id email first_name last_name]) }
@@ -60,23 +52,9 @@ class UsersController < ApplicationController
 
   def show
 
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
+    @id = general_auth || return
 
-      return
-    end
-
-    @id = authorized()
-
-    if (!(@id == params[:id].to_i))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    user_auth(@id) || return
     
     @user = User.find(@id)
     @hosted_events = @user.events ? @user.events : []
@@ -95,23 +73,9 @@ class UsersController < ApplicationController
 
   def update
 
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
+    @id = general_auth || return
 
-      return
-    end
-
-    @id = authorized()
-
-    if (!(@id == params[:id].to_i))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    user_auth(@id) || return
     
     @user = User.find(@id)
     @user.update(
@@ -159,23 +123,9 @@ class UsersController < ApplicationController
 
   def invitations
 
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
+    @id = general_auth || return
 
-      return
-    end
-
-    @id = authorized()
-
-    if (!(@id == params[:id].to_i))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    user_auth(@id) || return
 
     @other_event_ids = Participant.where(user_id: params[:id]).where(questionnaire_complete: true).collect(&:event_id)
     @new_event_ids = Participant.where(user_id: params[:id]).where(questionnaire_complete: false).collect(&:event_id)
@@ -192,24 +142,10 @@ class UsersController < ApplicationController
   end
 
   def events
-
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
     
-    @id = authorized()
+    @id = general_auth || return
 
-    if (!(@id == params[:id].to_i))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    user_auth(@id) || return
     
     @user = User.find(@id)
     @events = @user.events ? @user.events : []

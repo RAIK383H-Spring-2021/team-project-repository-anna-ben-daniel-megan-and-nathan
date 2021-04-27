@@ -1,27 +1,13 @@
-include Suggestions
+class SuggestionsController < AuthController
+  include Suggestions
 
-class SuggestionsController < ApplicationController
   def index
-    
-    if !authorized()
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
 
-      return
-    end
-
-    @id = authorized()
+    @id = general_auth || return
 
     @event = Event.find_by(id: params[:event_id])
 
-    if (!(@id == @event.host_id))
-      respond_to do |format|
-        format.json { render json: { error: :unauthorized }, status: :unauthorized }
-      end
-
-      return
-    end
+    host_auth(@id, @event.host_id) || return
 
     @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: @event.id).length
