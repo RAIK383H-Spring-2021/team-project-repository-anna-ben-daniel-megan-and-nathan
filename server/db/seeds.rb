@@ -34,7 +34,22 @@
   privacy_level: 0
 )
 
-@invited_quest = Questionnaire.create()
+@invited_quest = Questionnaire.create(q1: 1,
+  q2: 1, 
+  q3: 1, 
+  q4: 1,
+  q5: 1,
+  q6: 1,
+  q7: 1, 
+  q8: 1, 
+  q9: 1,
+  q10: 1,
+  q11: 1,
+  q12: 1, 
+  q13: 1, 
+  q14: 1,
+  q15: 1
+)
 @invited_user = User.create(email: "hello@hello.hello", 
   first_name: "first", 
   last_name: "last",
@@ -44,7 +59,22 @@
   privacy_level: 1
 )
 
-@invited_quest2 = Questionnaire.create()
+@invited_quest2 = Questionnaire.create(q1: 1,
+  q2: 1, 
+  q3: 1, 
+  q4: 1,
+  q5: 1,
+  q6: 1,
+  q7: 1, 
+  q8: 1, 
+  q9: 1,
+  q10: 1,
+  q11: 1,
+  q12: 1, 
+  q13: 1, 
+  q14: 1,
+  q15: 1
+)
 @invited_user2 = User.create(email: "hi@hi.hi", 
   first_name: "new", 
   last_name: "last",

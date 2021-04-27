@@ -22,26 +22,4 @@ RSpec.describe Questionnaire, type: :model do
 
         expect(@quest).to be_truthy
     end
-
-    it "successfully creates a new questionnaire when non-required fields are not included, sets them to default values" do
-        Questionnaire.create()
-
-        @quest = Questionnaire.find_by(id: 7)
-
-        expect(@quest.q1).to eq(1)
-        expect(@quest.q2).to eq(1)
-        expect(@quest.q3).to eq(1)
-        expect(@quest.q4).to eq(1)
-        expect(@quest.q5).to eq(1)
-        expect(@quest.q6).to eq(1)
-        expect(@quest.q7).to eq(1)
-        expect(@quest.q8).to eq(1)
-        expect(@quest.q9).to eq(1)
-        expect(@quest.q10).to eq(1)
-        expect(@quest.q11).to eq(1)
-        expect(@quest.q12).to eq(1)
-        expect(@quest.q13).to eq(1)
-        expect(@quest.q14).to eq(1)
-        expect(@quest.q15).to eq(1)
-    end
 end
