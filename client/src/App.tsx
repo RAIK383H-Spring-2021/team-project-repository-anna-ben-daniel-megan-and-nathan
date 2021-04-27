@@ -142,6 +142,7 @@ function PageFallback() {
         height: "100%",
         width: "100%",
         placeItems: "center",
+        position: "absolute",
         backgroundColor: theme.colors.background.base.backgroundColor,
       }}
     >

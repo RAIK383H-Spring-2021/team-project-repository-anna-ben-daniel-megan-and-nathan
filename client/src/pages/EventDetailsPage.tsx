@@ -134,7 +134,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     alignItems: "flex-end",
   },
   comfortMetricsCard: {
-    flex: "1 1 auto",
     display: "flex",
     flexDirection: "column",
   },
@@ -158,7 +157,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   separator: {
     flexGrow: 1,
     flexShrink: 0,
-    height: 24,
+    height: 36,
   },
   inviteesWrapper: {
     margin: ({ screen }) =>
@@ -252,32 +251,33 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-              ? response.event?.title ?? "Loading..."
-              : "Loading..."
+            ? response.event?.title ?? "Loading..."
+            : "Loading..."
         }
       />
-      {isLoading ?
+      {isLoading ? (
         <div className={classes.loadingWrapper}>
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
-        : response
-          ? (screen === "large" ? (
-            <EventDetailsLarge
-              event={response.event}
-              loading={isLoading}
-              suggestions={suggestions_response?.suggestions}
-            />
-          ) : (
-            <EventDetailsSmall
-              event={response.event}
-              loading={isLoading}
-              suggestions={suggestions_response?.suggestions}
-            />
-          ))
-          : <div className={classes.loadingWrapper}>
-            <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
-          </div>
-      }
+      ) : response ? (
+        screen === "large" ? (
+          <EventDetailsLarge
+            event={response.event}
+            loading={isLoading}
+            suggestions={suggestions_response?.suggestions}
+          />
+        ) : (
+          <EventDetailsSmall
+            event={response.event}
+            loading={isLoading}
+            suggestions={suggestions_response?.suggestions}
+          />
+        )
+      ) : (
+        <div className={classes.loadingWrapper}>
+          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
+        </div>
+      )}
     </Fragment>
   );
 };
@@ -339,7 +339,7 @@ function EventDetailsLarge({
       setEditing(false);
       publish("event_update");
     }
-  }
+  };
 
   return (
     <Content
@@ -347,7 +347,9 @@ function EventDetailsLarge({
         <Toolbar
           background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
-          end={host && <IconButton icon="edit" onClick={() => setEditing(true)} />}
+          end={
+            host && <IconButton icon="edit" onClick={() => setEditing(true)} />
+          }
           size="large"
           title={event?.title ?? "Loading..."}
         />
@@ -368,7 +370,12 @@ function EventDetailsLarge({
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
-      <EditDetailsDialog isEditing={isEditing} event={event} onClose={() => setEditing(false)} onSubmit={submitEventEdits} />
+      <EditDetailsDialog
+        isEditing={isEditing}
+        event={event}
+        onClose={() => setEditing(false)}
+        onSubmit={submitEventEdits}
+      />
       <Background className={classes.desktopBackground} />
     </Content>
   );
@@ -431,7 +438,7 @@ function EventDetailsSmall({
       setEditing(false);
       publish("event_update");
     }
-  }
+  };
 
   return (
     <Content
@@ -439,7 +446,9 @@ function EventDetailsSmall({
         <Toolbar
           background="filled"
           start={<IconButton icon="arrow_back" onClick={goBack} />}
-          end={host && <IconButton icon="edit" onClick={() => setEditing(true)} />}
+          end={
+            host && <IconButton icon="edit" onClick={() => setEditing(true)} />
+          }
           size="normal"
           title={event?.title ?? "Loading..."}
         />
@@ -458,12 +467,27 @@ function EventDetailsSmall({
           <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
         </div>
       )}
-      <EditDetailsDialog isEditing={isEditing} event={event} onClose={() => setEditing(false)} onSubmit={submitEventEdits} />
+      <EditDetailsDialog
+        isEditing={isEditing}
+        event={event}
+        onClose={() => setEditing(false)}
+        onSubmit={submitEventEdits}
+      />
     </Content>
   );
 }
 
-function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing: boolean, event: Event, onClose: () => void, onSubmit: (eventDetails: EventDetailsObject) => void }) {
+function EditDetailsDialog({
+  isEditing,
+  event,
+  onClose,
+  onSubmit,
+}: {
+  isEditing: boolean;
+  event: Event;
+  onClose: () => void;
+  onSubmit: (eventDetails: EventDetailsObject) => void;
+}) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
 
@@ -472,25 +496,40 @@ function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing:
       title: event.title,
       description: event.description,
       date: new Date(event.date_time).toISOString().split("T")[0],
-      time: new Date(event.date_time).toLocaleTimeString("en-US", { hour12: false }),
+      time: new Date(event.date_time).toLocaleTimeString("en-US", {
+        hour12: false,
+      }),
       location: event.location,
-      location_type: event.indoor ? "indoor" : event?.outdoor ? "outdoor" : "remote",
+      location_type: event.indoor
+        ? "indoor"
+        : event?.outdoor
+        ? "outdoor"
+        : "remote",
       masks: event.social_distancing_masks ? "1me" : "none",
-      distancing: event.social_distancing_masks?.toString() ?? (event.social_distancing_no_masks?.toString() ?? "0"),
+      distancing:
+        event.social_distancing_masks?.toString() ??
+        event.social_distancing_no_masks?.toString() ??
+        "0",
       food: event.food_buffet ? "ss" : event?.food_prepackaged ? "pp" : "none",
     };
     return result;
-  }
+  };
 
   const [validForm, setValidForm] = useState(false);
-  const [eventDetails, setEventDetails] = useState<EventDetailsObject>(convertEventToEventDetailsObject(event));
+  const [eventDetails, setEventDetails] = useState<EventDetailsObject>(
+    convertEventToEventDetailsObject(event)
+  );
 
   useEffect(() => {
-    setValidForm(!(eventDetails.title?.length === 0
-      || eventDetails.date?.length === 0
-      || eventDetails.time?.length === 0
-      || eventDetails.location_type?.length === 0
-      || eventDetails.location?.length === 0));
+    setValidForm(
+      !(
+        eventDetails.title?.length === 0 ||
+        eventDetails.date?.length === 0 ||
+        eventDetails.time?.length === 0 ||
+        eventDetails.location_type?.length === 0 ||
+        eventDetails.location?.length === 0
+      )
+    );
   }, [eventDetails]);
 
   useEffect(() => {
@@ -514,7 +553,11 @@ function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing:
           </Button>
         }
       />
-      <SetEventDetails className={classes.editEventDetails} eventDetails={eventDetails} setEventDetails={setEventDetails} />
+      <SetEventDetails
+        className={classes.editEventDetails}
+        eventDetails={eventDetails}
+        setEventDetails={setEventDetails}
+      />
     </Dialog>
   );
 }
@@ -540,8 +583,8 @@ function Meter({ event }: { event: Event }) {
       ? "Group Comfort Score"
       : "Individual Comfort Score"
     : host
-      ? "Invitee Responses"
-      : "Individual Comfort Score";
+    ? "Invitee Responses"
+    : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>
@@ -588,8 +631,24 @@ function SummarySection({ event }: { event: Event }) {
         </div>
         <InfoBlock icon="place" label="location" body={event.location} />
         <div className={classes.detailsCardDoubleColumn}>
-          <InfoBlock icon="nature_people" label="location type" body={event.indoor ? "Indoor" : event.outdoor ? "Outdoor" : "Remote"} />
-          <InfoBlock icon="restaurant_menu" label="food" body={event.food_buffet ? "Yes, Self-serve" : event.food_prepackaged ? "Yes, Pre-packaged" : "No food"} />
+          <InfoBlock
+            icon="nature_people"
+            label="location type"
+            body={
+              event.indoor ? "Indoor" : event.outdoor ? "Outdoor" : "Remote"
+            }
+          />
+          <InfoBlock
+            icon="restaurant_menu"
+            label="food"
+            body={
+              event.food_buffet
+                ? "Yes, Self-serve"
+                : event.food_prepackaged
+                ? "Yes, Pre-packaged"
+                : "No food"
+            }
+          />
         </div>
         <div className={classes.detailsCardDoubleColumn}>
           <InfoBlock
@@ -600,10 +659,11 @@ function SummarySection({ event }: { event: Event }) {
           <InfoBlock
             icon="social_distance"
             label="social distancing"
-            body={`${event.social_distancing_masks
-              ? event.social_distancing_masks
-              : event.social_distancing_no_masks
-              } feet`}
+            body={`${
+              event.social_distancing_masks
+                ? event.social_distancing_masks
+                : event.social_distancing_no_masks
+            } feet`}
           />
         </div>
         <InfoBlock
@@ -612,8 +672,8 @@ function SummarySection({ event }: { event: Event }) {
           body={event.description}
           bodyType="p"
         />
-      </Card >
-    </section >
+      </Card>
+    </section>
   );
 }
 
@@ -644,7 +704,11 @@ function ComfortMetricSection({
       <h2 hidden={screen !== "large"} className={classes.cardLabel}>
         Comfort Metrics
       </h2>
-      {qc ? <QuestionnaireCard eventId={event.id} /> : <ScoreDetailsCard />}
+      {qc ? (
+        <QuestionnaireCard eventId={event.id} />
+      ) : (
+        <ScoreDetailsCard event={event} />
+      )}
     </section>
   );
 }
@@ -699,10 +763,124 @@ function QuestionnaireCard({ eventId }: { eventId: number }) {
   );
 }
 
-function ScoreDetailsCard() {
+function ScoreDetailsCard({ event }: { event: Event }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
   const screen = useScreen();
+
+  function locationText() {
+    if (event.indoor) {
+      return "Indoor Venue";
+    } else if (event.outdoor) {
+      return "Outdoor Venue";
+    } else {
+      return "Indoor";
+    }
+  }
+
+  function msdPrimaryText() {
+    if (event.social_distancing_masks) {
+      return `Masks required, ${event.social_distancing_masks}-foot social distancing required.`;
+    } else {
+      return `Masks required, ${event.social_distancing_no_masks}-foot social distancing required.`;
+    }
+  }
+
+  function msdSecondaryText() {
+    if (event.indoor) {
+      if (User.questionnaire["q6"] > 2) {
+        if (event.social_distancing_masks) {
+          return `You prefer others to wear masks and distancing of at least ${User.questionnaire["q4"]} feet.`;
+        } else {
+          return `You prefer others to wear masks and distancing of at least ${User.questionnaire["q5"]} feet.`;
+        }
+      } else {
+        if (event.social_distancing_masks) {
+          return `You prefer distancing of at least ${User.questionnaire["q4"]} feet.`;
+        } else {
+          return `You prefer distancing of at least ${User.questionnaire["q5"]} feet.`;
+        }
+      }
+    } else {
+      if (User.questionnaire["q6"] > 2) {
+        if (event.social_distancing_masks) {
+          return `You prefer others to wear masks and distancing of at least ${User.questionnaire["q10"]} feet.`;
+        } else {
+          return `You prefer others to wear masks and distancing of at least ${User.questionnaire["q11"]} feet.`;
+        }
+      } else {
+        if (event.social_distancing_masks) {
+          return `You prefer distancing of at least ${User.questionnaire["q10"]} feet.`;
+        } else {
+          return `You prefer distancing of at least ${User.questionnaire["q11"]} feet.`;
+        }
+      }
+    }
+  }
+
+  function foodPrimary() {
+    if (event.food_buffet) {
+      return "Food will be served buffet-style.";
+    } else {
+      return "Food will be served pre-packaged.";
+    }
+  }
+
+  function foodSecondary() {
+    if (event.indoor) {
+      if (User.questionnaire["q7"] <= 2 && User.questionnaire["q8"] <= 2) {
+        return "You prefer food to not be served.";
+      }
+      if (event.food_buffet) {
+        if (
+          User.questionnaire["q7"] > User.questionnaire["q8"] &&
+          User.questionnaire["q7"] > 2
+        ) {
+          return "You prefer food to be pre-packaged";
+        }
+      } else {
+        if (
+          User.questionnaire["q8"] > User.questionnaire["q7"] &&
+          User.questionnaire["q8"] > 2
+        ) {
+          return "You prefer food to be buffet-style";
+        }
+      }
+    } else {
+      if (User.questionnaire["q13"] <= 2 && User.questionnaire["q14"] <= 2) {
+        return "You prefer food to not be served.";
+      }
+      if (event.food_buffet) {
+        if (User.questionnaire["q13"] > User.questionnaire["q14"]) {
+          return "You prefer food to be pre-packaged";
+        }
+      } else {
+        if (User.questionnaire["q14"] > User.questionnaire["q13"]) {
+          return "You prefer food to be buffet-style";
+        }
+      }
+    }
+  }
+
+  function pluralizedArticle(n: number) {
+    return n === 1 ? "is" : "are";
+  }
+
+  function pluralizedInvitee(n: number) {
+    return n === 1 ? "invitee" : "invitees";
+  }
+
+  function sizePreferenceText() {
+    if (event.indoor) {
+      const n = User.questionnaire["q9"];
+      if (n === -1) return "You are comfortable with any number of attendees.";
+      return `You prefer no more than ${n} ${pluralizedInvitee(n)}.`;
+    } else {
+      const n = User.questionnaire["q15"];
+      if (n === -1) return "You are comfortable with any number of attendees.";
+      return `You prefer no more than ${n} ${pluralizedInvitee(n)}.`;
+    }
+  }
 
   if (screen === "large") {
     return (
@@ -713,43 +891,77 @@ function ScoreDetailsCard() {
       >
         <div className={classes.desktopScoreItem}>
           <div className={classes.desktopScoreIcon}>
-            <MiniScore type="score" value={5} max={5} icon="nature_people" />
+            <MiniScore
+              type="score"
+              value={event.metrics.subscores.location_score}
+              max={5}
+              icon="nature_people"
+            />
           </div>
           <div className={classes.desktopScoreAside}>
-            <div>Outdoor Venue</div>
+            <div>{locationText()}</div>
           </div>
         </div>
         <div className={classes.separator} />
-        <div className={classes.desktopScoreItem}>
-          <div className={classes.desktopScoreIcon}>
-            <MiniScore type="score" value={3} max={5} icon="masks" />
-          </div>
-          <div className={classes.desktopScoreAside}>
-            <div>Masks required, 6-foot social distancing recommended.</div>
-            <div className={classes.desktopScoreExplanation}>
-              You prefer social distancing to be required.
+        {!event.remote && (
+          <>
+            <div className={classes.desktopScoreItem}>
+              <div className={classes.desktopScoreIcon}>
+                <MiniScore
+                  type="score"
+                  value={event.metrics.subscores.masks_social_dist_score}
+                  max={5}
+                  icon="masks"
+                />
+              </div>
+              <div className={classes.desktopScoreAside}>
+                <div>{msdPrimaryText()}</div>
+                <div className={classes.desktopScoreExplanation}>
+                  {msdSecondaryText()}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className={classes.separator} />
-        <div className={classes.desktopScoreItem}>
-          <div className={classes.desktopScoreIcon}>
-            <MiniScore type="score" value={1} max={5} icon="restaurant_menu" />
-          </div>
-          <div className={classes.desktopScoreAside}>
-            <div>Food will be served buffet-style.</div>
-            <div className={classes.desktopScoreExplanation}>
-              You prefer food to be pre-packaged.
+            <div className={classes.separator} />
+          </>
+        )}
+        {event.metrics.subscores.food_score && (
+          <>
+            <div className={classes.desktopScoreItem}>
+              <div className={classes.desktopScoreIcon}>
+                <MiniScore
+                  type="score"
+                  value={event.metrics.subscores.food_score}
+                  max={5}
+                  icon="restaurant_menu"
+                />
+              </div>
+              <div className={classes.desktopScoreAside}>
+                <div>{foodPrimary()}</div>
+                <div className={classes.desktopScoreExplanation}>
+                  {foodSecondary()}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className={classes.separator} />
+            <div className={classes.separator} />
+          </>
+        )}
         <div className={classes.desktopScoreItem}>
           <div className={classes.desktopScoreIcon}>
-            <MiniScore type="score" value={5} max={5} icon="people" />
+            <MiniScore
+              type="score"
+              value={event.metrics.subscores.group_size_score}
+              max={5}
+              icon="people"
+            />
           </div>
           <div className={classes.desktopScoreAside}>
-            <div>There are 23 invitees.</div>
+            <div>
+              There {pluralizedArticle(event.invitees)} {event.invitees}{" "}
+              {pluralizedInvitee(event.invitees)}.
+            </div>
+            <div className={classes.desktopScoreExplanation}>
+              {sizePreferenceText()}
+            </div>
           </div>
         </div>
       </Card>
@@ -803,17 +1015,17 @@ function SuggestionsCard({
     <div>
       <List type={listType}>
         {suggestions &&
-          Object.entries(suggestions).filter(
-            ([s_key, s_data]) => s_data.score !== null
-          ).length > 0 ? (
+        Object.entries(suggestions).filter(
+          ([s_key, s_data]) => s_data.score !== null
+        ).length > 0 ? (
           Object.entries(suggestions).map(([location_type, suggestionData]) => {
             const cleanedData: ISuggestion = {
               location_type,
               masks: suggestionData.masks
                 ? "1me"
                 : location_type === "indoor"
-                  ? "none"
-                  : undefined,
+                ? "none"
+                : undefined,
               food:
                 suggestionData.food_type ||
                 (location_type === "remote" ? undefined : "none"),
