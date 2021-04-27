@@ -1,6 +1,5 @@
 class InviteesController < ApplicationController
   def index
-    #TODO: get list of invitees
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -29,9 +28,6 @@ class InviteesController < ApplicationController
   end
 
   def create
-    #TODO: add invitee to an event
-
-    # pretty sure we can use before_action for this stuff, but leaving it like this for now
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }

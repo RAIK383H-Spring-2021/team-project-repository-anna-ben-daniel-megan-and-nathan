@@ -2,8 +2,6 @@ class EventsController < ApplicationController
   include ComfortMetric
 
   def create
-    #TODO: Create a new event
-
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -43,8 +41,6 @@ class EventsController < ApplicationController
   end
 
   def show
-    #TODO: Get a specific event's details
-
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -65,7 +61,6 @@ class EventsController < ApplicationController
       return
     end
 
-    # authorization: match id of host or invitee
     if (!(@id == @event.host_id) && !(@authorized_invitees.include?(@id)))
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -100,7 +95,6 @@ class EventsController < ApplicationController
   end
 
   def update
-    #TODO: update an event 
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -147,7 +141,6 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    #TODO: delete an event
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }

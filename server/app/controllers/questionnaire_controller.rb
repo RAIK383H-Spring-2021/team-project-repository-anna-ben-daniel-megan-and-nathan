@@ -2,8 +2,6 @@ include ComfortMetric
 
 class QuestionnaireController < ApplicationController
   def show
-    #TODO: Get current questionnaire responses
-    # auth matches either id OR the user has questionnaire sharing on
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
@@ -36,8 +34,6 @@ class QuestionnaireController < ApplicationController
   end
 
   def update
-    #TODO: Update questionnaire responses
-    #Just the user can update it
     if !authorized()
       respond_to do |format|
         format.json { render json: { error: :unauthorized }, status: :unauthorized }
