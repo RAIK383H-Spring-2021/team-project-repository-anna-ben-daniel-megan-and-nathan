@@ -8,14 +8,13 @@ import { Select } from "../../components/Select";
 import { Slider } from "../../components/Slider";
 import { Dialog } from "../../components/Dialog";
 import { ISuggestion } from "../EventDetailsPage";
-import { publish } from "../../hooks/useSubscription";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: {},
   toolbar: {
     position: "sticky",
     top: "-2px",
-    borderRadius: "8px 8px 0 0"
+    borderRadius: "8px 8px 0 0",
   },
   suggestionsWrapper: {
     padding: "0 20px",

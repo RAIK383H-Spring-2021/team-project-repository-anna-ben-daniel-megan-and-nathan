@@ -93,6 +93,7 @@ export const Slider: FC<SliderComponentProps> = (props) => {
         />
         <div className={classes.sliderWrapper}>
           <ReactSlider
+            disabled={disabled}
             value={parseInt(value ?? "")}
             onChange={(value) => onChange(value.toString())}
             max={max}

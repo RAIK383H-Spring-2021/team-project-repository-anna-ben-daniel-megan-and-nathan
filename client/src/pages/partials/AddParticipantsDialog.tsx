@@ -96,8 +96,7 @@ export const AddParticipantsDialog: FC<APDProps> = ({
 
     if (val.length > 0) {
       debounce = setTimeout(() => update(val), 300);
-    } else {
-    }
+    } 
   }
 
   function removeInvitee(invitee: User) {

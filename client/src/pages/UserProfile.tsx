@@ -17,6 +17,7 @@ import { FetchRequest, useRequest } from "../hooks/useRequest";
 import { useScreen } from "../hooks/useScreen";
 import { AppTheme, toggleTheme } from "../theme";
 import { User } from "../User";
+import { Questionnaire } from "./partials/Questionnaire";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   mainWrapper: {
@@ -69,6 +70,8 @@ export const UserProfile: FC = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState(User.user?.email);
   const [privacy, setPrivacy] = useState("0");
+
+  const [qOpen, setQOpen] = useState(false);
 
   const history = useHistory();
 
@@ -167,7 +170,7 @@ export const UserProfile: FC = () => {
           </Card>
         </section>
         <section className={classes.sect}>
-          <h2>Appearance</h2>
+          <h2>Options</h2>
           <List type="contain">
             <ListItem
               end={
@@ -179,6 +182,13 @@ export const UserProfile: FC = () => {
               }
             >
               <label htmlFor="my-switch">Use Dark Theme</label>
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => setQOpen(true)}
+              end={<Icon name="poll" />}
+            >
+              View Questionnaire
             </ListItem>
           </List>
         </section>
@@ -194,6 +204,12 @@ export const UserProfile: FC = () => {
           </List>
         </section>
       </div>
+      <Questionnaire
+        disabled
+        onClose={() => setQOpen(false)}
+        onSubmit={() => console.log("submit")}
+        open={qOpen}
+      />
     </Content>
   );
 };

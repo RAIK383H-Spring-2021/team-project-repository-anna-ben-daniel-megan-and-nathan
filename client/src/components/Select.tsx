@@ -76,6 +76,7 @@ export interface SelectComponentProps {
   label: string;
   caption?: string;
   value?: string;
+  disabled?: boolean;
   onChange?: (value: string) => unknown;
 }
 
@@ -87,6 +88,7 @@ export const Select: FC<SelectComponentProps> = (props) => {
     <div className={classes.wrapper}>
       {props.label && <label className={classes.label}>{props.label}</label>}
       <select
+        disabled={props.disabled}
         onChange={(ev) => props.onChange?.(ev.target.value)}
         className={classes.select}
         value={props.value}

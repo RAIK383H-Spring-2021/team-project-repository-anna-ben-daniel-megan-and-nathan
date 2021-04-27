@@ -174,6 +174,7 @@ function getSubQuestions(start: number): QuestionnaireComponent[] {
 
 export interface QuestionnaireProps {
   open: boolean;
+  disabled?: boolean;
   onSubmit: (q: IQuestionnaire) => void;
   onClose: () => void;
 }
@@ -182,6 +183,7 @@ const useStyles = createUseStyles((theme) => ({
   toolbar: {
     position: "sticky",
     top: "-2px",
+    borderRadius: [8, 8, 0, 0],
   },
   body: {
     // empty for now
@@ -192,7 +194,7 @@ const useStyles = createUseStyles((theme) => ({
 }));
 
 export const Questionnaire: FC<QuestionnaireProps> = (props) => {
-  const { open, onSubmit, onClose } = props;
+  const { open, onSubmit, onClose, disabled = false } = props;
 
   const q = User.questionnaire;
 
@@ -221,7 +223,7 @@ export const Questionnaire: FC<QuestionnaireProps> = (props) => {
         start={<IconButton onClick={onClose} icon="close" />}
         end={
           <Button
-            disabled={!canSubmit}
+            disabled={!canSubmit || disabled}
             onClick={() => onSubmit(q)}
             color="accent"
           >
@@ -235,6 +237,7 @@ export const Questionnaire: FC<QuestionnaireProps> = (props) => {
             q={q}
             comp={c}
             key={i}
+            disabled={disabled}
             update={(id, val) => updateQ(id, val)}
           />
         ))}
@@ -246,6 +249,7 @@ export const Questionnaire: FC<QuestionnaireProps> = (props) => {
 interface QuestionnaireComponentProps {
   q: IQuestionnaire;
   comp: QuestionnaireComponent;
+  disabled?: boolean;
   update: (id: number, value: number) => void;
 }
 
@@ -277,6 +281,7 @@ const QuestionnairePart: FC<QuestionnaireComponentProps> = (props) => {
       return (
         <div className={classes.question}>
           <Select
+            disabled={props.disabled}
             label={c.question}
             onChange={(val) => update(c.id, Number(val))}
           >
@@ -293,6 +298,7 @@ const QuestionnairePart: FC<QuestionnaireComponentProps> = (props) => {
         <div className={classes.question}>
           <SentimentPicker
             label={c.question}
+            disabled={props.disabled}
             value={valueAt(c.id)}
             onChange={(val) => update(c.id, val)}
           />
@@ -302,6 +308,7 @@ const QuestionnairePart: FC<QuestionnaireComponentProps> = (props) => {
       return (
         <div className={classes.question}>
           <Slider
+            disabled={props.disabled}
             value={val.toString()}
             onChange={(val) => update(c.id, Number(val))}
             label={c.question}

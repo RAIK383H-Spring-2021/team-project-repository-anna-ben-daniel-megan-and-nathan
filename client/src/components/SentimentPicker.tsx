@@ -52,6 +52,7 @@ export interface SentimentPickerComponentProps {
   label: string;
   value: number;
   color?: "primary" | "secondary" | "accent";
+  disabled?: boolean;
   onChange?: (value: number) => void;
 }
 
@@ -68,7 +69,13 @@ const options = [
 ];
 
 export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
-  const { label, value = 0, onChange = () => {}, color = "primary" } = props;
+  const {
+    label,
+    value = 0,
+    onChange = () => {},
+    color = "primary",
+    disabled = false,
+  } = props;
 
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, color });
@@ -76,8 +83,10 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
   const [val, setVal] = useState(value);
 
   function update(val: number) {
-    setVal(val);
-    onChange(val);
+    if (!disabled) {
+      setVal(val);
+      onChange(val);
+    }
   }
 
   return (
