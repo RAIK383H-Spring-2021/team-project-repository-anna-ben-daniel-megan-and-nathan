@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Logo } from "../components/Logo";
 import { AppTheme } from "../theme";
+import { User } from "../User";
 import { isEmail } from "../util/isEmail";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
@@ -148,7 +149,9 @@ const LogInPage: FC = () => {
         setErrors({ email: "", password: "Incorrect password." });
       }
     } else {
+      localStorage.removeItem("token");
       API.setToken(res.data.token);
+      User.update(res.data.token);
       history.push("/dash");
     }
   }
