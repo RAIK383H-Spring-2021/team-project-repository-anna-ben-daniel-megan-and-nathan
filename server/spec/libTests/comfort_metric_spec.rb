@@ -303,7 +303,7 @@ RSpec.describe "Comfort metric", type: :request do
 
         it "correctly generate all scores in the correct format, remote event" do 
             score = ComfortMetric.generateTotalScore(1,7)
-            expect(score).to eq(4)
+            expect(score[:total_score]).to eq(4)
         end
     end
 end
