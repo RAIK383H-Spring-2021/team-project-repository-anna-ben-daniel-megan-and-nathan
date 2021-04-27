@@ -61,6 +61,12 @@ export const SuggestionDialog: FC<SuggestionDialogComponentProps> = (props) => {
     }
   }, [suggestion]);
 
+  useEffect(() => {
+    setValidForm(!(
+      data.distancing?.length === 0
+    ));
+  }, [data])
+
   const updateSuggestionData = (
     key: "location_type" | "masks" | "distancing" | "room_size" | "food",
     value: string

@@ -287,7 +287,8 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       || eventDetails.date?.length === 0
       || eventDetails.time?.length === 0
       || eventDetails.location_type?.length === 0
-      || eventDetails.location?.length === 0,
+      || eventDetails.location?.length === 0
+      || eventDetails.distancing?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -300,7 +301,8 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       || eventDetails.date?.length === 0
       || eventDetails.time?.length === 0
       || eventDetails.location_type?.length === 0
-      || eventDetails.location?.length === 0,
+      || eventDetails.location?.length === 0
+      || eventDetails.distancing?.length === 0,
       invitees.length === 0,
     ]);
   };
