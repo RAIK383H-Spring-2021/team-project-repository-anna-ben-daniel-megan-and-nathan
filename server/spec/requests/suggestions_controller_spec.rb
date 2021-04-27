@@ -24,6 +24,12 @@ RSpec.describe "suggestions controller requests", type: :request do
             expect(response).to have_http_status(:unauthorized)
         end
 
+        it "returns not found http error when there are not enough responses to the questionnaire" do
+          get "/events/4/suggestions", headers: { "Authorization": "Bearer #{@token}"}
+
+          expect(response).to have_http_status(:not_found)
+        end
+
         it "gets suggestions from event1 correctly" do
             get "/events/1/suggestions", headers: { "Authorization": "Bearer #{@token}"}
 
