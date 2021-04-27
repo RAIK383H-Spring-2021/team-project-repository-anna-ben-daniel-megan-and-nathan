@@ -175,6 +175,7 @@ function getSubQuestions(start: number): QuestionnaireComponent[] {
 export interface QuestionnaireProps {
   open: boolean;
   disabled?: boolean;
+  questionnaire?: IQuestionnaire;
   onSubmit: (q: IQuestionnaire) => void;
   onClose: () => void;
 }
@@ -194,9 +195,15 @@ const useStyles = createUseStyles((theme) => ({
 }));
 
 export const Questionnaire: FC<QuestionnaireProps> = (props) => {
-  const { open, onSubmit, onClose, disabled = false } = props;
+  const {
+    open,
+    onSubmit,
+    onClose,
+    disabled = false,
+    questionnaire = User.questionnaire,
+  } = props;
 
-  const q = User.questionnaire;
+  const q = questionnaire;
 
   const [canSubmit, setCanSubmit] = useState(
     Object.values(q).every((val) => val !== 0)

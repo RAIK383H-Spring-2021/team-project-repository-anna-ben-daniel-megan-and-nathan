@@ -52,7 +52,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     animationFillMode: "forwards",
   },
   contentWrapper: {
-    display: "block",
+    display: "flex",
     width: "100%",
   },
   content: {
@@ -73,7 +73,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     borderBottomRightRadius: ({ size }) => size === "small" && 0,
     pointerEvents: "initial",
     padding: 0,
-    margin: [20, 0],
+    margin: [20, "auto"],
     minHeight: ({ size }) => size === "small" && `calc(100% - 20px)`,
   },
 }));

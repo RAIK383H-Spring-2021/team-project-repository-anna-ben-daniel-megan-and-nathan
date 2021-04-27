@@ -26,18 +26,22 @@ export class User {
 
     if (token) {
       if (!this._user) {
-        const claims = jwtDecode<TokenUser>(token);
-        this._user = new User(claims.sub, claims.email, claims.name, "", 1);
-
-        if (!this._questionnaire) {
-          this.updateQuestionnaire();
-        }
+        this.update(token);
       }
 
       return this._user;
     }
 
     return null;
+  }
+
+  public static update(token: string) {
+    const claims = jwtDecode<TokenUser>(token);
+    this._user = new User(claims.sub, claims.email, claims.name, "", 1);
+
+    if (!this._questionnaire) {
+      this.updateQuestionnaire();
+    }
   }
 
   static get isAuthorized() {
