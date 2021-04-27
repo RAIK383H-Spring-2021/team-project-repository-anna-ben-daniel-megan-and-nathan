@@ -17,6 +17,7 @@ import { Dialog } from "./components/Dialog";
 import { Toolbar } from "./components/Toolbar";
 import { IconButton } from "./components/IconButton";
 import { Button } from "./components/Button";
+import { UserProfile } from "./pages/UserProfile";
 
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
@@ -100,6 +101,13 @@ function Content() {
               </Page>
             </Guard>
           </Route>
+          <Route path="/profile">
+            <Guard fallback={<PageFallback />} canActivate={requireAuth}>
+              <Page>
+                <UserProfile />
+              </Page>
+            </Guard>
+          </Route>
           <Route exact path="/">
             <Page>
               <LandingPage />
@@ -168,8 +176,6 @@ function App() {
   const [showoff, setShowoff] = useState(
     !localStorage.getItem("shownOfflineDialog")
   );
-
-  console.log(localStorage.getItem("shownOfflineDialog"));
 
   if (offline) {
     localStorage.setItem("shownOfflineDialog", "true");

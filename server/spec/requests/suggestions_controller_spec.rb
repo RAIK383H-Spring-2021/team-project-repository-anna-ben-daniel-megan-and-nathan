@@ -29,6 +29,8 @@ RSpec.describe "suggestions controller requests", type: :request do
 
             @res = JSON.parse(response.body)
             expect(@res["suggestions"]["indoor"]["score"]).to eq(2.0586244615027125)
+            expect(@res["suggestions"]["outdoor"]["score"]).to eq(2.0586244615027125)
+            expect(@res["suggestions"]["remote"]["score"]).to eq(1)
         end
 
         it "gets suggestions from event2 correctly" do
@@ -39,6 +41,8 @@ RSpec.describe "suggestions controller requests", type: :request do
 
             @res = JSON.parse(response.body)
             expect(@res["suggestions"]["indoor"]["score"]).to eq(3.75)
+            expect(@res["suggestions"]["outdoor"]["score"]).to eq(4.25)
+            expect(@res["suggestions"]["remote"]["score"]).to eq(4)
         end
 
         it "gets suggestions from event8 correctly" do
@@ -49,6 +53,8 @@ RSpec.describe "suggestions controller requests", type: :request do
 
             @res = JSON.parse(response.body)
             expect(@res["suggestions"]["indoor"]["score"]).to eq(2.522015589266693)
+            expect(@res["suggestions"]["outdoor"]["score"]).to eq(3.060912725157515)
+            expect(@res["suggestions"]["remote"]["score"]).to eq(2.5)
         end
     end
 end

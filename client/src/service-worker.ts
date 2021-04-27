@@ -71,6 +71,14 @@ registerRoute(
   })
 );
 
+registerRoute(
+  ({ url }) => url.pathname.match(/.*\.(woff2|css)/g),
+  new StaleWhileRevalidate({
+    cacheName: "fonts",
+    plugins: [new ExpirationPlugin({ maxEntries: 5 })],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {

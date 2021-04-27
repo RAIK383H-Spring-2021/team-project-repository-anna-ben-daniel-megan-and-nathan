@@ -118,8 +118,6 @@ class UsersController < ApplicationController
       email: params[:email],
       first_name: params[:first_name], 
       last_name: params[:last_name],
-      password: params[:password],
-      password_confirmation: params[:password],
       privacy_level: params[:privacy_level]
     )
 

@@ -17,7 +17,8 @@ export class User {
     public id: number,
     public email: string,
     public first_name: string,
-    public last_name: string
+    public last_name: string,
+    public privacy_level: number
   ) {}
 
   static get user() {
@@ -26,7 +27,7 @@ export class User {
     if (token) {
       if (!this._user) {
         const claims = jwtDecode<TokenUser>(token);
-        this._user = new User(claims.sub, claims.email, claims.name, "");
+        this._user = new User(claims.sub, claims.email, claims.name, "", 1);
 
         if (!this._questionnaire) {
           this.updateQuestionnaire();
@@ -79,10 +80,10 @@ export class User {
         `users/${user.id}/questionnaire`
       );
 
-      if (Object.values(result).every((q) => q)) {
+      if (Object.values(result.data).every((q) => q)) {
         delete (result as any).id;
         API.setCacheItem(API.makeUrl(`users/${user.id}/questionnaire`), result);
-        this._questionnaire = result as any;
+        this._questionnaire = result.data as any;
       } else {
         this._questionnaire = getBaseQ();
       }

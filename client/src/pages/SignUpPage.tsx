@@ -153,9 +153,8 @@ const SignUpPage: FC = () => {
     setIsLoading(false);
 
     if (res.error) {
-      console.log(res.data.error);
+      // console.log(res.data.error);
       // if (res.data?.status) {
-
       // }
     } else {
       API.setToken(res.data.token);

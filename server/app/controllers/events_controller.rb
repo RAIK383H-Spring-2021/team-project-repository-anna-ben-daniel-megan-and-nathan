@@ -1,4 +1,6 @@
 class EventsController < ApplicationController
+  include ComfortMetric
+
   def create
     #TODO: Create a new event
 
@@ -135,6 +137,8 @@ class EventsController < ApplicationController
       social_distancing_no_masks: params[:social_distancing_no_masks]
     )
 
+    update_participants_and_event(@event)
+
     e_JSON = @event.as_json(only: %i[id title host_id description date_time food_prepackaged food_buffet location indoor outdoor remote score social_distancing_masks social_distancing_no_masks])
     
     respond_to do |format|
@@ -173,5 +177,31 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.json { render json: { status: :ok } }
       end
+  end
+
+  private
+  
+  def update_participants_and_event(event)
+    @responses = Participant.where(event_id: event.id).where(questionnaire_complete: true)
+
+    @responses.each do |participant|
+      @metrics = ComfortMetric.generateTotalScore(participant.user_id, participant.event_id)
+      participant.update(
+        score: @metrics[:total_score],
+        location_score: @metrics[:subscores][:location_score],
+        masks_social_dist_score: @metrics[:subscores][:masks_social_dist_score],
+        group_size_score: @metrics[:subscores][:group_size_score],
+        food_score: @metrics[:subscores][:food_score] || nil
+      )
+    end
+
+    @total_invitees = Participant.where(event_id: event.id).length
+
+    if (@responses.length / @total_invitees >= 0.8)
+      @participants = @responses.collect(&:user_id)
+      @scores = @participants.map{ |id| Participant.where(event_id: event.id).find_by(user_id: id).score }
+      @avg = @scores.sum(0.0) / @scores.size
+      event.update(score: @avg)
+    end
   end
 end
