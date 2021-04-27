@@ -220,6 +220,24 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     padding: 18,
     placeContent: "center",
   },
+  '@keyframes fabIn': {
+    "0%": {
+      transform: 'scale(0)'
+    }, "50%": {
+      transform: 'scale(1.5)'
+    }, "100%": {
+      transform: 'scale(1)'
+    }
+  },
+  nextFAB: {
+    position: "fixed",
+    right: ({ size }) => size === "large" ? "10vw" : 32,
+    bottom: 64,
+    zIndex: 10,
+    animationName: '$fabIn',
+    animationTimingFunction: theme.transitions.easing.default,
+    animationDuration: 600
+  }
 }));
 
 export interface CreateEventPageComponentProps { }
@@ -305,7 +323,8 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       <Stepper
         className={classes.stepper}
         disabled={stepperDisabled}
-        onChange={(step) => setActiveStep(step)}
+        activeStep={activeStep}
+        onChange={(step: number) => setActiveStep(step)}
       />
       <div className={classes.wrapper}>
         {activeStep === 0 ? (
@@ -324,6 +343,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
           <SendInvitations eventDetails={eventDetails} invitees={invitees} />
         )}
       </div>
+      {(activeStep < 2 && !stepperDisabled[activeStep + 1]) && <FAB className={classes.nextFAB} size="medium" icon="arrow_forward" onClick={() => setActiveStep(activeStep + 1)} />}
       <Background className={classes.background} />
     </Content>
   );

@@ -3,6 +3,7 @@ import { createUseStyles, useTheme } from "react-jss";
 import { AppTheme } from "../theme";
 import { useScreen } from "../hooks/useScreen";
 import { StepperNode } from "./StepperNode";
+import { useEffect } from "react";
 
 const useStyles = createUseStyles((theme: AppTheme) => ({
   wrapper: ({ size }) => {
@@ -49,18 +50,22 @@ export interface StepperComponentProps {
   className?: string;
   disabled: boolean[];
   onChange: (node: number) => void;
+  activeStep: number,
 }
 
-export const Stepper: FC<StepperComponentProps> = (props) => {
+export const Stepper: FC<StepperComponentProps> = (props: StepperComponentProps) => {
   const [activeNode, setActiveNode] = useState(0);
   const size = useScreen();
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme, activeNode, size, ...props });
 
   const changeStep = (node: number) => {
-    setActiveNode(node);
     props.onChange(node);
   };
+
+  useEffect(() => {
+    setActiveNode(props.activeStep);
+  }, [props.activeStep]);
 
   return (
     <div className={`${classes.wrapper} ${props.className}`}>
