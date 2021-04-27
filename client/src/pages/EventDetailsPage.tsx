@@ -284,8 +284,8 @@ const EventDetailsPage: FC = () => {
           isLoading
             ? "Loading..."
             : response
-            ? response.event?.title ?? "Loading..."
-            : "Loading..."
+              ? response.event?.title ?? "Loading..."
+              : "Loading..."
         }
       />
       {isLoading ? (
@@ -536,8 +536,8 @@ function EditDetailsDialog({
       location_type: event.indoor
         ? "indoor"
         : event?.outdoor
-        ? "outdoor"
-        : "remote",
+          ? "outdoor"
+          : "remote",
       masks: event.social_distancing_masks ? "1me" : "none",
       distancing:
         event.social_distancing_masks?.toString() ??
@@ -560,7 +560,8 @@ function EditDetailsDialog({
         eventDetails.date?.length === 0 ||
         eventDetails.time?.length === 0 ||
         eventDetails.location_type?.length === 0 ||
-        eventDetails.location?.length === 0
+        eventDetails.location?.length === 0 ||
+        eventDetails.distancing?.length === 0
       )
     );
   }, [eventDetails]);
@@ -616,8 +617,8 @@ function Meter({ event }: { event: Event }) {
       ? "Group Comfort Score"
       : "Individual Comfort Score"
     : host
-    ? "Invitee Responses"
-    : "Individual Comfort Score";
+      ? "Invitee Responses"
+      : "Individual Comfort Score";
 
   return (
     <div className={classes.meterCenter}>
@@ -678,8 +679,8 @@ function SummarySection({ event }: { event: Event }) {
               event.food_buffet
                 ? "Yes, Self-serve"
                 : event.food_prepackaged
-                ? "Yes, Pre-packaged"
-                : "No food"
+                  ? "Yes, Pre-packaged"
+                  : "No food"
             }
           />
         </div>
@@ -692,11 +693,10 @@ function SummarySection({ event }: { event: Event }) {
           <InfoBlock
             icon="social_distance"
             label="social distancing"
-            body={`${
-              event.social_distancing_masks
-                ? event.social_distancing_masks
-                : event.social_distancing_no_masks
-            } feet`}
+            body={`${event.social_distancing_masks
+              ? event.social_distancing_masks
+              : event.social_distancing_no_masks
+              } feet`}
           />
         </div>
         <InfoBlock
@@ -1127,17 +1127,17 @@ function SuggestionsCard({
     <div>
       <List type={listType}>
         {suggestions &&
-        Object.entries(suggestions).filter(
-          ([s_key, s_data]) => s_data.score !== null
-        ).length > 0 ? (
+          Object.entries(suggestions).filter(
+            ([s_key, s_data]) => s_data.score !== null
+          ).length > 0 ? (
           Object.entries(suggestions).map(([location_type, suggestionData]) => {
             const cleanedData: ISuggestion = {
               location_type,
               masks: suggestionData.masks
                 ? "1me"
                 : location_type === "indoor"
-                ? "none"
-                : undefined,
+                  ? "none"
+                  : undefined,
               food:
                 suggestionData.food_type ||
                 (location_type === "remote" ? undefined : "none"),

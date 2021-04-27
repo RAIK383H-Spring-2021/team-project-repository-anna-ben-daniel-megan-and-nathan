@@ -53,6 +53,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       boxShadow: "0 4 8 rgba(0, 0, 0, 0.1)",
     },
   },
+  searchBarWrapper: {
+    margin: [12, 24, 48, 24],
+  },
   eventDetailsWrapper: {
     maxWidth: ({ size }) => (size === "large" ? 510 : "100%"),
     display: "flex",
@@ -135,9 +138,6 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
       }
       : {
         minHeight: 350,
-        "& input": {
-          margin: "0 24px",
-        },
       },
   searchResultList: {
     flexShrink: 1,
@@ -287,7 +287,8 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       || eventDetails.date?.length === 0
       || eventDetails.time?.length === 0
       || eventDetails.location_type?.length === 0
-      || eventDetails.location?.length === 0,
+      || eventDetails.location?.length === 0
+      || eventDetails.distancing?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -300,7 +301,8 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
       || eventDetails.date?.length === 0
       || eventDetails.time?.length === 0
       || eventDetails.location_type?.length === 0
-      || eventDetails.location?.length === 0,
+      || eventDetails.location?.length === 0
+      || eventDetails.distancing?.length === 0,
       invitees.length === 0,
     ]);
   };
@@ -514,13 +516,15 @@ function AddParticipants(props: AddParticipantsProps) {
   return (
     <div className={classes.addParticipantsWrapper}>
       <div className={classes.searchPanel}>
-        <Input
-          label="search"
-          type="search"
-          placeholder="Invite with email address"
-          value={query}
-          onChange={(value) => debounce(value)}
-        />
+        <div className={classes.searchBarWrapper}>
+          <Input
+            label="search"
+            type="search"
+            placeholder="Invite with email address"
+            value={query}
+            onChange={(value) => debounce(value)}
+          />
+        </div>
         {query.length > 0 ? (
           <>
             <h2 className={classes.sectionHeader}>Results</h2>

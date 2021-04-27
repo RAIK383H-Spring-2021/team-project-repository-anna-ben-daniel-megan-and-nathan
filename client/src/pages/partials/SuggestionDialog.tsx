@@ -31,6 +31,15 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     border: "none",
     backgroundColor: theme.colors.divider.base.backgroundColor,
   },
+  suggestedActivities: {
+    "& > h4": {
+      ...theme.typography.preTitle,
+      marginBottom: 6,
+    },
+    "& > ul": {
+      paddingLeft: 16
+    }
+  }
 }));
 
 export interface SuggestionDialogComponentProps {
@@ -60,6 +69,12 @@ export const SuggestionDialog: FC<SuggestionDialogComponentProps> = (props) => {
       updateData(suggestion);
     }
   }, [suggestion]);
+
+  useEffect(() => {
+    setValidForm(!(
+      data.distancing?.length === 0
+    ));
+  }, [data])
 
   const updateSuggestionData = (
     key: "location_type" | "masks" | "distancing" | "room_size" | "food",
@@ -99,7 +114,42 @@ export const SuggestionDialog: FC<SuggestionDialogComponentProps> = (props) => {
             <option value="indoor">Indoor</option>
             <option value="remote">Remote</option>
           </Select>
-          <p>Activities</p>
+          <div className={classes.suggestedActivities}>
+            {
+              data.location_type === "outdoor"
+                ?
+                <>
+                  <h4>Suggested Outdoor Activities</h4>
+                  <ul>
+                    <li>Play basketball</li>
+                    <li>Throw a frisbee</li>
+                    <li>Picnic in the park</li>
+                    <li>Go swimming</li>
+                  </ul>
+                </>
+                : data.location_type === "indoor"
+                  ?
+                  <>
+                    <h4>Suggested Indoor Activities</h4>
+                    <ul>
+                      <li>Play a board game</li>
+                      <li>Watch a movie</li>
+                      <li>Do arts and crafts</li>
+                      <li>Gift exchange</li>
+                    </ul>
+                  </>
+                  :
+                  <>
+                    <h4>Suggested Remote Activities</h4>
+                    <ul>
+                      <li>Host a trivia night</li>
+                      <li>Virtual happy hour</li>
+                      <li>Play an online game</li>
+                      <li>Virtual dance party</li>
+                    </ul>
+                  </>
+            }
+          </div>
         </div>
         {data.location_type !== "remote" && (
           <>
@@ -155,6 +205,6 @@ export const SuggestionDialog: FC<SuggestionDialogComponentProps> = (props) => {
           </>
         )}
       </div>
-    </Dialog>
+    </Dialog >
   );
 };
