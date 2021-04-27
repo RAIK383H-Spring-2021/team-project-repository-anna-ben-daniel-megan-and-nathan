@@ -78,12 +78,12 @@ type QuestionnaireComponent =
 
 const components: QuestionnaireComponent[] = [
   {
-    id: 1,
+    id: 2,
     type: "sentiment",
     question: `How comfortable are you with outdoor events?`,
   },
   {
-    id: 2,
+    id: 1,
     type: "sentiment",
     question: `How comfortable are you with indoor events?`,
   },

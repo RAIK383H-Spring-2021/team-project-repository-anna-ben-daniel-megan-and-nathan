@@ -29,6 +29,8 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     height: 0,
     border: ({ color }) =>
       `1px solid ${theme.colors[color].base.backgroundColor}`,
+    backgroundColor: ({ color }) =>
+      `1px solid ${theme.colors[color].base.backgroundColor}`,
     flex: "1 1 auto",
     marginBottom: 22,
   },
