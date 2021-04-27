@@ -125,6 +125,8 @@ RSpec.describe "events controller requests", type: :request do
 
             @res = JSON.parse(response.body)
 
+            puts(response.status)
+
             expect(@res["title"]).to eq("Updated Title")
             expect(@res["host_id"]).to eq(2)
         end
