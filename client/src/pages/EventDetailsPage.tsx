@@ -196,6 +196,9 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
     top: "-2px",
     borderRadius: "8px 8px 0 0 ",
   },
+  editEventDetails: {
+    maxWidth: "100% !important",
+  },
 }));
 
 function suggestions(id: number): FetchRequest {
@@ -306,8 +309,35 @@ function EventDetailsLarge({
 
   const [isEditing, setEditing] = useState(false);
 
-  const submitEventEdits = (newDetails: EventDetailsObject) => {
+  const submitEventEdits = async (newDetails: EventDetailsObject) => {
+    const social_distancing_masks =
+      newDetails.masks === "none" ? null : newDetails.distancing;
+    const social_distancing_no_masks =
+      newDetails.masks === "none" ? newDetails.distancing : null;
 
+    const res = await API.put(`events/${event.id}`, {
+      title: newDetails.title,
+      host_id: User.user?.id,
+      description: newDetails.description,
+      date_time: new Date(
+        `${newDetails.date}T${newDetails.time}`
+      ).toISOString(),
+      food_prepackaged: newDetails.food === "pp",
+      food_buffet: newDetails.food === "ss",
+      location: newDetails.location,
+      indoor: newDetails.location_type === "indoor",
+      outdoor: newDetails.location_type === "outdoor",
+      remote: newDetails.location_type === "remote",
+      social_distancing_masks,
+      social_distancing_no_masks,
+    });
+
+    if (res.error) {
+      alert("that didn't work");
+    } else {
+      setEditing(false);
+      publish("event_update");
+    }
   }
 
   return (
@@ -396,6 +426,9 @@ function EventDetailsSmall({
 
     if (res.error) {
       alert("that didn't work");
+    } else {
+      setEditing(false);
+      publish("event_update");
     }
   }
 
@@ -432,11 +465,6 @@ function EventDetailsSmall({
 function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing: boolean, event: Event, onClose: () => void, onSubmit: (eventDetails: EventDetailsObject) => void }) {
   const theme = useTheme<AppTheme>();
   const classes = useStyles({ theme });
-  const { event_id } = useParams<{ event_id: string }>();
-  const [response, isLoading, makeRequest] = useRequest<{ event: Event }>(
-    events.get,
-    event_id
-  );
 
   const convertEventToEventDetailsObject = (event: Event) => {
     const result: EventDetailsObject = {
@@ -454,7 +482,7 @@ function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing:
   }
 
   const [validForm, setValidForm] = useState(false);
-  const [eventDetails, setEventDetails] = useState<EventDetailsObject>(convertEventToEventDetailsObject(response?.event ?? event));
+  const [eventDetails, setEventDetails] = useState<EventDetailsObject>(convertEventToEventDetailsObject(event));
 
   useEffect(() => {
     setValidForm(!(eventDetails.title?.length === 0
@@ -463,6 +491,10 @@ function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing:
       || eventDetails.location_type?.length === 0
       || eventDetails.location?.length === 0));
   }, [eventDetails]);
+
+  useEffect(() => {
+    setEventDetails(convertEventToEventDetailsObject(event));
+  }, [event]);
 
   return (
     <Dialog open={isEditing} onClose={onClose}>
@@ -481,12 +513,7 @@ function EditDetailsDialog({ isEditing, event, onClose, onSubmit }: { isEditing:
           </Button>
         }
       />
-      {isLoading
-        ? <div className={classes.inviteesSpinnerWrapper}>
-          <MDSpinner singleColor={theme.colors.primary.base.backgroundColor} />
-        </div>
-        : <SetEventDetails eventDetails={eventDetails} setEventDetails={setEventDetails} />
-      }
+      <SetEventDetails className={classes.editEventDetails} eventDetails={eventDetails} setEventDetails={setEventDetails} />
     </Dialog>
   );
 }
@@ -754,6 +781,7 @@ function SuggestionsCard({ event, suggestions }: { event: Event, suggestions?: I
       alert("that didn't work");
     } else {
       setDialogData(undefined);
+      publish("event_update");
     }
   };
 

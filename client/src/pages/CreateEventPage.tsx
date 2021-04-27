@@ -330,6 +330,7 @@ const CreateEventPage: FC<CreateEventPageComponentProps> = (props) => {
 };
 
 interface SetEventDetailsProps {
+  className?: string;
   eventDetails: EventDetailsObject;
   setEventDetails: (eventDetails: EventDetailsObject) => void;
 }
@@ -358,7 +359,7 @@ export function SetEventDetails(props: SetEventDetailsProps) {
   };
 
   return (
-    <div className={classes.eventDetailsWrapper}>
+    <div className={`${classes.eventDetailsWrapper} ${props.className ?? ""}`}>
       <Input
         type="text"
         label="Title"
