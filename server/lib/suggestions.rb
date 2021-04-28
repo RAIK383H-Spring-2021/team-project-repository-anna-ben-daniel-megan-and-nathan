@@ -11,7 +11,7 @@ module Suggestions
     @food = event.food_buffet || event.food_prepackaged
 
     indoor_suggestion = generate_indoor(@questionnaires, @food, @num_participants)
-    outdoor_suggestion = generate_outdoor(@questionnaires, @food, @num_participants)
+    outdoor_suggestion = generate_outdoor(@questionnaires, @food)
     remote_suggestion = generate_remote(@questionnaires)
 
     indoor_score = generate_dummy_score(event, indoor_suggestion, "indoor", @questionnaires, @food)
@@ -62,7 +62,7 @@ module Suggestions
     return suggestions
   end
 
-  def self.generate_outdoor(questionnaires, food, num_participants)
+  def self.generate_outdoor(questionnaires, food)
     suggestions = {}
 
     location_comfort = questionnaires.map{ |quest| quest.q2 }
