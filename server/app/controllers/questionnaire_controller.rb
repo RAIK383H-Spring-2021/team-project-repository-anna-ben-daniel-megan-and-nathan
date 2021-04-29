@@ -61,7 +61,7 @@ class QuestionnaireController < AuthController
       q15: params[:q15],
     )
 
-    metrics = ComfortMetric.generateTotalScore(@user.id, @event.id)
+    metrics = ComfortMetric.generate_total_score(@user.id, @event.id)
 
     @invitee = @participant.update(
       user_id: @id,
@@ -74,7 +74,7 @@ class QuestionnaireController < AuthController
       food_score: metrics[:subscores][:food_score] || nil
     )
 
-    updateEventScore(params[:event_id])
+    update_event_score(params[:event_id])
 
     q_JSON = @questionnaire.as_json(only: %i[id q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12 q13 q14 q15])
 
@@ -85,7 +85,7 @@ class QuestionnaireController < AuthController
 
   private
 
-  def updateEventScore(event_id)
+  def update_event_score(event_id)
     @responses = Participant.where(event_id: event_id).where(questionnaire_complete: true).length
     @invitees = Participant.where(event_id: event_id).length
 

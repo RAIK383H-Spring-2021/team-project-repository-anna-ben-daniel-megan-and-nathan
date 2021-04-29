@@ -1,7 +1,6 @@
-include ComfortMetric
-
 module Suggestions
-
+  include ComfortMetric
+  
   def self.generate(event)
     @participant_user_ids = Participant.where(event_id: event.id).where(questionnaire_complete: true).collect(&:user_id)
     @users = @participant_user_ids.map{ |id| User.find(id) }
@@ -127,9 +126,9 @@ module Suggestions
     all_scores = []
 
     questionnaires.each do |quest|
-      food_score = food ? ComfortMetric.generateFoodScore(quest, @dummy_event, @dummy_event.indoor) : nil
-      masks_social_dist_score = ComfortMetric.generateMasksSocialDistancingScore(quest, @dummy_event, @dummy_event.indoor)
-      group_size_score = ComfortMetric.generateGroupSizeScore(quest, event, @dummy_event.indoor)
+      food_score = food ? ComfortMetric.generate_food_score(quest, @dummy_event, @dummy_event.indoor) : nil
+      masks_social_dist_score = ComfortMetric.generate_masks_social_distancing_score(quest, @dummy_event, @dummy_event.indoor)
+      group_size_score = ComfortMetric.generate_group_size_score(quest, event, @dummy_event.indoor)
       location_score = @dummy_event.indoor ? quest.q1 : quest.q2
 
       if food_score

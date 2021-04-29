@@ -1,7 +1,7 @@
-include Math
-
 module ComfortMetric
-  def self.generateTotalScore(userID, eventID)
+  include Math
+  
+  def self.generate_total_score(userID, eventID)
     @event = Event.find(eventID)
     @user = User.find(userID)
     @quest = @user.questionnaire
@@ -11,36 +11,36 @@ module ComfortMetric
     
     if (@event.indoor)
       indoor =  true
-      locationScore = @quest.q1
+      location_score = @quest.q1
     elsif (@event.outdoor)
       indoor = false
-      locationScore = @quest.q2
+      location_score = @quest.q2
     else
-      locationScore = @quest.q3
-      return {total_score: locationScore, subscores: {}}
+      location_score = @quest.q3
+      return { total_score: location_score, subscores: {} }
     end
 
     if (@event.food_prepackaged || @event.food_buffet)
-      foodScore = generateFoodScore(@quest, @event, indoor)
+      foodScore = generate_food_score(@quest, @event, indoor)
     end
 
-    masksSocialDistScore = generateMasksSocialDistancingScore(@quest, @event, indoor)
-    groupSizeScore = generateGroupSizeScore(@quest, @event, indoor)
+    masks_social_dist_score = generate_masks_social_distancing_score(@quest, @event, indoor)
+    group_size_score = generate_group_size_score(@quest, @event, indoor)
 
     if (foodScore)
-      scoreArr = [locationScore, masksSocialDistScore, groupSizeScore, foodScore]
-      subscores = { location_score: locationScore, masks_social_dist_score: masksSocialDistScore, group_size_score: groupSizeScore, food_score: foodScore }
-      avg = scoreArr.sum(0.0) / scoreArr.size
+      score_arr = [location_score, masks_social_dist_score, group_size_score, foodScore]
+      subscores = { location_score: location_score, masks_social_dist_score: masks_social_dist_score, group_size_score: group_size_score, food_score: foodScore }
+      avg = score_arr.sum(0.0) / score_arr.size
       return {subscores: subscores, total_score: avg}
     else
-      scoreArr = [locationScore, masksSocialDistScore, groupSizeScore]
-      subscores = { location_score: locationScore, masks_social_dist_score: masksSocialDistScore, group_size_score: groupSizeScore }
-      avg = scoreArr.sum(0.0) / scoreArr.size
+      score_arr = [location_score, masks_social_dist_score, group_size_score]
+      subscores = { location_score: location_score, masks_social_dist_score: masks_social_dist_score, group_size_score: group_size_score }
+      avg = score_arr.sum(0.0) / score_arr.size
       return {subscores: subscores, total_score: avg}
     end
   end
 
-  def self.generateFoodScore(quest, event, indoor)
+  def self.generate_food_score(quest, event, indoor)
     if (indoor)
       if event.food_prepackaged
         return quest.q7
@@ -56,48 +56,48 @@ module ComfortMetric
     end
   end
 
-  def self.generateMasksSocialDistancingScore(quest, event, indoor)
+  def self.generate_masks_social_distancing_score(quest, event, indoor)
     if (indoor)
       if (event.social_distancing_masks)
-        indRisk = 1 / (feetToMeters(quest.q4) + 1)
-        eventRisk = 1 / (feetToMeters(event.social_distancing_masks) + 1)
-        return indRisk >= eventRisk ? 5 : maskSigmoid(eventRisk - indRisk)
+        ind_risk = 1 / (feet_to_meters(quest.q4) + 1)
+        event_risk = 1 / (feet_to_meters(event.social_distancing_masks) + 1)
+        return ind_risk >= event_risk ? 5 : mask_sigmoid(event_risk - ind_risk)
       else
-        indRisk = 6 / (feetToMeters(quest.q5) + 1)
-        eventRisk = 6 / (feetToMeters(event.social_distancing_no_masks) + 1)
-        indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort >= eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        ind_risk = 6 / (feet_to_meters(quest.q5) + 1)
+        event_risk = 6 / (feet_to_meters(event.social_distancing_no_masks) + 1)
+        ind_comfort = ind_risk * find_penalty(quest, event, indoor)
+        return ind_comfort >= event_risk ? 5 : mask_sigmoid(event_risk - ind_comfort)
       end
     else
       if (event.social_distancing_masks)
-        indRisk = 1 / (feetToMeters(quest.q10) + 1)
-        eventRisk = 1 / (feetToMeters(event.social_distancing_masks) + 1)
-        return indRisk >= eventRisk ? 5 : maskSigmoid(eventRisk - indRisk)
+        ind_risk = 1 / (feet_to_meters(quest.q10) + 1)
+        event_risk = 1 / (feet_to_meters(event.social_distancing_masks) + 1)
+        return ind_risk >= event_risk ? 5 : mask_sigmoid(event_risk - ind_risk)
       else
-        indRisk = 6 / (feetToMeters(quest.q11) + 1)
-        eventRisk = 6 / (feetToMeters(event.social_distancing_no_masks) + 1)
-        indComfort = indRisk * findPenalty(quest, event, indoor)
-        return indComfort >= eventRisk ? 5 : maskSigmoid(eventRisk - indComfort)
+        ind_risk = 6 / (feet_to_meters(quest.q11) + 1)
+        event_risk = 6 / (feet_to_meters(event.social_distancing_no_masks) + 1)
+        ind_comfort = ind_risk * find_penalty(quest, event, indoor)
+        return ind_comfort >= event_risk ? 5 : mask_sigmoid(event_risk - ind_comfort)
       end
     end
   end
 
-  def self.generateGroupSizeScore(quest, event, indoor)
+  def self.generate_group_size_score(quest, event, indoor)
 
-    comfortSize = -1
+    comfort_size = -1
     if (indoor)
-      comfortSize = quest.q9
+      comfort_size = quest.q9
     else
-      comfortSize = quest.q15
+      comfort_size = quest.q15
     end
 
-    eventSize = Participant.where(event_id: event.id).length
-    return (comfortSize > eventSize) || (comfortSize == -1) ? 5 : groupSigmoid((comfortSize - eventSize).to_f/comfortSize)
+    event_size = Participant.where(event_id: event.id).length
+    return (comfort_size > event_size) || (comfort_size == -1) ? 5 : group_sigmoid((comfort_size - event_size).to_f/comfort_size)
   end
 
   private
 
-  def self.findPenalty(quest, event, indoor)
+  def self.find_penalty(quest, event, indoor)
     if (indoor)
       return event.social_distancing_no_masks ? 1 : 1.2 - (0.2 * quest.q6)
     else
@@ -105,15 +105,15 @@ module ComfortMetric
     end
   end
 
-  def self.feetToMeters(x)
+  def self.feet_to_meters(x)
     return x / 3.281
   end
 
-  def self.maskSigmoid(x)
+  def self.mask_sigmoid(x)
     return (-8 / (1 + Math.exp(-x))) + 9
   end
 
-  def self.groupSigmoid(x)
+  def self.group_sigmoid(x)
     return (8 / (1 + Math.exp((-3.5)*x))) + 1
   end
 

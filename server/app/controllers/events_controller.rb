@@ -137,7 +137,7 @@ class EventsController < AuthController
     @responses = Participant.where(event_id: event.id).where(questionnaire_complete: true)
 
     @responses.each do |participant|
-      @metrics = ComfortMetric.generateTotalScore(participant.user_id, participant.event_id)
+      @metrics = ComfortMetric.generate_total_score(participant.user_id, participant.event_id)
       participant.update(
         score: @metrics[:total_score],
         location_score: @metrics[:subscores][:location_score],

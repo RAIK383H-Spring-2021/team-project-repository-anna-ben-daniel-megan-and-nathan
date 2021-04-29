@@ -42,7 +42,7 @@ RSpec.describe "Comfort metric", type: :request do
                 remote: false,
                 score: nil)
 
-            foodScore = ComfortMetric.generateFoodScore(@globalQuestionnaire, @eventIndoorPrepackaged,true)
+            foodScore = ComfortMetric.generate_food_score(@globalQuestionnaire, @eventIndoorPrepackaged,true)
             expect(foodScore).to eq(3)
         end
 
@@ -59,7 +59,7 @@ RSpec.describe "Comfort metric", type: :request do
                 remote: false,
                 score: nil)
 
-            foodScore = ComfortMetric.generateFoodScore(@globalQuestionnaire, @eventIndoorPrepackaged,true)
+            foodScore = ComfortMetric.generate_food_score(@globalQuestionnaire, @eventIndoorPrepackaged,true)
             expect(foodScore).to eq(1)
         end
 
@@ -76,7 +76,7 @@ RSpec.describe "Comfort metric", type: :request do
                 remote: false,
                 score: nil)
 
-            foodScore = ComfortMetric.generateFoodScore(@globalQuestionnaire, @eventIndoorPrepackaged,false)
+            foodScore = ComfortMetric.generate_food_score(@globalQuestionnaire, @eventIndoorPrepackaged,false)
             expect(foodScore).to eq(4)
         end
 
@@ -93,7 +93,7 @@ RSpec.describe "Comfort metric", type: :request do
                 remote: false,
                 score: nil)
 
-            foodScore = ComfortMetric.generateFoodScore(@globalQuestionnaire, @eventIndoorPrepackaged,false)
+            foodScore = ComfortMetric.generate_food_score(@globalQuestionnaire, @eventIndoorPrepackaged,false)
             expect(foodScore).to eq(2)
         end
     end
@@ -106,7 +106,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @event = Event.find(@resId)
 
-            groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true)
+            groupSizeScore = ComfortMetric.generate_group_size_score(@globalQuestionnaire, @event, true)
             
             expect(groupSizeScore). to eq(5)
         end
@@ -120,7 +120,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @event = Event.find(@resId)
 
-            groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true)
+            groupSizeScore = ComfortMetric.generate_group_size_score(@globalQuestionnaire, @event, true)
             
             expect(groupSizeScore). to eq(5)
         end
@@ -148,7 +148,7 @@ RSpec.describe "Comfort metric", type: :request do
             q14: 2,
             q15: 2)
 
-            groupSizeScore = ComfortMetric.generateGroupSizeScore(@localQuest, @event, false).round(4)
+            groupSizeScore = ComfortMetric.generate_group_size_score(@localQuest, @event, false).round(4)
             
             expect(groupSizeScore).to eq(2.1844)
         end
@@ -160,7 +160,7 @@ RSpec.describe "Comfort metric", type: :request do
 
             @event = Event.find(@resId)
 
-            groupSizeScore = ComfortMetric.generateGroupSizeScore(@globalQuestionnaire, @event, true).round(4)
+            groupSizeScore = ComfortMetric.generate_group_size_score(@globalQuestionnaire, @event, true).round(4)
             
             expect(groupSizeScore). to eq(1.2345)
         end
@@ -183,7 +183,7 @@ RSpec.describe "Comfort metric", type: :request do
                 social_distancing_masks: 6,
                 social_distancing_no_masks:nil)
             
-            score = ComfortMetric.generateMasksSocialDistancingScore(@globalQuestionnaire, @event, true)
+            score = ComfortMetric.generate_masks_social_distancing_score(@globalQuestionnaire, @event, true)
 
             expect(score).to eq(5)
         end
@@ -203,7 +203,7 @@ RSpec.describe "Comfort metric", type: :request do
                 social_distancing_masks: nil,
                 social_distancing_no_masks: 0)
 
-            score = ComfortMetric.generateMasksSocialDistancingScore(@globalQuestionnaire, @event, true).round(4)
+            score = ComfortMetric.generate_masks_social_distancing_score(@globalQuestionnaire, @event, true).round(4)
                 
             expect(score).to eq(1.162)
         end
@@ -239,7 +239,7 @@ RSpec.describe "Comfort metric", type: :request do
                 q14: 2,
                 q15: 25)
 
-            score = ComfortMetric.generateMasksSocialDistancingScore(@localQuestionnaire, @event, false).round(4)
+            score = ComfortMetric.generate_masks_social_distancing_score(@localQuestionnaire, @event, false).round(4)
                 
             expect(score).to eq(3.7503)
         end
@@ -275,7 +275,7 @@ RSpec.describe "Comfort metric", type: :request do
                 q14: 2,
                 q15: 25)
 
-            score = ComfortMetric.generateMasksSocialDistancingScore(@localQuestionnaire, @event, false).round(4)
+            score = ComfortMetric.generate_masks_social_distancing_score(@localQuestionnaire, @event, false).round(4)
                 
             expect(score).to eq(4.4905)
         end
@@ -283,7 +283,7 @@ RSpec.describe "Comfort metric", type: :request do
 
     describe "generate Total Score tests" do 
         it "correctly generate all scores in the correct format, food score exists" do 
-            score = ComfortMetric.generateTotalScore(1,2)
+            score = ComfortMetric.generate_total_score(1,2)
             
             expect(score[:subscores][:location_score]).to eq(2)
             expect(score[:subscores][:masks_social_dist_score].round(4)).to eq(1.9683)
@@ -293,7 +293,7 @@ RSpec.describe "Comfort metric", type: :request do
         end
 
         it "correctly generate all scores in the correct format, food score does not exist" do 
-            score = ComfortMetric.generateTotalScore(1,3)
+            score = ComfortMetric.generate_total_score(1,3)
             
             expect(score[:subscores][:location_score]).to eq(3)
             expect(score[:subscores][:masks_social_dist_score].round(4)).to eq(2.3365)
@@ -302,7 +302,7 @@ RSpec.describe "Comfort metric", type: :request do
         end
 
         it "correctly generate all scores in the correct format, remote event" do 
-            score = ComfortMetric.generateTotalScore(1,7)
+            score = ComfortMetric.generate_total_score(1,7)
             expect(score[:total_score]).to eq(4)
         end
     end

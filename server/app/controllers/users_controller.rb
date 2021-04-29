@@ -58,16 +58,16 @@ class UsersController < AuthController
     
     @user = User.find(@id)
     @hosted_events = @user.events ? @user.events : []
-    @hosted_events = @hosted_events.map{ |event| formatEvent(event.id) }
+    @hosted_events = @hosted_events.map{ |event| format_event(event.id) }
 
     @event_ids = Participant.where(user_id: params[:id]).collect(&:event_id)
     @invited_events = Event.find(@event_ids)
-    @invited_events = @invited_events.map{ |event| formatEvent(event.id) }
+    @invited_events = @invited_events.map{ |event| format_event(event.id) }
 
-    userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
+    user_json = @user.as_json(only: %i[id email first_name last_name privacy_level])
 
     respond_to do |format|
-      format.json { render json: {user: userJson, hosted_events: @hosted_events, invited_events: @invited_events } }
+      format.json { render json: {user: user_json, hosted_events: @hosted_events, invited_events: @invited_events } }
     end
   end
 
@@ -85,10 +85,10 @@ class UsersController < AuthController
       privacy_level: params[:privacy_level]
     )
 
-    userJson = @user.as_json(only: %i[id email first_name last_name privacy_level])
+    user_json = @user.as_json(only: %i[id email first_name last_name privacy_level])
 
     respond_to do |format|
-      format.json { render json: {user: userJson} }
+      format.json { render json: {user: user_json} }
     end
   end
 
@@ -133,8 +133,8 @@ class UsersController < AuthController
     @other_events = Event.find(@other_event_ids)
     @new_events = Event.find(@new_event_ids)
 
-    @other_events = @other_events.map{ |event| formatEventWithScores(event.id, params[:id]) }
-    @new_events = @new_events.map{ |event| formatEvent(event.id) }
+    @other_events = @other_events.map{ |event| format_event_with_scores(event.id, params[:id]) }
+    @new_events = @new_events.map{ |event| format_event(event.id) }
 
     respond_to do |format|
       format.json { render json: {new_events: @new_events, other_events: @other_events } }
@@ -150,7 +150,7 @@ class UsersController < AuthController
     @user = User.find(@id)
     @events = @user.events ? @user.events : []
 
-    @events = @events.map{ |event| formatEvent(event.id) }
+    @events = @events.map{ |event| format_event(event.id) }
 
     respond_to do |format|
       format.json { render json: {events: @events } }
@@ -159,7 +159,7 @@ class UsersController < AuthController
 
   private
 
-  def formatEvent(event_id)
+  def format_event(event_id)
     @event = Event.find(event_id)
     @host = User.find(@event.host_id)
     @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
@@ -170,7 +170,7 @@ class UsersController < AuthController
     return {**@event_json, host_email: @host.email, host_first_name: @host.first_name, host_last_name: @host.last_name, invitees: @invitees, responses: @responses }
   end
 
-  def formatEventWithScores(event_id, user_id)
+  def format_event_with_scores(event_id, user_id)
     @event = Event.find(event_id)
     @host = User.find(@event.host_id)
     @responses = Participant.where(event_id: @event.id).where(questionnaire_complete: true).length
