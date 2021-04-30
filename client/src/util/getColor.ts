@@ -1,4 +1,4 @@
-import { AppTheme } from "./theme";
+import { AppTheme } from "../theme";
 
 export function getColor(x: number, theme: AppTheme) {
   const cutoff1 = 4 / 3 + 1;

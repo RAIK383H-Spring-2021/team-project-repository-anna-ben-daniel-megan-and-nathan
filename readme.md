@@ -1,20 +1,73 @@
 # Shindig
 
-\[short description]
+
 
 Megan Chaffey, Nathan Gentry, Anna Krueger, Ben Lohrman, Daniel Noon
 
-This project has two parts:
-
-- Client
-  - Written in React + Typescript
-  - Mobile-First
-  - PWA
-  - Capacitor
+This project is comprised of a React+TypeScript web client 
 
 ## Client
 
-add documentation here :D
+### Technologies
+
+* **React**: allowed us to create UI components following the function component + hooks pattern. Routing is handled by react-router, and several simple hooks were written exclusively for use in Shindig.
+* **TypeScript**: used for all code in the project, which provides a strong, null-safe type system. This enables us to write better code and collaborate more effectively. 
+* **Storybook**: helped us design, prototype, and test React components isolated from the rest of the app. You can view the Storybook at https://storybook.shindig.one
+
+In addition to these significant technologies, several small npm packages were used, such as a handful of Google’s material design components, rc-slider, jwt-decode, workbox, and others.
+
+### Structure
+
+In the top-level `client` directory, you will find several files and folders:
+
+```
+.storybook	 		- storybook configuration
+public				- static assets to be served
+│					  along with the compiled react app
+└─ manifest.json	- metadata about our progressive web app
+src					- the root of the react app
+-----------------
+package.json		list of dependencies, metadata, build/develop/test script definitions
+tsconfig.json		typescript compiler options
+```
+
+In the `src` folder, there are additional important files and folders:
+
+```
+components			- any and all custom components (there are many)
+					  can be found here.
+hooks				- custom hooks.
+models				- interfaces or classes representing a server response.
+pages				- special components that represent entire pages.
+└─ partials			- added late in development, place for sections
+					  of pages that have become unwieldy.
+resources			- an idea we had early in development to keep
+					  server-client communications isolated from the app,
+					  rarely used in practice.
+stories				- component metadata for storybook.
+util				- utility functions or classes for use throughout the app.
+------------------
+api.ts				- contains a helper class to maintain authorization,
+					  abstract communications, cache fetch results, update
+					  the cache, and deal with URLs.
+App.tsx				- base component wrapping all other components and pages.
+					  imports base CSS, deals with routing and authorization
+					  guards, etc.
+index.tsx			- bootstraps React, service worker
+theme.ts			- stores theme information for dark and light themes,
+					  type information for theming.
+User.ts				- logic for user-specific data. we want to make the app
+					  performant but behave as expected, i.e, we need to make
+					  sure we have the most up-to-date information on the user.
+					  To achieve this, User.ts queries the name and email
+                      stored in the authorization token to display to the user.
+                      However, as soon as an opportunity arises, this
+                      we fetch newer data from the server--profile data,
+                      questionnaire data, etc. This information is also cached
+                      in case the user goes offline.
+```
+
+
 
 ## Server
 
@@ -70,6 +123,15 @@ Our application is currently deployed using Heroku! Visit it at https://shindig.
 However, if you REALLY want to run it locally, here's some instructions!
 
 ### Deploying the Frontend Locally
+
+Getting the front-end up and running on your local device is extremely simple.
+
+1. If you haven’t already, install Node.js (this will also install npm)
+2. Open a terminal session and `cd` into the `client` directory
+3. Run `npm i` to install dependencies
+4. Run `npm start` to start a development server
+5. The dev server should open Shindig in your default browser automatically.
+   * If it fails to do so, open http://localhost:3000 in your browser.
 
 ### Deploying the Backend Locally
 

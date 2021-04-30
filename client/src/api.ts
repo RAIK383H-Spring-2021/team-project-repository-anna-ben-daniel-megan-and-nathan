@@ -54,15 +54,12 @@ export class API {
 
   public static setCacheItem(url: string, data: unknown) {
     // don't include searches since they may change frequently
-    if (!url.includes("?")) {
-      this.cache.set(url, { data, expires: Date.now() + 1.728e8 });
-      queueMicrotask(() =>
-        localStorage.setItem(
-          "cache",
-          JSON.stringify({ cache: [...this.cache] })
-        )
-      );
-    }
+    if (url.includes("?")) return;
+
+    this.cache.set(url, { data, expires: Date.now() + 1.728e8 });
+    queueMicrotask(() =>
+      localStorage.setItem("cache", JSON.stringify({ cache: [...this.cache] }))
+    );
   }
 
   public static getCacheItem(url: string) {

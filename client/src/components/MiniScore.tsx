@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { createUseStyles, useTheme } from "react-jss";
-import { getColor } from "../getColor";
+import { getColor } from "../util/getColor";
 import { AppTheme } from "../theme";
 import { Icon } from "./Icon";
 import { round } from "./Score";

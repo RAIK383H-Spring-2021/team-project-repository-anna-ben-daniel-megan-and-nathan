@@ -13,9 +13,11 @@ export function useSubscription<T>(name: string, callback: subscription<T>) {
     registry.get(name)?.push(callback);
 
     return () => {
-      const idx = registry.get(name)?.indexOf(callback);
-      if (idx) {
-        registry.get(name)?.splice(idx, 1);
+      const list = registry.get(name);
+
+      const idx = list?.indexOf(callback);
+      if (idx && idx >= 0) {
+        list?.splice(idx, 1);
       }
     };
   });
