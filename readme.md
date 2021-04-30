@@ -118,7 +118,7 @@ Our tests can be found in the `/server/spec/` directory, and the corresponding c
 
 ## Deploying
 
-Our application is currently deployed using Heroku! Visit it at https://shindig.one.
+Our application is currently deployed using Heroku and Vercel! Visit it at https://shindig.one.
 
 However, if you REALLY want to run it locally, here's some instructions!
 
@@ -144,6 +144,7 @@ Once you have those two things installed on your computer, do the following:
 
 * `cd` into the `server/` directory
 * Run: `bundle install`. This will install the necessary Gems defined in our `Gemfile`.
+* Go into the `config/` directory and open `database.yml`. Here, you need to edit the `username` and `password` fields to match your PostgreSQL credentials.
 * Run: `rails db:create` followed by `rails db:create RAILS_ENV=test`. This creates the development and testing databases.
 * Run: `rails db:migrate` followed by `rails db:migrate RAILS_ENV=test`. This will create the tables and columns in the databases.
 * Run: `rails s`. This will begin serving the backend so that it can be interacted with.
