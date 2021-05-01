@@ -53,7 +53,7 @@ export class API {
   }
 
   public static setCacheItem(url: string, data: unknown) {
-    // don't include searches since they may change frequently
+    // don't include queries since they may change frequently
     if (url.includes("?")) return;
 
     this.cache.set(url, { data, expires: Date.now() + 1.728e8 });

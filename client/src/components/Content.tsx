@@ -7,13 +7,11 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
   content: {
     display: "grid",
     height: "100%",
-    // gridTemplateRows: "150px 1fr",
   },
   scroll: {
     height: "100%",
     overflowY: "auto",
     overflowX: "hidden",
-    // paddingBottom: ({ fabExists }) => fabExists && 96,
   },
   toolbar: {
     zIndex: 3,
@@ -28,9 +26,7 @@ const useStyles = createUseStyles((theme: AppTheme) => ({
         display: "block",
         width: "100%",
         height: 30,
-        // background: "linear-gradient(",
       },
-    // ...theme.colors.background.base,
   },
   fabContainer: {
     position: "absolute",

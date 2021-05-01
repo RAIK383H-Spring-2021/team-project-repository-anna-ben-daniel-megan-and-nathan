@@ -60,13 +60,13 @@ export interface SentimentPickerComponentProps {
 
 const options = [
   { icon: "sentiment_very_dissatisfied", value: 1 },
-  {},
+  "line",
   { icon: "sentiment_dissatisfied", value: 2 },
-  {},
+  "line",
   { icon: "sentiment_satisfied", value: 3 },
-  {},
+  "line",
   { icon: "sentiment_satisfied_alt", value: 4 },
-  {},
+  "line",
   { icon: "sentiment_very_satisfied", value: 5 },
 ];
 
@@ -98,7 +98,7 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
       </div>
       <div className={classes.control}>
         {options.map((option, i) =>
-          option?.icon ? (
+          typeof option === "object" ? (
             <label key={i} className={classes.label}>
               <Button
                 onClick={() => update(option.value)}
@@ -115,13 +115,6 @@ export const SentimentPicker: FC<SentimentPickerComponentProps> = (props) => {
           )
         )}
       </div>
-      {/* <div >
-        {[1, 2, 3, 4, 5].map((i) => (
-          <label key={i} onClick={() => update(i)} className={classes.label}>
-            {i}
-          </label>
-        ))}
-      </div> */}
     </div>
   );
 };
